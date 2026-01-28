@@ -17,6 +17,7 @@
 #include "wizchip_spi.h"
 
 #include "loopback.h"
+#include "socket.h"
 
 #include "timer.h"
 
@@ -29,50 +30,6 @@
 /* Buffer */
 #define ETHERNET_BUF_MAX_SIZE (1024 * 2)
 
-/* Socket */
-#define SOCKET_TCP_SERVER 0
-#define SOCKET_TCP_CLIENT 1
-#define SOCKET_UDP 2
-#define SOCKET_TCP_SERVER6 3
-#define SOCKET_TCP_CLIENT6 4
-#define SOCKET_UDP6 5
-#define SOCKET_TCP_SERVER_DUAL 6
-#define SOCKET_DHCP 7
-
-/* Port */
-#define PORT_TCP_SERVER 5000
-#define PORT_TCP_CLIENT 5001
-#define PORT_TCP_CLIENT_DEST    5002
-#define PORT_UDP 5003
-
-#define PORT_TCP_SERVER6 5004
-#define PORT_TCP_CLIENT6 5005
-#define PORT_TCP_CLIENT6_DEST 5006
-#define PORT_UDP6 5007
-
-#define PORT_TCP_SERVER_DUAL 5008
-
-#define IPV4
-// #define IPV6
-
-#ifdef IPV4
-#define TCP_SERVER
-// #define TCP_CLIENT
-// #define UDP
-#endif
-
-#ifdef IPV6
-#define TCP_SERVER6
-#define TCP_CLIENT6
-#define UDP6
-#endif
-
-#if defined IPV4 && defined IPV6
-#define TCP_SERVER_DUAL
-#endif
-
-#define RETRY_CNT   10000
-
 /**
     ----------------------------------------------------------------------------------------------------
     Variables
@@ -81,7 +38,7 @@
 /* Network */
 static wiz_NetInfo g_net_info = {
     .mac = {0x00, 0x08, 0xDC, 0x12, 0x34, 0x56}, // MAC address
-    .ip = {192, 168, 11, 22},                     // IP address
+    .ip = {192, 168, 11, 12},                     // IP address
     .sn = {255, 255, 255, 0},                    // Subnet Mask
     .gw = {192, 168, 11, 1},                     // Gateway
     .dns = {8, 8, 8, 8},                         // DNS server
@@ -122,43 +79,8 @@ static wiz_NetInfo g_net_info = {
 #endif
 };
 
-uint8_t tcp_client_destip[] = {
-    192, 168, 50, 103
-};
 
-uint8_t tcp_client_destip6[] = {
-    0x20, 0x01, 0x02, 0xb8,
-    0x00, 0x10, 0xff, 0xff,
-    0x71, 0x48, 0xcb, 0x27,
-    0x36, 0xb9, 0x99, 0x2e
-};
 
-uint16_t tcp_client_destport = PORT_TCP_CLIENT_DEST;
-
-uint16_t tcp_client_destport6 = PORT_TCP_CLIENT6_DEST;
-
-/* Loopback */
-static uint8_t g_tcp_server_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_tcp_client_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_udp_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_tcp_server6_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_tcp_client6_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_udp6_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
-static uint8_t g_tcp_server_dual_buf[ETHERNET_BUF_MAX_SIZE] = {
-    0,
-};
 
 /* Timer */
 static volatile uint16_t g_msec_cnt = 0;
@@ -206,81 +128,69 @@ int main() {
     /* Get network information */
     print_network_information(g_net_info);
 
-    /*Choose IPv4 / IPv6*/
-#if _WIZCHIP_ > W5500
-#ifdef IPV6
-    set_loopback_mode_W6x00(AS_IPV6);
-#endif
-#endif
+    socket(1,Sn_MR_TCP4,5000,0x00);
+    listen(1);    
 
-    /* Infinite loop */
     while (1) {
-#ifdef TCP_SERVER
-        /* TCP server loopback test */
-        if ((retval = loopback_tcps(SOCKET_TCP_SERVER, g_tcp_server_buf, PORT_TCP_SERVER)) < 0) {
-            printf(" loopback_tcps error : %d\n", retval);
+    static uint8_t ping_started = 0;
+    uint8_t slir;
 
-            while (1)
-                ;
-        }
-#endif
-#ifdef TCP_CLIENT
-        /* TCP client loopback test */
-        static uint32_t tcp_client_cnt = 0;
-        if ((retval = loopback_tcpc(SOCKET_TCP_CLIENT, g_tcp_client_buf, tcp_client_destip, tcp_client_destport)) < 0) {
-            printf(" loopback_tcpc error : %d\n", retval);
+    /* 1. TCP Client 연결 감지 (Socket 1) */
+    if (getSn_IR(1) & Sn_IR_CON)
+    {
+        printf("TCP Client Connected (Socket 1)\n");
 
-            while (1)
-                ;
-        }
-#endif
-#ifdef UDP
-        /* UDP loopback test */
-        if ((retval = loopback_udps(SOCKET_UDP, g_udp_buf, PORT_UDP)) < 0) {
-            printf(" loopback_udps error : %d\n", retval);
+        /* CON 인터럽트 클리어 */
+        setSn_IRCLR(1, 0x01);
 
-            while (1)
-                ;
-        }
-#endif
-#ifdef IPV6_AVAILABLE
-#ifdef TCP_SERVER6
-        /* TCP server loopback test */
-        if ((retval = loopback_tcps(SOCKET_TCP_SERVER6, g_tcp_server6_buf, PORT_TCP_SERVER6)) < 0) {
-            printf(" loopback_tcps IPv6 error : %d\n", retval);
+        /* PING 시작 플래그 */
+        ping_started = 1;
+    }
 
-            while (1)
-                ;
-        }
-#endif
-#ifdef TCP_CLIENT6
-        /* TCP client loopback test */
-        if ((retval = loopback_tcpc(SOCKET_TCP_CLIENT6, g_tcp_client6_buf, tcp_client_destip6, tcp_client_destport6)) < 0) {
-            printf(" loopback_tcpc IPv6 error : %d\n", retval);
+    /* 2. TCP 연결 이후 SOCKET-less IPv4 PING 반복 */
+    if (ping_started)
+    {
+        /* SOCKET-less Retransmission 설정 */
+        setSLRTR(0x03E8);   // 100ms (unit: 100us)
+        setSLRCR(5);
 
-            while (1)
-                ;
-        }
-#endif
-#ifdef UDP6
-        /* UDP loopback test */
-        if ((retval = loopback_udps(SOCKET_UDP6, g_udp6_buf, PORT_UDP6)) < 0) {
-            printf(" loopback_udps IPv6 error : %d\n", retval);
+        /* SOCKET-less Interrupt Mask (PING4 + TIMEOUT) */
+        setSLIMR((1<<5) | (1<<7));
 
-            while (1)
-                ;
+        /* Destination IP = 192.168.11.45 */
+        {
+            uint8_t dst_ip[4] = {192, 168, 11, 45};
+            setSLDIP4R(dst_ip);
         }
-#endif
-#ifdef TCP_SERVER_DUAL
-        /* TCP server dual loopback test */
-        if ((retval = loopback_tcps(SOCKET_TCP_SERVER_DUAL, g_tcp_server_dual_buf, PORT_TCP_SERVER_DUAL, AS_IPDUAL)) < 0) {
-            printf(" loopback_tcps IPv6 error : %d\n", retval);
 
-            while (1)
-                ;
+        /* PING Sequence / ID */
+        static uint16_t ping_seq = 0x03E8;
+        setPINGSEQR(ping_seq++);
+        setPINGIDR(0x0100);
+
+        /* IPv4 PING Command */
+        setSLCR(SLCR_PING4);
+
+        /* Command 완료 대기 */
+        while (getSLCR() != 0x00);
+
+        /* 결과 확인 */
+        slir = getSLIR();
+
+        if (slir & SLIR_PING4)
+        {
+            printf("PING Reply received\n");
+            setSLIRCLR((1<<5));
         }
-#endif
-#endif
+        else if (slir & (1<<7))
+        {
+            printf("PING Timeout\n");
+            setSLIRCLR((1<<7));
+        }
+
+        sleep_ms(1000);
+    }
+
     }
 }
 
