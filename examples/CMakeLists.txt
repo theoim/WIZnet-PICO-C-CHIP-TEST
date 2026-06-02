@@ -1,3 +1,4 @@
-add_subdirectory(buffer_read)
-add_subdirectory(PING_TEST)
-add_subdirectory(10M_Complience_Test)
+# add_subdirectory(buffer_read)
+# add_subdirectory(PING_TEST)
+# add_subdirectory(10M_Complience_Test)
+add_subdirectory(opcua_usb_stdio)
