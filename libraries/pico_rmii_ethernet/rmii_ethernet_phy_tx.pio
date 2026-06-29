@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2021 Sandeep Mistry
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+.program rmii_ethernet_phy_tx_data
+; MII TX - nibble (4-bit) mode
+;
+; OUT pins (5): TXD0, TXD1, TXD2, TXD3, TX-EN  (tx_pin_start)
+; IN  pin  (0): TX-CLK from PHY                 (tx_clk_pin, used for wait only)
+;
+; Data byte layout in tx_frame_bits[]:
+;   bit[4]   = TX-EN
+;   bit[3:0] = TXD3:TXD0  (nibble, LSB first)
+;
+; Each byte entry in tx_frame_bits -> one PIO cycle -> one nibble output.
+.wrap_target
+    wait 0 pin 0    ; wait for TX-CLK falling edge
+    wait 1 pin 0    ; wait for TX-CLK rising edge
+    out pins, 5     ; output TXD[3:0] + TX-EN simultaneously
+.wrap
+
+% c-sdk {
+
+static inline void mii_ethernet_phy_tx_init(PIO pio, uint sm, uint offset, uint tx_pin, uint tx_clk_pin) {
+    for (int i = 0; i < 5; i++) {
+        pio_gpio_init(pio, tx_pin + i);
+    }
+
+    // TXD0, TXD1, TXD2, TXD3, TX-EN = outputs
+    pio_sm_set_consecutive_pindirs(pio, sm, tx_pin, 5, true);
+
+    pio_sm_config c = rmii_ethernet_phy_tx_data_program_get_default_config(offset);
+
+    // OUT base = TXD0 (5 output pins: TXD0-3, TX-EN)
+    sm_config_set_out_pins(&c, tx_pin, 5);
+
+    // IN base = TX-CLK (used only for 'wait 0/1 pin 0')
+    sm_config_set_in_pins(&c, tx_clk_pin);
+
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
+
+    // right shift, autopull at 5 bits (one nibble + TX-EN per DMA byte)
+    sm_config_set_out_shift(&c, true, true, 5);
+
+    // run at full speed to reliably detect TX-CLK edges
+    sm_config_set_clkdiv(&c, 1);
+
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

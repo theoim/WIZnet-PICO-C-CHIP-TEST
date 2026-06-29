@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2021 Sandeep Mistry
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+.program rmii_ethernet_phy_rx_data
+; MII RX - nibble (4-bit) mode
+;
+; IN pins (relative to rx_pin_start):
+;   pin 0 = RXD0
+;   pin 1 = RXD1
+;   pin 2 = RXD2
+;   pin 3 = RXD3
+;   pin 4 = RX-DV
+;   pin 5 = RX-CLK  (from PHY, continuous)
+;
+; Startup: wait for RX-DV to go high, then align to clock edge.
+; Main loop: sample RXD[3:0] on each rising edge of RX-CLK.
+; Frame end: RX-DV falling edge triggers an external GPIO interrupt
+;            which stops this SM and aborts DMA (handled in C).
+
+    wait 0 pin 4        ; wait for RX-DV = 0 (idle / previous frame ended)
+    wait 1 pin 4        ; wait for RX-DV = 1 (new frame arriving)
+    wait 0 pin 5        ; align to RX-CLK falling edge
+    wait 1 pin 5        ; align to RX-CLK rising edge (first nibble boundary)
+.wrap_target
+    in pins, 4          ; sample RXD[3:0] (bits [3:0] -> ISR MSB with right shift)
+    wait 0 pin 5        ; wait for RX-CLK falling
+    wait 1 pin 5        ; wait for RX-CLK rising (next nibble)
+.wrap
+
+% c-sdk {
+
+static inline void mii_ethernet_phy_rx_init(PIO pio, uint sm, uint offset, uint rx_pin) {
+    for (int i = 0; i < 6; i++) {
+        pio_gpio_init(pio, rx_pin + i);
+    }
+
+    // RXD0, RXD1, RXD2, RXD3, RX-DV, RX-CLK = all inputs
+    pio_sm_set_consecutive_pindirs(pio, sm, rx_pin, 6, false);
+
+    pio_sm_config c = rmii_ethernet_phy_rx_data_program_get_default_config(offset);
+
+    // IN base = RXD0, giving: pin0=RXD0, pin1=RXD1, pin2=RXD2, pin3=RXD3, pin4=RX-DV, pin5=RX-CLK
+    sm_config_set_in_pins(&c, rx_pin);
+
+    // right shift, autopush at 8 bits (2 nibbles = 1 byte per FIFO push)
+    sm_config_set_in_shift(&c, true, true, 8);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+
+    // run at full speed to reliably detect RX-CLK edges
+    sm_config_set_clkdiv(&c, 1);
+
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
