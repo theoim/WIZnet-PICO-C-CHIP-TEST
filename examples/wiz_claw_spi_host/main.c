@@ -17,9 +17,10 @@
  * ──────────────────────────────────────────────────────────────── */
 
 #include <stdio.h>
-#include <string.h> 
+#include <string.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <malloc.h>
  
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
@@ -90,6 +91,36 @@ static volatile bool    g_llm_resp_ok     = false;  /* true=success, false=error
 static char             g_llm_resp_text[LLM_RESP_TEXT_MAX + 1] = "";
 static char             g_llm_resp_session[64] = "";
 static volatile bool    g_esp32_alive     = false;  /* true after first successful PONG */
+
+/* ── S-track stability instrumentation ─────────────────────────────
+ * Relay outcome counters + periodic health line for soak/leak detection.
+ * FreeHeap should stay flat across a 24h soak (no monotonic decline).
+ */
+static volatile uint32_t g_stat_relay_ok      = 0;
+static volatile uint32_t g_stat_relay_err     = 0;  /* ESP32 returned ok=false */
+static volatile uint32_t g_stat_relay_timeout = 0;  /* 90s deadline hit        */
+static volatile uint32_t g_stat_local_fb      = 0;  /* local Groq fallback used */
+
+extern char __StackLimit;
+extern char __bss_end__;
+static uint32_t free_heap_bytes(void)
+{
+    struct mallinfo m = mallinfo();
+    return (uint32_t)(&__StackLimit - &__bss_end__) - (uint32_t)m.uordblks;
+}
+
+static void print_health_line(void)
+{
+    printf("[health] up=%lus heap=%lu esp_alive=%d "
+           "relay_ok=%lu relay_err=%lu relay_to=%lu local_fb=%lu\n",
+           (unsigned long)(to_ms_since_boot(get_absolute_time()) / 1000u),
+           (unsigned long)free_heap_bytes(),
+           (int)g_esp32_alive,
+           (unsigned long)g_stat_relay_ok,
+           (unsigned long)g_stat_relay_err,
+           (unsigned long)g_stat_relay_timeout,
+           (unsigned long)g_stat_local_fb);
+}
 
 /* ── 소켓 할당 ─────────────────────────────────────────────────────
  *   0 : Telegram getUpdates (long-poll)
@@ -751,11 +782,14 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 if (got && g_llm_resp_ok) {
                     send_text  = g_llm_resp_text;
                     used_relay = true;
+                    g_stat_relay_ok++;
                     printf("[relay] ESP32 CLAW response received\n");
                 } else if (got) {
+                    g_stat_relay_err++;
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
                 } else {
+                    g_stat_relay_timeout++;
                     printf("[relay] timeout — falling back to local Groq\n");
                     /* g_esp32_alive 유지: ESP32 STATUS 패킷 오면 자동 복구 */
                 }
@@ -765,6 +799,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
 
     /* ── 로컬 Groq fallback ─────────────────────────────────────── */
     if (!used_relay) {
+        g_stat_local_fb++;
         if (ctx->session == NULL) {
             ctx->session = wiz_claw_session_create();
         }
@@ -1130,6 +1165,9 @@ int main(void)
         printf("[main] drain done, starting from offset=%" PRId64 "\n", offset);
     }
 
+    absolute_time_t next_health = make_timeout_time_ms(30000);
+    print_health_line();  /* baseline at boot */
+
     while (1) {
         wiz_claw_tg_poll(&tg_poll_cfg,
                           TG_POLL_TIMEOUT_SEC,
@@ -1138,6 +1176,11 @@ int main(void)
                           &agent_ctx);
 
         wiz_claw_webserver_poll();
+
+        if (time_reached(next_health)) {
+            print_health_line();
+            next_health = make_timeout_time_ms(30000);
+        }
 
         /* PIR auto-capture (set by Core1 SPI callback) */
         if (g_pir_triggered) {
