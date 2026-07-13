@@ -42,15 +42,13 @@ static const wiz_claw_settings_t s_defaults = {
     .dns           = {8, 8, 8, 8},
     .dhcp          = 0,
     .llm_api_key   = "",
-    .llm_base_url  = "https://gateway.ai.cloudflare.com",
+    .llm_base_url  = "https://api.groq.com",
     .llm_model     = "meta-llama/llama-4-scout-17b-16e-instruct",
-    .llm_chat_path = "/v1/83f5e908134d951a5eecb420dc82a473"
-                     "/esp-claw-theo/groq/chat/completions",
+    .llm_chat_path = "/openai/v1/chat/completions",
     .llm_max_tokens = "512",
-    .tg_bot_token  = "",
-    .vision_host   = "gateway.ai.cloudflare.com",
-    .vision_path   = "/v1/83f5e908134d951a5eecb420dc82a473"
-                     "/esp-claw-theo/groq/chat/completions",
+    .tg_bot_token  = "8943839781:AAEaSLlC5eC7J5Kbq41_A2DGAYzULLzkUVU",
+    .vision_host   = "api.groq.com",
+    .vision_path   = "/openai/v1/chat/completions",
 };
 
 static const wiz_claw_settings_t *s_cfg;

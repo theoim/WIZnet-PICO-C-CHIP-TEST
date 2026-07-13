@@ -244,20 +244,40 @@ wiz_claw_err_t wiz_claw_tls_connect(wiz_claw_tls_t  *tls,
     WIZ_CLAW_LOG_I(TAG, "TLS handshake %s:%u ...",
                    hostname ? hostname : "?", port);
 
-    do {
-        ret = mbedtls_ssl_handshake(&tls->ssl);
-    } while (ret == MBEDTLS_ERR_SSL_WANT_READ ||
-             ret == MBEDTLS_ERR_SSL_WANT_WRITE);
+    {
+        uint32_t hs_start = (uint32_t)to_ms_since_boot(get_absolute_time());
+        uint32_t hs_limit = (timeout_ms > 0) ? timeout_ms : 30000u;
+        do {
+            ret = mbedtls_ssl_handshake(&tls->ssl);
+            if (ret == MBEDTLS_ERR_SSL_WANT_READ ||
+                ret == MBEDTLS_ERR_SSL_WANT_WRITE) {
+                if ((uint32_t)to_ms_since_boot(get_absolute_time()) - hs_start >= hs_limit) {
+                    WIZ_CLAW_LOG_E(TAG, "TLS handshake timeout after %ums", (unsigned)hs_limit);
+                    ret = MBEDTLS_ERR_SSL_TIMEOUT;
+                    break;
+                }
+                sleep_ms(5);
+            }
+        } while (ret == MBEDTLS_ERR_SSL_WANT_READ ||
+                 ret == MBEDTLS_ERR_SSL_WANT_WRITE);
+    }
 
     if (ret != 0) {
         char errbuf[80];
         mbedtls_strerror(ret, errbuf, sizeof(errbuf));
         WIZ_CLAW_LOG_E(TAG, "TLS handshake failed -0x%04x: %s", -ret, errbuf);
+        /* X509 검증 실패 플래그: 0x08=NOT_TRUSTED, 0x4000=BAD_KEY */
+        uint32_t vf = mbedtls_ssl_get_verify_result(&tls->ssl);
+        WIZ_CLAW_LOG_E(TAG, "X509 verify_result=0x%08x", (unsigned)vf);
         wiz_claw_tcp_close(tls->socket_no);
         return WIZ_CLAW_ERR_HTTP;
     }
 
-    WIZ_CLAW_LOG_I(TAG, "TLS ok [%s]", mbedtls_ssl_get_ciphersuite(&tls->ssl));
+    {
+        uint32_t vf = mbedtls_ssl_get_verify_result(&tls->ssl);
+        WIZ_CLAW_LOG_I(TAG, "TLS ok [%s] verify_flags=0x%08x",
+                        mbedtls_ssl_get_ciphersuite(&tls->ssl), (unsigned)vf);
+    }
     return WIZ_CLAW_OK;
 }
 
@@ -267,12 +287,20 @@ int32_t wiz_claw_tls_write(wiz_claw_tls_t *tls,
                              const uint8_t  *buf,
                              size_t          len)
 {
-    size_t written = 0;
-    int    ret;
+    size_t   written  = 0;
+    int      ret;
+    uint32_t deadline = (uint32_t)to_ms_since_boot(get_absolute_time()) + 30000u;
 
     while (written < len) {
         ret = mbedtls_ssl_write(&tls->ssl, buf + written, len - written);
-        if (ret == MBEDTLS_ERR_SSL_WANT_WRITE) { continue; }
+        if (ret == MBEDTLS_ERR_SSL_WANT_WRITE) {
+            if ((uint32_t)to_ms_since_boot(get_absolute_time()) >= deadline) {
+                WIZ_CLAW_LOG_E(TAG, "TLS write timeout");
+                return MBEDTLS_ERR_SSL_TIMEOUT;
+            }
+            sleep_ms(5);
+            continue;
+        }
         if (ret < 0) { return (int32_t)ret; }
         written += (size_t)ret;
     }

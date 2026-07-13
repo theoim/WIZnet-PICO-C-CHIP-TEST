@@ -30,7 +30,11 @@ typedef void (*wiz_spi_slave_rx_cb_t)(spi_claw_cmd_t cmd,
                                        uint16_t       len,
                                        void          *user_ctx);
 
+/* CRC 에러 콜백 — CRC 불일치 패킷 수신 시 호출 (cmd 바이트는 신뢰 불가) */
+typedef void (*wiz_spi_slave_crc_err_cb_t)(uint8_t raw_cmd, void *user_ctx);
+
 void wiz_spi_slave_init(wiz_spi_slave_rx_cb_t rx_cb, void *user_ctx);
+void wiz_spi_slave_set_crc_err_cb(wiz_spi_slave_crc_err_cb_t cb, void *user_ctx);
 void wiz_spi_slave_poll(void);
 void wiz_spi_slave_send(spi_claw_cmd_t cmd, const uint8_t *payload, uint16_t len);
 

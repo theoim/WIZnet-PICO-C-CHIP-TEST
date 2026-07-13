@@ -65,11 +65,28 @@ static absolute_time_t  g_pir_cooldown_until = {0};  /* {0} = already past at bo
  * Core1: SPI_CMD_LLM_RESP 수신 → g_llm_resp_* 채우기 → g_llm_resp_ready=true
  * 타임아웃 시 로컬 Groq fallback.
  */
-#define LLM_RESP_TEXT_MAX  3800u
-#define LLM_RELAY_TIMEOUT_MS 35000u
+#define LLM_RESP_TEXT_MAX    3800u
+#define LLM_RELAY_TIMEOUT_MS 90000u
+
+/* ── HTTP 프록시 (Core1 수신 → Core0 처리) ──────────────────────────
+ * Core1: HTTP_REQ/BODY/BODY_END 수신 → g_proxy_* 채우기 → g_proxy_ready=true
+ * Core0: LLM_REQ 대기 루프에서 g_proxy_ready 감지 → HTTP POST → HTTP_RESP 전송
+ */
+#define HTTP_PROXY_URL_MAX   256u
+#define HTTP_PROXY_AUTH_MAX  640u
+#define HTTP_PROXY_BODY_MAX  (32u * 1024u)
+
+static char          g_proxy_url[HTTP_PROXY_URL_MAX];
+static char          g_proxy_auth[HTTP_PROXY_AUTH_MAX];
+static uint8_t      *g_proxy_body     = NULL;
+static uint32_t      g_proxy_body_len = 0;
+static uint32_t      g_proxy_body_rcv = 0;
+static volatile bool g_proxy_ready    = false;
+static bool          g_proxy_crc_err  = false;  /* CRC error during body recv; send 500 on BODY_END */
 
 static spin_lock_t     *g_llm_spin        = NULL;
 static volatile bool    g_llm_resp_ready  = false;
+static volatile bool    g_llm_resp_ok     = false;  /* true=success, false=error from ESP32 */
 static char             g_llm_resp_text[LLM_RESP_TEXT_MAX + 1] = "";
 static char             g_llm_resp_session[64] = "";
 static volatile bool    g_esp32_alive     = false;  /* true after first successful PONG */
@@ -607,6 +624,38 @@ static const char *SYSTEM_PROMPT =
     "text message confirming what was done — do NOT call the same tool again. "
     "Respond concisely in the same language the user writes in.";
 
+/* ── HTTP 프록시 응답 전송 (Core0) ──────────────────────────────────
+ * wiz_claw_http_post_cb 결과를 SPI_CMD_HTTP_RESP + RESP_BODY chunks +
+ * SPI_CMD_HTTP_RESP_END 로 ESP32에 돌려준다.
+ */
+/* http_status: actual Groq HTTP status (200/400/429/…), or 0 for connection error */
+static void _proxy_send_response(int http_status, const char *body)
+{
+    int    status   = (http_status > 0) ? http_status : 500;
+    size_t body_len = body ? strlen(body) : 0;
+
+    char meta[64];
+    int  mlen = snprintf(meta, sizeof(meta),
+                         "{\"status\":%d,\"body_len\":%zu}", status, body_len);
+    wiz_spi_slave_send(SPI_CMD_HTTP_RESP, (const uint8_t *)meta, (uint16_t)mlen);
+
+    if (body && body_len > 0) {
+        const char *ptr = body;
+        size_t remaining = body_len;
+        while (remaining > 0) {
+            uint16_t n = (uint16_t)(remaining > SPI_CLAW_MAX_CHUNK
+                                     ? SPI_CLAW_MAX_CHUNK : remaining);
+            wiz_spi_slave_send(SPI_CMD_HTTP_RESP_BODY, (const uint8_t *)ptr, n);
+            ptr       += n;
+            remaining -= n;
+            sleep_ms(5);
+        }
+    }
+
+    wiz_spi_slave_send(SPI_CMD_HTTP_RESP_END, NULL, 0);
+    printf("[proxy] response sent status=%d body=%zu bytes\n", status, body_len);
+}
+
 /* 부팅 드레인용 noop 콜백 — 메시지 수신만 ACK, 처리 안 함 */
 static void tg_drain_noop(const wiz_claw_tg_message_t *msg, void *ctx)
 {
@@ -655,6 +704,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 /* 응답 플래그 초기화 */
                 uint32_t save = spin_lock_blocking(g_llm_spin);
                 g_llm_resp_ready = false;
+                g_llm_resp_ok    = false;
                 spin_unlock(g_llm_spin, save);
 
                 wiz_spi_slave_send(SPI_CMD_LLM_REQ,
@@ -664,7 +714,11 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 printf("[relay] LLM_REQ sent to ESP32, waiting up to %ums\n",
                        LLM_RELAY_TIMEOUT_MS);
 
-                /* 응답 대기 (Core1이 SPI poll 계속 수행) */
+                /* 응답 대기 (Core1이 SPI poll 계속 수행)
+                 * 루프 내부에서 HTTP proxy 요청도 처리한다:
+                 * ESP32가 WiFi 없이 Groq 호출이 필요할 때 SPI로 proxy 요청을
+                 * 보내면 Core0이 여기서 받아 Ethernet으로 HTTP POST를 대신 수행.
+                 */
                 uint32_t deadline = to_ms_since_boot(get_absolute_time()) + LLM_RELAY_TIMEOUT_MS;
                 bool got = false;
                 while (to_ms_since_boot(get_absolute_time()) < deadline) {
@@ -672,16 +726,38 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                     got = g_llm_resp_ready;
                     spin_unlock(g_llm_spin, save);
                     if (got) break;
-                    sleep_ms(100);
+
+                    /* HTTP proxy: ESP32 body 수신 완료 → HTTP POST → 응답 전송 */
+                    if (g_proxy_ready && g_proxy_body) {
+                        printf("[proxy] forwarding %u bytes to %s\n",
+                               (unsigned)g_proxy_body_rcv, g_proxy_url);
+                        char *resp = NULL;
+                        wiz_claw_err_t perr = wiz_claw_http_post_cb(
+                            g_proxy_url, g_proxy_auth,
+                            (char *)g_proxy_body, &resp, &g_llm_ctx);
+                        int http_status = (perr == WIZ_CLAW_OK)
+                                          ? wiz_claw_http_last_status() : 0;
+                        _proxy_send_response(http_status, resp);
+                        free(resp);
+                        free(g_proxy_body); g_proxy_body = NULL;
+                        g_proxy_body_len = 0;
+                        g_proxy_body_rcv = 0;
+                        g_proxy_ready    = false;
+                    }
+
+                    sleep_ms(10);
                 }
 
-                if (got) {
+                if (got && g_llm_resp_ok) {
                     send_text  = g_llm_resp_text;
                     used_relay = true;
                     printf("[relay] ESP32 CLAW response received\n");
+                } else if (got) {
+                    printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
+                    /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
                 } else {
                     printf("[relay] timeout — falling back to local Groq\n");
-                    g_esp32_alive = false;  /* 이번 세션 동안 로컬로 전환 */
+                    /* g_esp32_alive 유지: ESP32 STATUS 패킷 오면 자동 복구 */
                 }
             }
         }
@@ -721,6 +797,29 @@ static void core1_spi_entry(void)
     while (1) {
         wiz_spi_slave_poll();
         tight_loop_contents();
+    }
+}
+
+/* ── SPI CRC 에러 콜백 ──────────────────────────────────────────────
+ * HTTP_BODY/BODY_END CRC 에러 시 proxy body 버퍼를 해제하고 플래그 설정.
+ * 응답 전송은 BODY_END 도착 후 Core0에서 처리 — BODY TX 중 응답 전송 시
+ * ESP32 s_rx_task와 spi_wiz_send(chunk) 간에 SPI bus race 발생하므로.
+ */
+static void on_spi_crc_error(uint8_t raw_cmd, void *user_ctx)
+{
+    (void)user_ctx;
+    if (raw_cmd == SPI_CMD_HTTP_BODY || raw_cmd == SPI_CMD_HTTP_BODY_END ||
+        raw_cmd == SPI_CMD_HTTP_REQ) {
+        if (g_proxy_body || g_proxy_body_len > 0) {
+            printf("[proxy] CRC error on HTTP stream cmd=0x%02X — will respond 500 on BODY_END\n",
+                   raw_cmd);
+            free(g_proxy_body);
+            g_proxy_body     = NULL;
+            g_proxy_body_len = 0;
+            g_proxy_body_rcv = 0;
+            g_proxy_ready    = false;
+            g_proxy_crc_err  = true;
+        }
     }
 }
 
@@ -768,20 +867,27 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
         const char *session = cJSON_GetStringValue(cJSON_GetObjectItem(root, "session_id"));
         const char *text    = cJSON_GetStringValue(cJSON_GetObjectItem(root, "text"));
         bool ok = cJSON_IsTrue(cJSON_GetObjectItem(root, "ok"));
-        if (ok && text) {
+        {
             uint32_t save = spin_lock_blocking(g_llm_spin);
-            strncpy(g_llm_resp_text, text, LLM_RESP_TEXT_MAX);
-            g_llm_resp_text[LLM_RESP_TEXT_MAX] = '\0';
-            if (session) {
-                strncpy(g_llm_resp_session, session, sizeof(g_llm_resp_session) - 1);
-                g_llm_resp_session[sizeof(g_llm_resp_session) - 1] = '\0';
+            if (ok && text) {
+                strncpy(g_llm_resp_text, text, LLM_RESP_TEXT_MAX);
+                g_llm_resp_text[LLM_RESP_TEXT_MAX] = '\0';
+                if (session) {
+                    strncpy(g_llm_resp_session, session, sizeof(g_llm_resp_session) - 1);
+                    g_llm_resp_session[sizeof(g_llm_resp_session) - 1] = '\0';
+                }
+                g_llm_resp_ok    = true;
+                g_llm_resp_ready = true;
+                spin_unlock(g_llm_spin, save);
+                printf("[spi_rx] LLM_RESP ok session=%s len=%u\n",
+                       session ? session : "?", (unsigned)strlen(text));
+            } else {
+                /* ok=false: wake relay loop immediately so it falls back without waiting 90s */
+                g_llm_resp_ok    = false;
+                g_llm_resp_ready = true;
+                spin_unlock(g_llm_spin, save);
+                printf("[spi_rx] LLM_RESP error — waking relay for immediate fallback\n");
             }
-            g_llm_resp_ready = true;
-            spin_unlock(g_llm_spin, save);
-            printf("[spi_rx] LLM_RESP ok session=%s len=%u\n",
-                   session ? session : "?", (unsigned)strlen(text));
-        } else {
-            printf("[spi_rx] LLM_RESP error or missing text\n");
         }
         cJSON_Delete(root);
         break;
@@ -832,6 +938,76 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
                seq, g_photo_mime, (unsigned)g_photo_size);
         g_photo_ready = true;
         break;
+
+    case SPI_CMD_HTTP_REQ: {
+        /* {"url":"...","auth":"Bearer key","body_len":N} */
+        if (!payload || len == 0 || len >= 768) { break; }
+        char js[768]; memcpy(js, payload, len); js[len] = '\0';
+        cJSON *r = cJSON_Parse(js);
+        if (!r) { printf("[proxy] HTTP_REQ parse failed\n"); break; }
+        const char *url  = cJSON_GetStringValue(cJSON_GetObjectItem(r, "url"));
+        const char *auth = cJSON_GetStringValue(cJSON_GetObjectItem(r, "auth"));
+        cJSON *bl = cJSON_GetObjectItem(r, "body_len");
+        uint32_t blen = cJSON_IsNumber(bl) ? (uint32_t)bl->valuedouble : 0;
+
+        strncpy(g_proxy_url,  url  ? url  : "", HTTP_PROXY_URL_MAX  - 1);
+        strncpy(g_proxy_auth, auth ? auth : "", HTTP_PROXY_AUTH_MAX - 1);
+        free(g_proxy_body);
+        g_proxy_body = (blen > 0 && blen <= HTTP_PROXY_BODY_MAX)
+                       ? malloc(blen + 1) : NULL;
+        g_proxy_body_len = blen;
+        g_proxy_body_rcv = 0;
+        g_proxy_ready    = false;
+        g_proxy_crc_err  = false;
+        cJSON_Delete(r);
+        printf("[proxy] HTTP_REQ url=%.60s body_len=%u\n",
+               g_proxy_url, (unsigned)blen);
+        break;
+    }
+
+    case SPI_CMD_HTTP_BODY: {
+        if (!g_proxy_body || !payload || len == 0) { break; }
+        if (g_proxy_body_rcv + len <= g_proxy_body_len) {
+            memcpy(g_proxy_body + g_proxy_body_rcv, payload, len);
+            g_proxy_body_rcv += len;
+        } else {
+            printf("[proxy] BODY overflow %u+%u > %u\n",
+                   (unsigned)g_proxy_body_rcv, len, (unsigned)g_proxy_body_len);
+        }
+        break;
+    }
+
+    case SPI_CMD_HTTP_BODY_END: {
+        if (g_proxy_crc_err) {
+            /* CRC error occurred during body receive — respond with 500 now that
+             * ESP32 has finished sending (no more SPI TX race for s_rx_task). */
+            printf("[proxy] BODY_END after CRC error, sending 500\n");
+            _proxy_send_response(0, NULL);
+            g_proxy_crc_err  = false;
+            free(g_proxy_body);
+            g_proxy_body     = NULL;
+            g_proxy_body_len = 0;
+            g_proxy_body_rcv = 0;
+            g_proxy_ready    = false;
+        } else if (g_proxy_body) {
+            if (g_proxy_body_rcv < g_proxy_body_len) {
+                printf("[proxy] BODY incomplete %u/%u, sending error\n",
+                       (unsigned)g_proxy_body_rcv, (unsigned)g_proxy_body_len);
+                _proxy_send_response(0, NULL);
+                free(g_proxy_body);
+                g_proxy_body     = NULL;
+                g_proxy_body_len = 0;
+                g_proxy_body_rcv = 0;
+                g_proxy_ready    = false;
+            } else {
+                g_proxy_body[g_proxy_body_rcv] = '\0';
+                g_proxy_ready = true;
+                printf("[proxy] BODY_END rcv=%u/%u\n",
+                       (unsigned)g_proxy_body_rcv, (unsigned)g_proxy_body_len);
+            }
+        }
+        break;
+    }
 
     default:
         printf("[spi_rx] unhandled cmd=0x%02X seq=%u len=%u\n", cmd, seq, len);
@@ -889,6 +1065,7 @@ int main(void)
     wiz_claw_net_print_info(&g_net_info);
 
     wiz_spi_slave_init(on_spi_rx, NULL);
+    wiz_spi_slave_set_crc_err_cb(on_spi_crc_error, NULL);
     printf("[main] SPI slave ready\n");
 
     wiz_claw_tg_config_t tg_poll_cfg = {

@@ -78,11 +78,14 @@
 #define MBEDTLS_SHA256_C
 
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED     /* P-256: ECDHE-RSA 핸드셰이크에 필요 */
-#define MBEDTLS_ECDH_C                       /* ECDH 연산 (ECDHE 키 교환) */
-#define MBEDTLS_ECDSA_C                      /* ECDSA 서명 검증 (EC 인증서 체인) */
-#define MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED /* TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 */
-#define MBEDTLS_ENTROPY_C                    /* 엔트로피 수집기 (CTR-DRBG 의존) */
-#define MBEDTLS_SHA1_C                       /* 일부 CA 체인 서명 검증에 필요 */
+#define MBEDTLS_ECDH_C                          /* ECDH 연산 (ECDHE 키 교환) */
+#define MBEDTLS_ECDSA_C                         /* ECDSA 서명 검증 (EC 인증서 체인) */
+#define MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED  /* TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 */
+#define MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED /* TLS_ECDHE_ECDSA_*: ECDSA 인증서 서버 (Cloudflare 등) */
+#define MBEDTLS_ENTROPY_C                       /* 엔트로피 수집기 (CTR-DRBG 의존) */
+#define MBEDTLS_SHA1_C                          /* 일부 CA 체인 서명 검증에 필요 */
+#define MBEDTLS_SHA512_C                        /* SHA-512 */
+#define MBEDTLS_SHA384_C                        /* SHA-384: GTS Root R4 (ecdsa-with-SHA384) 파싱 필요 (mbedTLS 3.x 분리됨) */
 
 #define MBEDTLS_SSL_CLI_C
 #define MBEDTLS_SSL_SRV_C

@@ -6,7 +6,7 @@
 
 #define SPI_CLAW_MAGIC_0   0xCA
 #define SPI_CLAW_MAGIC_1   0xFE
-#define SPI_CLAW_MAX_CHUNK 4096u   /* 단일 패킷 최대 페이로드 */
+#define SPI_CLAW_MAX_CHUNK 2048u   /* 단일 패킷 최대 페이로드 */
 #define SPI_CLAW_HDR_SIZE  7u      /* sizeof(spi_claw_hdr_t) */
 
 typedef enum {
@@ -16,6 +16,9 @@ typedef enum {
     SPI_CMD_GPIO_SET     = 0x03,  /* payload: {"pin":N,"state":"on|off|toggle"} */
     SPI_CMD_CAPTURE_REQ  = 0x04,  /* payload: 없음 (캡처 후 CHUNK 전송 요청) */
     SPI_CMD_LLM_REQ      = 0x05,  /* payload: {"session_id":"tg_<chat_id>","chat_id":"...","sender":"...","text":"..."} */
+    SPI_CMD_HTTP_REQ     = 0x06,  /* payload: {"url":"...","auth":"Bearer key","body_len":N} */
+    SPI_CMD_HTTP_BODY    = 0x07,  /* payload: raw HTTP body chunk (up to SPI_CLAW_MAX_CHUNK) */
+    SPI_CMD_HTTP_BODY_END= 0x08,  /* payload: none — body complete, Pico executes HTTP POST */
 
     /* ── ESP32 → W55RP20 (업스트림) ─────────────── */
     SPI_CMD_EVENT        = 0x40,  /* payload: {"type":"motion","label":"cat",...} */
@@ -23,6 +26,9 @@ typedef enum {
     SPI_CMD_CHUNK_END    = 0x42,  /* payload: {"mime":"image/jpeg","size":N} */
     SPI_CMD_LLM_RESP     = 0x43,  /* payload: {"session_id":"...","ok":true,"text":"..."} */
     SPI_CMD_ESP_STATUS   = 0x44,  /* payload: {"wifi":true,"agent":true} */
+    SPI_CMD_HTTP_RESP    = 0x45,  /* payload: {"status":200,"body_len":N} */
+    SPI_CMD_HTTP_RESP_BODY=0x46,  /* payload: raw HTTP response body chunk */
+    SPI_CMD_HTTP_RESP_END= 0x47,  /* payload: none — response assembly complete */
 
     /* ── 양방향 ──────────────────────────────────── */
     SPI_CMD_ACK          = 0x80,  /* payload: {"seq":N,"ok":true} */

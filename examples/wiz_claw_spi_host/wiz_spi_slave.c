@@ -21,9 +21,17 @@
 #include "hardware/sync.h"
 
 /* ── 모듈 상태 ──────────────────────────────────────────────────── */
-static wiz_spi_slave_rx_cb_t s_rx_cb;
-static void                 *s_rx_ctx;
-static uint8_t               s_seq;   /* 송신 시퀀스 카운터 */
+static wiz_spi_slave_rx_cb_t     s_rx_cb;
+static void                     *s_rx_ctx;
+static wiz_spi_slave_crc_err_cb_t s_crc_err_cb;
+static void                     *s_crc_err_ctx;
+static uint8_t                   s_seq;   /* 송신 시퀀스 카운터 */
+
+void wiz_spi_slave_set_crc_err_cb(wiz_spi_slave_crc_err_cb_t cb, void *user_ctx)
+{
+    s_crc_err_cb  = cb;
+    s_crc_err_ctx = user_ctx;
+}
 
 /* ── CRC 계산 ────────────────────────────────────────────────────
  * 헤더의 crc 필드를 0으로 두고 hdr+payload 전체 XOR.
@@ -132,13 +140,16 @@ static void _handle_rx(void)
             for (uint16_t _i = 0; _i < plen; _i++) printf(" %02X", payload[_i]);
             printf("\n");
         }
+        if (s_crc_err_cb) {
+            s_crc_err_cb(hdr_buf[2], s_crc_err_ctx);
+        }
         return;
     }
 
     uint8_t cmd = hdr_buf[2];
     uint8_t seq = hdr_buf[5];
-    /* CHUNK_DATA 수신 직후 printf ~3ms → SSP FIFO(8 bytes) overflow → 다음 chunk 손실 방지 */
-    if (cmd != SPI_CMD_CHUNK_DATA) {
+    /* CHUNK_DATA / HTTP_BODY 수신 직후 printf ~3ms → SSP FIFO(8 bytes) overflow → 다음 chunk 손실 방지 */
+    if (cmd != SPI_CMD_CHUNK_DATA && cmd != SPI_CMD_HTTP_BODY) {
         printf("[spi_slave] RX cmd=0x%02X seq=%u len=%u\n", cmd, seq, plen);
     }
 

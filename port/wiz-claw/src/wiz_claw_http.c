@@ -96,13 +96,29 @@ wiz_claw_err_t wiz_claw_tcp_connect(uint8_t        sn,
     if (getSn_SR(sn) != SOCK_CLOSED) {
         disconnect(sn);
         close(sn);
-        sleep_ms(10);
+        sleep_ms(50);   /* W5500 close 완료 대기 (10ms 부족했음) */
     }
 
     ret = socket(sn, Sn_MR_TCP, 0, 0);
     if (ret != (int8_t)sn) {
         WIZ_CLAW_LOG_E(TAG, "socket(%u) failed ret=%d", sn, ret);
         return WIZ_CLAW_ERR_HTTP;
+    }
+
+    /* W5500가 OPEN 커맨드 처리해 SOCK_INIT에 진입할 때까지 대기.
+     * connect()는 SOCK_INIT 아니면 SOCKERR_BUSY(-13) 반환. */
+    {
+        uint32_t t = 0;
+        while (getSn_SR(sn) != SOCK_INIT) {
+            if (t >= 100) {
+                WIZ_CLAW_LOG_E(TAG, "sn=%u not SOCK_INIT (sr=0x%02x) after socket()",
+                                sn, getSn_SR(sn));
+                close(sn);
+                return WIZ_CLAW_ERR_HTTP;
+            }
+            sleep_ms(1);
+            t++;
+        }
     }
 
     ret = connect(sn, (uint8_t *)ip, port);
@@ -405,6 +421,9 @@ static wiz_claw_err_t recv_body_by_length(wiz_http_transport_t *t,
 
 /* HTTPS용 정적 TLS 컨텍스트 — 한 번에 하나의 연결만 지원 (단일 스레드 설계) */
 static wiz_claw_tls_t s_tls;
+/* 마지막 HTTP 응답 상태 코드 — 프록시 응답 릴레이용 */
+static int s_last_http_status = 0;
+int wiz_claw_http_last_status(void) { return s_last_http_status; }
 
 static wiz_claw_err_t do_http_request(uint8_t     sn,
                                        const char *method,
@@ -495,6 +514,7 @@ static wiz_claw_err_t do_http_request(uint8_t     sn,
 
     /* 6. 상태 코드 */
     status = parse_status_code(hdr_buf);
+    s_last_http_status = status;
     WIZ_CLAW_LOG_I(TAG, "HTTP %s %s → %d (%s)",
                    method, parsed.path, status,
                    parsed.is_https ? "TLS" : "plain");

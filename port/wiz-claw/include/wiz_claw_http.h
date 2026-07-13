@@ -110,6 +110,9 @@ wiz_claw_err_t wiz_claw_http_post_cb(const char *url,
                                       char      **out_response,
                                       void       *user_ctx);
 
+/* 마지막 HTTP 응답 상태 코드 반환 (wiz_claw_http_post_cb 호출 직후 유효) */
+int wiz_claw_http_last_status(void);
+
 /**
  * HTTP GET/POST 요청 실행 (auth 헤더 없음).
  *

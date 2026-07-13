@@ -255,3 +255,6 @@ target_include_directories(MULTI_FILES PUBLIC
         ${WIZNET_DIR}/Ethernet
         ${WIZNET_DIR}/Application/multicast
         )
+
+# PIO-based MII Ethernet MAC + lwIP (W55RP20_EVB_PICO)
+add_subdirectory(pico_rmii_ethernet)
