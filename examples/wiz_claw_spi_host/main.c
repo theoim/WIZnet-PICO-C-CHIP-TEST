@@ -100,6 +100,8 @@ static volatile uint32_t g_stat_relay_ok      = 0;
 static volatile uint32_t g_stat_relay_err     = 0;  /* ESP32 returned ok=false */
 static volatile uint32_t g_stat_relay_timeout = 0;  /* 90s deadline hit        */
 static volatile uint32_t g_stat_local_fb      = 0;  /* local Groq fallback used */
+static volatile uint32_t g_stat_local_fb_unavail = 0; /* local fallback skipped: no API key configured */
+static volatile uint32_t g_esp32_last_seen_ms = 0;   /* last PING/STATUS rx time (P-5) */
 
 extern char __StackLimit;
 extern char __bss_end__;
@@ -112,14 +114,40 @@ static uint32_t free_heap_bytes(void)
 static void print_health_line(void)
 {
     printf("[health] up=%lus heap=%lu esp_alive=%d "
-           "relay_ok=%lu relay_err=%lu relay_to=%lu local_fb=%lu\n",
+           "relay_ok=%lu relay_err=%lu relay_to=%lu local_fb=%lu local_fb_unavail=%lu\n",
            (unsigned long)(to_ms_since_boot(get_absolute_time()) / 1000u),
            (unsigned long)free_heap_bytes(),
            (int)g_esp32_alive,
            (unsigned long)g_stat_relay_ok,
            (unsigned long)g_stat_relay_err,
            (unsigned long)g_stat_relay_timeout,
-           (unsigned long)g_stat_local_fb);
+           (unsigned long)g_stat_local_fb,
+           (unsigned long)g_stat_local_fb_unavail);
+}
+
+/* ── P-5: dead-ESP detection ─────────────────────────────────────────
+ * ESP sends SPI_CMD_PING (until first PONG) then SPI_CMD_ESP_STATUS every
+ * 20s (see spi_status_task in edge_agent/main.c). g_esp32_alive used to
+ * latch true forever once set (S-track scenario 4, DEVLOG 15th entry):
+ * on independent power, an ESP that dies while the Pico stays up would
+ * make every relay attempt burn the full 90s LLM_RELAY_TIMEOUT_MS before
+ * falling back locally. This checks for 3 missed STATUS cycles (60s) with
+ * a small margin and clears the flag so relay is skipped immediately.
+ */
+#define ESP32_ALIVE_TIMEOUT_MS (65u * 1000u)
+
+static void check_esp32_alive_timeout(void)
+{
+    if (!g_esp32_alive) {
+        return;
+    }
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if ((uint32_t)(now - g_esp32_last_seen_ms) > ESP32_ALIVE_TIMEOUT_MS) {
+        g_esp32_alive = false;
+        printf("[health] ESP32 STATUS timeout (%lums) — relay disabled, "
+               "falling back to local until PING/STATUS resumes\n",
+               (unsigned long)ESP32_ALIVE_TIMEOUT_MS);
+    }
 }
 
 /* ── 소켓 할당 ─────────────────────────────────────────────────────
@@ -799,19 +827,31 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
 
     /* ── 로컬 Groq fallback ─────────────────────────────────────── */
     if (!used_relay) {
-        g_stat_local_fb++;
-        if (ctx->session == NULL) {
-            ctx->session = wiz_claw_session_create();
-        }
-        wiz_claw_err_t ret = wiz_claw_agent_run(ctx->agent, ctx->session,
-                                                 msg->text, &reply, &err_msg);
-        if (ret == WIZ_CLAW_OK && reply) {
-            send_text = reply;
+        if (g_settings.llm_api_key[0] == '\0') {
+            /* No local LLM key configured: a call here always 401s (see
+             * DEVLOG.md S-track 15th entry) — wastes a TLS round trip and
+             * returns a misleading "처리 중 오류" instead of the real cause.
+             * Skip the doomed call and say so honestly. Configure a key via
+             * the web dashboard (http://<pico-ip>/) to enable this fallback. */
+            g_stat_local_fb_unavail++;
+            printf("[agent] local fallback unavailable: no llm_api_key configured\n");
+            send_text = "일시적으로 ESP32 연결이 끊어졌고, 로컬 백업 응답도 설정되지 않았습니다. "
+                        "잠시 후 다시 시도해주세요.";
         } else {
-            printf("[agent] error: %s\n", err_msg ? err_msg : "unknown");
-            send_text = "죄송합니다, 처리 중 오류가 발생했습니다.";
-            cJSON_Delete(ctx->session);
-            ctx->session = NULL;
+            g_stat_local_fb++;
+            if (ctx->session == NULL) {
+                ctx->session = wiz_claw_session_create();
+            }
+            wiz_claw_err_t ret = wiz_claw_agent_run(ctx->agent, ctx->session,
+                                                     msg->text, &reply, &err_msg);
+            if (ret == WIZ_CLAW_OK && reply) {
+                send_text = reply;
+            } else {
+                printf("[agent] error: %s\n", err_msg ? err_msg : "unknown");
+                send_text = "죄송합니다, 처리 중 오류가 발생했습니다.";
+                cJSON_Delete(ctx->session);
+                ctx->session = NULL;
+            }
         }
     }
 
@@ -872,6 +912,7 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
             printf("[spi_rx] ESP32 PING — CLAW relay pre-enabled\n");
         }
         g_esp32_alive = true;
+        g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
         break;
 
     case SPI_CMD_ESP_STATUS:
@@ -879,6 +920,7 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
             printf("[spi_rx] ESP32 alive — CLAW relay enabled\n");
         }
         g_esp32_alive = true;
+        g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
         break;
 
     case SPI_CMD_ACK:
@@ -1176,6 +1218,8 @@ int main(void)
                           &agent_ctx);
 
         wiz_claw_webserver_poll();
+
+        check_esp32_alive_timeout();
 
         if (time_reached(next_health)) {
             print_health_line();
