@@ -22,6 +22,22 @@ static const char *TAG = "wiz_claw_http";
 #define HTTP_POLL_INTERVAL_MS    5u
 #define HTTP_RECV_CHUNK          512u
 
+/* Mask a Telegram bot token in a URL path for logging ONLY.
+ * "/bot<id>:<secret>/method" -> "/bot***/method". The real request uses the
+ * unmodified path; this sanitizes just the log line so serial captures (and
+ * pasted logs) don't leak the token. Non-Telegram paths are logged as-is. */
+static const char *http_log_safe_path(const char *path, char *buf, size_t n)
+{
+    if (!path || !buf || n == 0) { return path ? path : "(null)"; }
+    const char *bot = strstr(path, "/bot");
+    if (!bot) { return path; }
+    const char *rest = strchr(bot + 4, '/');       /* first '/' after token */
+    int head = (int)(bot - path) + 4;              /* keep leading "/bot"   */
+    int w = snprintf(buf, n, "%.*s***%s", head, path, rest ? rest : "");
+    if (w < 0 || (size_t)w >= n) { buf[n - 1] = '\0'; }
+    return buf;
+}
+
 /* ── URL 파서 ───────────────────────────────────────────────── */
 
 wiz_claw_err_t wiz_claw_http_parse_url(const char            *url,
@@ -515,8 +531,11 @@ static wiz_claw_err_t do_http_request(uint8_t     sn,
     /* 6. 상태 코드 */
     status = parse_status_code(hdr_buf);
     s_last_http_status = status;
+    char safe_path[160];
     WIZ_CLAW_LOG_I(TAG, "HTTP %s %s → %d (%s)",
-                   method, parsed.path, status,
+                   method,
+                   http_log_safe_path(parsed.path, safe_path, sizeof(safe_path)),
+                   status,
                    parsed.is_https ? "TLS" : "plain");
 
     /* 7. 바디 수신 */
