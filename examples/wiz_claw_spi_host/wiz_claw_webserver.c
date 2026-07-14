@@ -46,7 +46,7 @@ static const wiz_claw_settings_t s_defaults = {
     .llm_model     = "meta-llama/llama-4-scout-17b-16e-instruct",
     .llm_chat_path = "/openai/v1/chat/completions",
     .llm_max_tokens = "512",
-    .tg_bot_token  = "8943839781:AAEaSLlC5eC7J5Kbq41_A2DGAYzULLzkUVU",
+    .tg_bot_token  = "",  /* set at runtime via web dashboard — never hardcode */
     .vision_host   = "api.groq.com",
     .vision_path   = "/openai/v1/chat/completions",
 };
