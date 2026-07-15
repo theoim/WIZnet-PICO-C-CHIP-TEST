@@ -839,6 +839,34 @@ typedef struct {
     cJSON                         *session;
 } agent_ctx_t;
 
+/* ── 메시지-무손실 큐 (MVP: 단일 슬롯, 자동 1회 재시도) ──────────────
+ * ESP가 mid-relay 리셋하면 사용자 메시지가 유실된다. 여기 보관했다가 ESP가
+ * 복구되면(~부팅 시간 후) 한 번 자동 재질의 → 답을 잃지 않는다.
+ * Pico RAM 전용 — ESP 재부팅은 견디지만 Pico 재부팅은 못 견딤(flash 큐는 향후).
+ * 단일 자동 재시도만: 재시도가 또 리셋을 만나면 루프/노이즈 없이 포기. */
+static struct {
+    bool            valid;
+    char            chat_id[32];
+    char            sender_id[32];
+    char            text[256];
+    absolute_time_t not_before;
+} g_pending;
+static bool g_in_retry = false;   /* true while re-driving a held message */
+
+static void pending_enqueue(const wiz_claw_tg_message_t *msg, uint32_t delay_ms)
+{
+    g_pending.valid = true;
+    strncpy(g_pending.chat_id,  msg->chat_id,  sizeof(g_pending.chat_id) - 1);
+    g_pending.chat_id[sizeof(g_pending.chat_id) - 1] = '\0';
+    strncpy(g_pending.sender_id, msg->sender_id, sizeof(g_pending.sender_id) - 1);
+    g_pending.sender_id[sizeof(g_pending.sender_id) - 1] = '\0';
+    strncpy(g_pending.text, msg->text ? msg->text : "", sizeof(g_pending.text) - 1);
+    g_pending.text[sizeof(g_pending.text) - 1] = '\0';
+    g_pending.not_before = make_timeout_time_ms(delay_ms);
+    printf("[relay] message held for auto-retry (~%lus): %.40s\n",
+           (unsigned long)(delay_ms / 1000u), g_pending.text);
+}
+
 /* ── Telegram 메시지 수신 콜백 ────────────────────────────────────── */
 static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                                  void                        *user_ctx)
@@ -938,13 +966,19 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
                 } else if (rebooted) {
-                    /* ESP restarted mid-request. The answer it may have been
-                     * computing is gone with its RAM. Fail fast with an honest
-                     * message instead of the misleading "no backup" one after a
-                     * full 90s wait. (Auto re-ask after ESP is ready again =
-                     * next step: message-survival queue.) */
-                    printf("[relay] ESP32 rebooted mid-request — fast honest reply\n");
-                    send_text  = "기기가 방금 재시작되었어요. 같은 메시지를 다시 보내주시면 이어서 처리할게요.";
+                    /* ESP restarted mid-request. The answer it was computing is
+                     * gone with its RAM. Break the 90s wait immediately and, on
+                     * the FIRST try, hold the message for one auto-retry once the
+                     * ESP is back — so the user gets a real answer, not an error.
+                     * During a retry (g_in_retry) we do NOT re-hold, to avoid a
+                     * loop if the ESP keeps resetting. */
+                    printf("[relay] ESP32 rebooted mid-request\n");
+                    if (!g_in_retry) {
+                        pending_enqueue(msg, 35000);  /* re-ask ~35s later */
+                        send_text = "기기가 재시작됐어요. 복구되면 자동으로 다시 답해드릴게요.";
+                    } else {
+                        send_text = "기기가 계속 재시작 중이에요. 잠시 후 다시 보내주세요.";
+                    }
                     used_relay = true;   /* honest msg ready; skip local fallback */
                 } else {
                     g_stat_relay_timeout++;
@@ -1008,6 +1042,28 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
 
     free(reply);
     free(err_msg);
+}
+
+/* ── 보류 메시지 자동 재시도 (Core0 메인루프) ──────────────────────────
+ * ESP 복구 + 부팅 유예 경과 시, 보관한 메시지를 합성해 on_telegram_message로
+ * 한 번 재구동. 단일 재시도라 재구동 전에 슬롯을 비운다(g_in_retry로 재보관 차단). */
+static void process_pending_relay(agent_ctx_t *ctx)
+{
+    if (!g_pending.valid)                     { return; }
+    if (!g_esp32_alive)                       { return; }  /* ESP 아직 안 돌아옴 */
+    if (!time_reached(g_pending.not_before))  { return; }  /* 부팅 유예 대기 */
+
+    wiz_claw_tg_message_t m = {0};
+    strncpy(m.chat_id,   g_pending.chat_id,   sizeof(m.chat_id) - 1);
+    strncpy(m.sender_id, g_pending.sender_id, sizeof(m.sender_id) - 1);
+    m.text = g_pending.text;   /* 정적 버퍼 — on_telegram_message는 free 안 함 */
+
+    g_pending.valid = false;   /* 단일 자동 재시도: 재구동 전에 비움 */
+    printf("[relay] auto-retrying held message after ESP recovery: %.40s\n", m.text);
+
+    g_in_retry = true;
+    on_telegram_message(&m, ctx);
+    g_in_retry = false;
 }
 
 /* ── Core 1: SPI slave 전용 루프 ────────────────────────────────────
@@ -1381,6 +1437,7 @@ int main(void)
 
         process_esp_status();
         check_esp32_alive_timeout();
+        process_pending_relay(&agent_ctx);
 
         if (time_reached(next_health)) {
             print_health_line();
