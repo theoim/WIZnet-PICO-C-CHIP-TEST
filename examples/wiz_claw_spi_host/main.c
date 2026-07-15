@@ -114,6 +114,11 @@ static volatile uint32_t g_esp_heap        = 0;
 static volatile bool     g_esp_wifi        = false;
 static volatile bool     g_esp_proxy       = false;
 static volatile uint32_t g_relay_to_streak = 0;  /* consecutive relay timeouts */
+/* Incremented on every SPI_CMD_PING. ESP sends PING at boot until its first
+ * PONG, so a PING arriving mid-relay = ESP rebooted. Handled on Core1, so it
+ * works even while Core0 is blocked in the relay wait loop (where
+ * process_esp_status/STATUS parsing does NOT run). */
+static volatile uint32_t g_esp_boot_epoch = 0;
 
 /* ESP_STATUS raw payload staged by the Core1 RX callback, parsed on Core0
  * (process_esp_status) to keep the SPI hot path short. */
@@ -885,12 +890,18 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                  * 보내면 Core0이 여기서 받아 Ethernet으로 HTTP POST를 대신 수행.
                  */
                 uint32_t deadline = to_ms_since_boot(get_absolute_time()) + LLM_RELAY_TIMEOUT_MS;
+                uint32_t boot_epoch = g_esp_boot_epoch;
                 bool got = false;
+                bool rebooted = false;
                 while (to_ms_since_boot(get_absolute_time()) < deadline) {
                     save = spin_lock_blocking(g_llm_spin);
                     got = g_llm_resp_ready;
                     spin_unlock(g_llm_spin, save);
                     if (got) break;
+
+                    /* ESP rebooted mid-request (fresh PING) → the in-flight
+                     * answer died with it. Don't wait out the 90s deadline. */
+                    if (g_esp_boot_epoch != boot_epoch) { rebooted = true; break; }
 
                     /* HTTP proxy: ESP32 body 수신 완료 → HTTP POST → 응답 전송 */
                     if (g_proxy_ready && g_proxy_body) {
@@ -924,6 +935,15 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                     g_relay_to_streak = 0;   /* got a response (err) → agent alive */
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
+                } else if (rebooted) {
+                    /* ESP restarted mid-request. The answer it may have been
+                     * computing is gone with its RAM. Fail fast with an honest
+                     * message instead of the misleading "no backup" one after a
+                     * full 90s wait. (Auto re-ask after ESP is ready again =
+                     * next step: message-survival queue.) */
+                    printf("[relay] ESP32 rebooted mid-request — fast honest reply\n");
+                    send_text  = "기기가 방금 재시작되었어요. 같은 메시지를 다시 보내주시면 이어서 처리할게요.";
+                    used_relay = true;   /* honest msg ready; skip local fallback */
                 } else {
                     g_stat_relay_timeout++;
                     g_relay_to_streak++;
@@ -1032,6 +1052,7 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
         }
         g_esp32_alive = true;
         g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
+        g_esp_boot_epoch++;   /* new PING = ESP (re)booted; relay wait watches this */
         break;
 
     case SPI_CMD_ESP_STATUS: {
