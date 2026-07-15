@@ -854,6 +854,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
     char *reply   = NULL;
     char *err_msg = NULL;
     bool used_relay = false;
+    bool esp_reachable_err = false;  /* ESP answered with ok=false (agent up, request failed) */
 
     /* ── ESP32 CLAW 릴레이 시도 ─────────────────────────────────── */
     if (g_esp32_alive) {
@@ -933,6 +934,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 } else if (got) {
                     g_stat_relay_err++;
                     g_relay_to_streak = 0;   /* got a response (err) → agent alive */
+                    esp_reachable_err = true; /* ESP is UP; the LLM request itself failed */
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
                 } else if (rebooted) {
@@ -973,9 +975,16 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
              * Skip the doomed call and say so honestly. Configure a key via
              * the web dashboard (http://<pico-ip>/) to enable this fallback. */
             g_stat_local_fb_unavail++;
-            printf("[agent] local fallback unavailable: no llm_api_key configured\n");
-            send_text = "일시적으로 ESP32 연결이 끊어졌고, 로컬 백업 응답도 설정되지 않았습니다. "
-                        "잠시 후 다시 시도해주세요.";
+            printf("[agent] local fallback unavailable: no llm_api_key configured "
+                   "(esp_reachable_err=%d)\n", (int)esp_reachable_err);
+            if (esp_reachable_err) {
+                /* ESP was reachable and answered — the LLM request itself failed
+                 * (e.g. Groq 400 tool-validation, context error). NOT a
+                 * disconnect. Don't claim the link dropped. */
+                send_text = "요청을 처리하지 못했어요 (기기는 정상). 잠시 후 다시 시도해주세요.";
+            } else {
+                send_text = "지금 응답 서버에 연결하지 못했어요. 잠시 후 다시 시도해주세요.";
+            }
         } else {
             g_stat_local_fb++;
             if (ctx->session == NULL) {
