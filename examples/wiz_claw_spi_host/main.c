@@ -115,6 +115,12 @@ static volatile bool     g_esp_wifi        = false;
 static volatile bool     g_esp_proxy       = false;
 static volatile uint32_t g_relay_to_streak = 0;  /* consecutive relay timeouts */
 
+/* ESP_STATUS raw payload staged by the Core1 RX callback, parsed on Core0
+ * (process_esp_status) to keep the SPI hot path short. */
+static volatile bool     g_esp_status_pending = false;
+static char              g_esp_status_raw[192];
+static volatile uint16_t g_esp_status_raw_len = 0;
+
 /* Provisional threshold — tune after observing ESP heap baseline on soak.
  * Below this the guardian flags DEGRADED (OOM precursor, DEVLOG 10/11th) but
  * does NOT act yet. */
@@ -160,6 +166,40 @@ static const char *guard_state_str(guard_state_t s)
     case GUARD_DEGRADED: return "DEGRADED";
     default:             return "HEALTHY";
     }
+}
+
+/* Parse a staged ESP_STATUS payload on Core0 (called from the main loop).
+ * Off the SPI hot path — see the SPI_CMD_ESP_STATUS handler. */
+static void process_esp_status(void)
+{
+    if (!g_esp_status_pending) { return; }
+
+    char buf[192];
+    uint16_t n = g_esp_status_raw_len;
+    if (n >= sizeof(buf)) { n = sizeof(buf) - 1; }
+    memcpy(buf, g_esp_status_raw, n);
+    buf[n] = '\0';
+    g_esp_status_pending = false;
+
+    uint32_t seq_v = 0, up_v = 0, heap_v = 0;
+    bool have_seq = esp_js_uint(buf, "seq", &seq_v);
+    esp_js_uint(buf, "up", &up_v);
+    esp_js_uint(buf, "heap", &heap_v);
+
+    /* Reboot: seq reset to a lower value, or uptime regressed. */
+    if (g_esp_valid && have_seq &&
+        (seq_v < g_esp_seq || (up_v + 5u) < g_esp_up_s)) {
+        printf("[guardian] ESP32 reboot detected (seq %lu->%lu, up %lus->%lus)\n",
+               (unsigned long)g_esp_seq, (unsigned long)seq_v,
+               (unsigned long)g_esp_up_s, (unsigned long)up_v);
+        g_relay_to_streak = 0;   /* fresh ESP */
+    }
+    g_esp_seq   = seq_v;
+    g_esp_up_s  = up_v;
+    g_esp_heap  = heap_v;
+    g_esp_wifi  = esp_js_bool_true(buf, "wifi");
+    g_esp_proxy = esp_js_bool_true(buf, "proxy");
+    g_esp_valid = true;
 }
 
 extern char __StackLimit;
@@ -1000,30 +1040,15 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
         }
         g_esp32_alive = true;
         g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
-        /* Parse objective health. Payload is small & trusted but NOT
-         * NUL-terminated, so copy to a local buffer first. */
-        if (payload && len > 0 && len < 192) {
-            char buf[192];
-            memcpy(buf, payload, len);
-            buf[len] = '\0';
-            uint32_t seq_v = 0, up_v = 0, heap_v = 0;
-            bool have_seq = esp_js_uint(buf, "seq", &seq_v);
-            esp_js_uint(buf, "up", &up_v);
-            esp_js_uint(buf, "heap", &heap_v);
-            /* Reboot: seq reset to a lower value, or uptime regressed. */
-            if (g_esp_valid && have_seq &&
-                (seq_v < g_esp_seq || (up_v + 5u) < g_esp_up_s)) {
-                printf("[guardian] ESP32 reboot detected (seq %lu->%lu, up %lus->%lus)\n",
-                       (unsigned long)g_esp_seq, (unsigned long)seq_v,
-                       (unsigned long)g_esp_up_s, (unsigned long)up_v);
-                g_relay_to_streak = 0;   /* fresh ESP */
-            }
-            g_esp_seq   = seq_v;
-            g_esp_up_s  = up_v;
-            g_esp_heap  = heap_v;
-            g_esp_wifi  = esp_js_bool_true(buf, "wifi");
-            g_esp_proxy = esp_js_bool_true(buf, "proxy");
-            g_esp_valid = true;
+        /* Keep this Core1 SPI RX callback minimal: copy the raw payload and
+         * flag it. Parsing (strstr/strtoul) runs on Core0 in the main loop
+         * (process_esp_status). A slow callback here would delay the next
+         * incoming SPI frame and corrupt it (CRC error) during rapid proxy
+         * bursts. */
+        if (payload && len > 0 && len < sizeof(g_esp_status_raw)) {
+            memcpy(g_esp_status_raw, payload, len);
+            g_esp_status_raw_len = len;
+            g_esp_status_pending = true;
         }
         break;
     }
@@ -1324,6 +1349,7 @@ int main(void)
 
         wiz_claw_webserver_poll();
 
+        process_esp_status();
         check_esp32_alive_timeout();
 
         if (time_reached(next_health)) {
