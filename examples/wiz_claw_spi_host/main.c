@@ -103,6 +103,65 @@ static volatile uint32_t g_stat_local_fb      = 0;  /* local Groq fallback used 
 static volatile uint32_t g_stat_local_fb_unavail = 0; /* local fallback skipped: no API key configured */
 static volatile uint32_t g_esp32_last_seen_ms = 0;   /* last PING/STATUS rx time (P-5) */
 
+/* ── Heartbeat: last ESP health snapshot from SPI_CMD_ESP_STATUS ──────
+ * ESP now reports objective health (seq/up/heap/wifi/proxy) instead of a
+ * hardcoded string. Guardian derives a 3-state liveness from it + the
+ * relay-timeout streak. Spec: docs/HEARTBEAT.md (to be written). */
+static volatile bool     g_esp_valid       = false;
+static volatile uint32_t g_esp_seq         = 0;
+static volatile uint32_t g_esp_up_s        = 0;
+static volatile uint32_t g_esp_heap        = 0;
+static volatile bool     g_esp_wifi        = false;
+static volatile bool     g_esp_proxy       = false;
+static volatile uint32_t g_relay_to_streak = 0;  /* consecutive relay timeouts */
+
+/* Provisional threshold — tune after observing ESP heap baseline on soak.
+ * Below this the guardian flags DEGRADED (OOM precursor, DEVLOG 10/11th) but
+ * does NOT act yet. */
+#define ESP_HEAP_FLOOR_BYTES   30000u
+#define RELAY_HUNG_STREAK      3u
+
+/* minimal JSON scalar extraction for the small, trusted status payload */
+static bool esp_js_uint(const char *js, const char *key, uint32_t *out)
+{
+    char pat[16];
+    int m = snprintf(pat, sizeof(pat), "\"%s\":", key);
+    if (m <= 0 || m >= (int)sizeof(pat)) { return false; }
+    const char *p = strstr(js, pat);
+    if (!p) { return false; }
+    *out = (uint32_t)strtoul(p + m, NULL, 10);
+    return true;
+}
+static bool esp_js_bool_true(const char *js, const char *key)
+{
+    char pat[16];
+    int m = snprintf(pat, sizeof(pat), "\"%s\":", key);
+    if (m <= 0 || m >= (int)sizeof(pat)) { return false; }
+    const char *p = strstr(js, pat);
+    return p && strncmp(p + m, "true", 4) == 0;
+}
+
+/* Guardian liveness state (most-severe first). HUNG = STATUS still arriving
+ * but agent not answering relays; DEAD = STATUS stopped (P-5). */
+typedef enum { GUARD_DEAD, GUARD_HUNG, GUARD_DEGRADED, GUARD_HEALTHY } guard_state_t;
+static guard_state_t guardian_state(void)
+{
+    if (!g_esp32_alive)                          { return GUARD_DEAD; }
+    if (g_relay_to_streak >= RELAY_HUNG_STREAK)  { return GUARD_HUNG; }
+    if (g_esp_valid && g_esp_heap && g_esp_heap < ESP_HEAP_FLOOR_BYTES)
+                                                 { return GUARD_DEGRADED; }
+    return GUARD_HEALTHY;
+}
+static const char *guard_state_str(guard_state_t s)
+{
+    switch (s) {
+    case GUARD_DEAD:     return "DEAD";
+    case GUARD_HUNG:     return "HUNG";
+    case GUARD_DEGRADED: return "DEGRADED";
+    default:             return "HEALTHY";
+    }
+}
+
 extern char __StackLimit;
 extern char __bss_end__;
 static uint32_t free_heap_bytes(void)
@@ -113,16 +172,23 @@ static uint32_t free_heap_bytes(void)
 
 static void print_health_line(void)
 {
-    printf("[health] up=%lus heap=%lu esp_alive=%d "
-           "relay_ok=%lu relay_err=%lu relay_to=%lu local_fb=%lu local_fb_unavail=%lu\n",
+    printf("[health] up=%lus heap=%lu esp=%s alive=%d "
+           "relay_ok=%lu err=%lu to=%lu(streak=%lu) local_fb=%lu unavail=%lu | "
+           "esp_seq=%lu esp_up=%lus esp_heap=%lu esp_wifi=%d\n",
            (unsigned long)(to_ms_since_boot(get_absolute_time()) / 1000u),
            (unsigned long)free_heap_bytes(),
+           guard_state_str(guardian_state()),
            (int)g_esp32_alive,
            (unsigned long)g_stat_relay_ok,
            (unsigned long)g_stat_relay_err,
            (unsigned long)g_stat_relay_timeout,
+           (unsigned long)g_relay_to_streak,
            (unsigned long)g_stat_local_fb,
-           (unsigned long)g_stat_local_fb_unavail);
+           (unsigned long)g_stat_local_fb_unavail,
+           (unsigned long)g_esp_seq,
+           (unsigned long)g_esp_up_s,
+           (unsigned long)g_esp_heap,
+           (int)g_esp_wifi);
 }
 
 /* ── P-5: dead-ESP detection ─────────────────────────────────────────
@@ -811,15 +877,28 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                     send_text  = g_llm_resp_text;
                     used_relay = true;
                     g_stat_relay_ok++;
+                    g_relay_to_streak = 0;   /* agent answered → alive */
                     printf("[relay] ESP32 CLAW response received\n");
                 } else if (got) {
                     g_stat_relay_err++;
+                    g_relay_to_streak = 0;   /* got a response (err) → agent alive */
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
                 } else {
                     g_stat_relay_timeout++;
-                    printf("[relay] timeout — falling back to local Groq\n");
+                    g_relay_to_streak++;
+                    printf("[relay] timeout — falling back to local Groq (streak=%lu)\n",
+                           (unsigned long)g_relay_to_streak);
                     /* g_esp32_alive 유지: ESP32 STATUS 패킷 오면 자동 복구 */
+                    if (g_esp32_alive && g_relay_to_streak >= RELAY_HUNG_STREAK) {
+                        /* STATUS still arriving but agent not answering →
+                         * agent logically hung (not crashed). This is the case a
+                         * dumb watchdog IC cannot see. Guardian would HW-reset the
+                         * ESP here via the EN line — NEXT step, not wired yet. */
+                        printf("[guardian] ESP32 agent HUNG (streak=%lu, STATUS alive) "
+                               "— HW reset pending (EN line TODO)\n",
+                               (unsigned long)g_relay_to_streak);
+                    }
                 }
             }
         }
@@ -915,13 +994,39 @@ static void on_spi_rx(spi_claw_cmd_t cmd, uint8_t seq, const uint8_t *payload,
         g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
         break;
 
-    case SPI_CMD_ESP_STATUS:
+    case SPI_CMD_ESP_STATUS: {
         if (!g_esp32_alive) {
             printf("[spi_rx] ESP32 alive — CLAW relay enabled\n");
         }
         g_esp32_alive = true;
         g_esp32_last_seen_ms = to_ms_since_boot(get_absolute_time());
+        /* Parse objective health. Payload is small & trusted but NOT
+         * NUL-terminated, so copy to a local buffer first. */
+        if (payload && len > 0 && len < 192) {
+            char buf[192];
+            memcpy(buf, payload, len);
+            buf[len] = '\0';
+            uint32_t seq_v = 0, up_v = 0, heap_v = 0;
+            bool have_seq = esp_js_uint(buf, "seq", &seq_v);
+            esp_js_uint(buf, "up", &up_v);
+            esp_js_uint(buf, "heap", &heap_v);
+            /* Reboot: seq reset to a lower value, or uptime regressed. */
+            if (g_esp_valid && have_seq &&
+                (seq_v < g_esp_seq || (up_v + 5u) < g_esp_up_s)) {
+                printf("[guardian] ESP32 reboot detected (seq %lu->%lu, up %lus->%lus)\n",
+                       (unsigned long)g_esp_seq, (unsigned long)seq_v,
+                       (unsigned long)g_esp_up_s, (unsigned long)up_v);
+                g_relay_to_streak = 0;   /* fresh ESP */
+            }
+            g_esp_seq   = seq_v;
+            g_esp_up_s  = up_v;
+            g_esp_heap  = heap_v;
+            g_esp_wifi  = esp_js_bool_true(buf, "wifi");
+            g_esp_proxy = esp_js_bool_true(buf, "proxy");
+            g_esp_valid = true;
+        }
         break;
+    }
 
     case SPI_CMD_ACK:
         if (payload && len > 0) {
