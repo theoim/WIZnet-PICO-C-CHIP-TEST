@@ -89,6 +89,36 @@ static inline void _flush_tx_fifo(void)
     hw_set_bits(&spi_get_hw(spi)->cr1, SPI_SSPCR1_SSE_BITS);
 }
 
+/* ── 타임아웃 적용 slave TX ──────────────────────────────────────────
+ * spi_write_blocking(slave)은 master(ESP)가 클럭을 주지 않으면 TX FIFO가
+ * 차서 무한 블록한다. ESP가 죽거나 프록시 에러 경로에서 응답을 안 읽어가면
+ * 여기서 영영 멈추고, TX가 Core1 소유이므로 Core0의 spi_tx 대기까지 물려
+ * Pico 전체가 정지한다(2026-07-22 openai TLS 간헐 실패 후 완전정지 관측).
+ * SDK spi_write_blocking과 동일 절차(writable 대기 → dr write → RX drain →
+ * BSY 대기)에 데드라인만 추가. 타임아웃 시 false 반환 → 상위가 전송을 포기하고
+ * poll이 재동기하도록 한다. */
+#define SPI_SLAVE_TX_TIMEOUT_MS 2000u
+
+static bool _spi_write_timeout(const uint8_t *src, size_t len, uint32_t timeout_ms)
+{
+    uint32_t deadline = to_ms_since_boot(get_absolute_time()) + timeout_ms;
+    for (size_t i = 0; i < len; i++) {
+        while (!spi_is_writable(spi0)) {
+            if (to_ms_since_boot(get_absolute_time()) >= deadline) { return false; }
+            tight_loop_contents();
+        }
+        spi_get_hw(spi0)->dr = (uint32_t)src[i];
+    }
+    /* drain RX + 전송 완료(BSY) 대기 — master 클럭이 멈추면 타임아웃 */
+    while (spi_is_readable(spi0)) { (void)spi_get_hw(spi0)->dr; }
+    while (spi_get_hw(spi0)->sr & SPI_SSPSR_BSY_BITS) {
+        if (to_ms_since_boot(get_absolute_time()) >= deadline) { return false; }
+        tight_loop_contents();
+    }
+    while (spi_is_readable(spi0)) { (void)spi_get_hw(spi0)->dr; }
+    return true;
+}
+
 /* ── CMD_PONG 전송 ───────────────────────────────────────────────
  * 흐름:
  *   1. TX FIFO 클린업
@@ -110,10 +140,12 @@ static void _send_pong(uint8_t req_seq)
 
     _flush_tx_fifo();
     gpio_put(WIZ_SPI_SLAVE_IRQ_PIN, 1);
-    spi_write_blocking(spi0, (const uint8_t *)&pong, SPI_CLAW_HDR_SIZE);
+    bool ok = _spi_write_timeout((const uint8_t *)&pong, SPI_CLAW_HDR_SIZE,
+                                 SPI_SLAVE_TX_TIMEOUT_MS);
     gpio_put(WIZ_SPI_SLAVE_IRQ_PIN, 0);
 
-    printf("[spi_slave] CMD_PONG sent (seq=%u)\n", req_seq);
+    printf("[spi_slave] CMD_PONG sent (seq=%u)%s\n", req_seq,
+           ok ? "" : " [TX TIMEOUT]");
 }
 
 /* ── 패킷 수신 처리 ──────────────────────────────────────────────────
@@ -280,11 +312,13 @@ void wiz_spi_slave_send(spi_claw_cmd_t cmd, const uint8_t *payload, uint16_t len
 
     gpio_put(WIZ_SPI_SLAVE_IRQ_PIN, 1);
 
-    spi_write_blocking(spi0, (const uint8_t *)&hdr, SPI_CLAW_HDR_SIZE);
-    if (len > 0) {
-        spi_write_blocking(spi0, payload, len);
+    bool ok = _spi_write_timeout((const uint8_t *)&hdr, SPI_CLAW_HDR_SIZE,
+                                 SPI_SLAVE_TX_TIMEOUT_MS);
+    if (ok && len > 0) {
+        ok = _spi_write_timeout(payload, len, SPI_SLAVE_TX_TIMEOUT_MS);
     }
 
     gpio_put(WIZ_SPI_SLAVE_IRQ_PIN, 0);
-    printf("[spi_slave] SEND done cmd=0x%02X\n", (unsigned)cmd);
+    printf("[spi_slave] SEND done cmd=0x%02X%s\n", (unsigned)cmd,
+           ok ? "" : " [TX TIMEOUT]");
 }

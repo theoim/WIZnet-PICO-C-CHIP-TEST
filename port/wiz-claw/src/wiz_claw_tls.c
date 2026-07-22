@@ -73,6 +73,16 @@ static int bio_send(void *ctx, const unsigned char *buf, size_t len)
     if (ret < 0) {
         return MBEDTLS_ERR_NET_SEND_FAILED;
     }
+    /* W6300 TX 버퍼가 꽉 차면(원격이 약신호 등으로 ACK를 안 해 TX가 안 비면)
+     * send()가 0을 반환한다. 이때 0을 그대로 돌려주면 mbedtls는 "0바이트 전송"
+     * 으로 보고 같은 데이터를 계속 재전송해 내부에서 무한 루프에 빠진다 →
+     * mbedtls_ssl_handshake()가 반환하지 않아 상위 handshake 루프의 데드라인
+     * 체크에도 도달 못 하고 Core0 전체가 정지(2026-07-22 openai TLS handshake
+     * 무한 hang 관측). WANT_WRITE를 반환해 mbedtls가 물러나게 하면, handshake
+     * 루프가 WANT_WRITE를 보고 데드라인을 체크해 정상적으로 타임아웃한다. */
+    if (ret == 0) {
+        return MBEDTLS_ERR_SSL_WANT_WRITE;
+    }
     return (int)ret;
 }
 
