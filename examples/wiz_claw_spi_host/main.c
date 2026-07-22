@@ -94,6 +94,41 @@ static char             g_llm_resp_text[LLM_RESP_TEXT_MAX + 1] = "";
 static char             g_llm_resp_session[64] = "";
 static volatile bool    g_esp32_alive     = false;  /* true after first successful PONG */
 
+/* ── SPI0 단일-코어 소유 (race 제거) ────────────────────────────────
+ * SPI0 하드웨어는 Core1(core1_spi_entry)만 만진다. Core0가 무언가 TX해야
+ * 하면 이 슬롯에 얹고 Core1이 poll 루프에서 실제 전송한다. Core0/Core1이
+ * 같은 SPI0를 동시 접근해 FIFO가 깨지던 race(2026-07-22: 프록시 응답 SEND
+ * 직후 RX 영구 사망)를 원천 제거한다. 락이 없으므로 flash write의
+ * multicore_lockout과도 충돌하지 않는다(Core0는 SPI를 안 만짐).
+ * Core0는 relay 루프 단일 흐름이라 슬롯 하나로 충분하다. */
+static volatile bool    g_spi_tx_pending  = false;
+static volatile bool    g_spi_tx_done     = false;
+static spi_claw_cmd_t   g_spi_tx_cmd;
+static uint8_t          g_spi_tx_buf[SPI_CLAW_MAX_CHUNK];
+static uint16_t         g_spi_tx_len;
+
+/* SPI TX 진입점. Core1에서 부르면(on_spi_rx 콜백/PONG 등) 이미 SPI 소유
+ * 코어이므로 직접 전송. Core0에서 부르면 슬롯에 얹고 Core1이 보낼 때까지
+ * 대기 — get_core_num()으로 자동 분기하므로 호출처가 어느 코어든 안전하고
+ * 재진입 데드락이 없다. */
+static void spi_tx(spi_claw_cmd_t cmd, const uint8_t *payload, uint16_t len)
+{
+    if (len > SPI_CLAW_MAX_CHUNK) { return; }
+    if (get_core_num() == 1) {
+        wiz_spi_slave_send(cmd, payload, len);   /* already on the SPI-owner core */
+        return;
+    }
+    /* Core0: hand off to Core1 and block until sent. */
+    if (payload && len > 0) { memcpy(g_spi_tx_buf, payload, len); }
+    g_spi_tx_cmd     = cmd;
+    g_spi_tx_len     = len;
+    g_spi_tx_done    = false;
+    __dmb();                       /* buf/cmd/len 쓰기가 pending보다 먼저 보이게 */
+    g_spi_tx_pending = true;
+    while (!g_spi_tx_done) { tight_loop_contents(); }
+    __dmb();
+}
+
 /* ── S-track stability instrumentation ─────────────────────────────
  * Relay outcome counters + periodic health line for soak/leak detection.
  * FreeHeap should stay flat across a 24h soak (no monotonic decline).
@@ -342,7 +377,14 @@ static void check_esp32_alive_timeout(void)
  */
 static wiz_claw_http_ctx_t g_tg_poll_ctx  = { .socket_no = 0, .timeout_ms = 60000 };
 static wiz_claw_http_ctx_t g_tg_send_ctx  = { .socket_no = 1, .timeout_ms = 30000 };
-static wiz_claw_http_ctx_t g_llm_ctx      = { .socket_no = 2, .timeout_ms = 60000 };
+/* openai 프록시 아웃바운드 타임아웃은 ESP의 프록시 응답 대기(25s,
+ * spi_http_proxy_fn)보다 반드시 짧아야 한다. 길면(기존 60s) openai가 느릴 때
+ * ESP가 먼저 25s에 포기해도 Pico는 계속 openai에 물려 Core0가 do_http_request에
+ * 블로킹되고, 다음 프록시/relay 처리가 밀려 STATUS까지 끊기는 악순환이 된다
+ * (2026-07-22 관측: 세션 컨텍스트 누적으로 body가 커지며 왕복이 25s에 근접 →
+ * "요청 몇 개 후 먹통"). 20s로 두면 Pico가 항상 먼저 포기해 SPI로 에러 응답을
+ * 보내고 ESP가 25s 안에 받아 깔끔히 실패 처리 + Core0 블로킹 최대 20s로 제한. */
+static wiz_claw_http_ctx_t g_llm_ctx      = { .socket_no = 2, .timeout_ms = 20000 };
 static wiz_claw_http_ctx_t g_photo_ctx    = { .socket_no = 3, .timeout_ms = 60000 };
 static wiz_claw_http_ctx_t g_vision_ctx   = { .socket_no = 4, .timeout_ms = 60000 };
 
@@ -397,7 +439,7 @@ static wiz_claw_err_t gpio_tool_handler(const char  *name,
     int  fwd_len = snprintf(fwd, sizeof(fwd),
                             "{\"pin\":%d,\"state\":\"%s\"}", pin, state);
     if (fwd_len > 0) {
-        wiz_spi_slave_send(SPI_CMD_GPIO_SET,
+        spi_tx(SPI_CMD_GPIO_SET,
                            (const uint8_t *)fwd, (uint16_t)fwd_len);
         printf("[tool] set_gpio pin=%d state=%s → ESP32\n", pin, state);
     }
@@ -697,7 +739,7 @@ static wiz_claw_err_t capture_photo_tool_handler(const char  *name,
     g_photo_capturing = true;
     strncpy(g_photo_mime, "image/jpeg", sizeof(g_photo_mime) - 1);
 
-    wiz_spi_slave_send(SPI_CMD_CAPTURE_REQ, NULL, 0);
+    spi_tx(SPI_CMD_CAPTURE_REQ, NULL, 0);
     printf("[capture] CAPTURE_REQ sent → waiting...\n");
 
     /* Core1이 청크를 수신하는 동안 Core0은 90s 대기.
@@ -773,7 +815,7 @@ static wiz_claw_err_t exec_lua_tool_handler(const char  *name,
         return WIZ_CLAW_OK;
     }
 
-    wiz_spi_slave_send(SPI_CMD_LUA_EXEC,
+    spi_tx(SPI_CMD_LUA_EXEC,
                        (const uint8_t *)script, (uint16_t)script_len);
     printf("[tool] exec_lua: %u bytes → ESP32\n", (unsigned)script_len);
 
@@ -879,7 +921,7 @@ static void _proxy_send_response(int http_status, const char *body)
     char meta[64];
     int  mlen = snprintf(meta, sizeof(meta),
                          "{\"status\":%d,\"body_len\":%zu}", status, body_len);
-    wiz_spi_slave_send(SPI_CMD_HTTP_RESP, (const uint8_t *)meta, (uint16_t)mlen);
+    spi_tx(SPI_CMD_HTTP_RESP, (const uint8_t *)meta, (uint16_t)mlen);
 
     if (body && body_len > 0) {
         const char *ptr = body;
@@ -887,14 +929,14 @@ static void _proxy_send_response(int http_status, const char *body)
         while (remaining > 0) {
             uint16_t n = (uint16_t)(remaining > SPI_CLAW_MAX_CHUNK
                                      ? SPI_CLAW_MAX_CHUNK : remaining);
-            wiz_spi_slave_send(SPI_CMD_HTTP_RESP_BODY, (const uint8_t *)ptr, n);
+            spi_tx(SPI_CMD_HTTP_RESP_BODY, (const uint8_t *)ptr, n);
             ptr       += n;
             remaining -= n;
             sleep_ms(5);
         }
     }
 
-    wiz_spi_slave_send(SPI_CMD_HTTP_RESP_END, NULL, 0);
+    spi_tx(SPI_CMD_HTTP_RESP_END, NULL, 0);
     printf("[proxy] response sent status=%d body=%zu bytes\n", status, body_len);
 }
 
@@ -978,7 +1020,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 g_llm_resp_ok    = false;
                 spin_unlock(g_llm_spin, save);
 
-                wiz_spi_slave_send(SPI_CMD_LLM_REQ,
+                spi_tx(SPI_CMD_LLM_REQ,
                                    (const uint8_t *)req_str,
                                    (uint16_t)strlen(req_str));
                 free(req_str);
@@ -1160,6 +1202,16 @@ static void core1_spi_entry(void)
     /* flash 쓰기 시 Core 0의 multicore_lockout_start_blocking()에 응답 */
     multicore_lockout_victim_init();
     while (1) {
+        /* Core0가 요청한 TX를 이 코어에서 실제로 전송 (SPI 단일-코어 소유). */
+        if (g_spi_tx_pending) {
+            __dmb();               /* pending 관측 후 buf/cmd/len 읽기 전 배리어 */
+            wiz_spi_slave_send(g_spi_tx_cmd,
+                               g_spi_tx_len > 0 ? g_spi_tx_buf : NULL,
+                               g_spi_tx_len);
+            g_spi_tx_pending = false;
+            __dmb();
+            g_spi_tx_done    = true;
+        }
         wiz_spi_slave_poll();
         tight_loop_contents();
     }
