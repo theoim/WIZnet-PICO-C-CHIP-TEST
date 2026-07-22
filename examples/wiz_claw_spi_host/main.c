@@ -67,6 +67,8 @@ static absolute_time_t  g_pir_cooldown_until = {0};  /* {0} = already past at bo
  * 타임아웃 시 로컬 Groq fallback.
  */
 #define LLM_RESP_TEXT_MAX    3800u
+/* Must exceed the worst-case SPI-proxy round trip (~10.5s observed, DEVLOG
+ * 15th) with margin for TLS retries. 8000u is a U-1 test value only. */
 #define LLM_RELAY_TIMEOUT_MS 90000u
 
 /* ── HTTP 프록시 (Core1 수신 → Core0 처리) ──────────────────────────
@@ -114,6 +116,10 @@ static volatile uint32_t g_esp_heap        = 0;
 static volatile bool     g_esp_wifi        = false;
 static volatile bool     g_esp_proxy       = false;
 static volatile uint32_t g_relay_to_streak = 0;  /* consecutive relay timeouts */
+/* Guardian reset bookkeeping (U-1). See esp_reset_pulse / guardian_try_reset. */
+static uint32_t g_last_reset_ms   = 0;      /* to_ms_since_boot of last reset pulse; 0 = never */
+static uint32_t g_reset_count     = 0;      /* consecutive resets since last recovery */
+static bool     g_esp_hard_failed = false;  /* gave up after GUARD_RESET_MAX; stop hammering */
 /* Incremented on every SPI_CMD_PING. ESP sends PING at boot until its first
  * PONG, so a PING arriving mid-relay = ESP rebooted. Handled on Core1, so it
  * works even while Core0 is blocked in the relay wait loop (where
@@ -131,6 +137,19 @@ static volatile uint16_t g_esp_status_raw_len = 0;
  * does NOT act yet. */
 #define ESP_HEAP_FLOOR_BYTES   30000u
 #define RELAY_HUNG_STREAK      3u
+
+/* Guardian → ESP32 reset line (U-1). Pico drives ESP_RESET_REQ_PIN high for
+ * ESP_RESET_PULSE_MS to ask a hung ESP to esp_restart() (software reset via a
+ * broken-out GPIO on ESP GPIO4 — see edge_agent main.c). Recovers the logical-
+ * hang case (RTOS alive, agent stuck) that a dumb watchdog IC cannot see.
+ * Reset streak is higher than HUNG detection so the agent gets a chance first;
+ * cooldown gives the ESP time to boot+reconnect; max-reset latch stops a boot
+ * loop if the ESP never recovers. */
+#define ESP_RESET_REQ_PIN       5u
+#define ESP_RESET_PULSE_MS      100u    /* hold high; ESP confirms >=50ms */
+#define GUARD_RESET_STREAK      5u      /* relay-timeout streak to trigger reset (> HUNG detect 3) */
+#define GUARD_RESET_COOLDOWN_MS 30000u  /* min gap between resets (ESP boot+reconnect budget) */
+#define GUARD_RESET_MAX         3u      /* consecutive resets before hard-fail latch (anti boot-loop) */
 
 /* minimal JSON scalar extraction for the small, trusted status payload */
 static bool esp_js_uint(const char *js, const char *key, uint32_t *out)
@@ -171,6 +190,56 @@ static const char *guard_state_str(guard_state_t s)
     case GUARD_DEGRADED: return "DEGRADED";
     default:             return "HEALTHY";
     }
+}
+
+/* Pulse the guardian reset line: drive high for ESP_RESET_PULSE_MS, then low.
+ * The ESP samples the line and, if it stays high past its confirm window,
+ * calls esp_restart(). */
+static void esp_reset_pulse(void)
+{
+    gpio_put(ESP_RESET_REQ_PIN, 1);
+    sleep_ms(ESP_RESET_PULSE_MS);
+    gpio_put(ESP_RESET_REQ_PIN, 0);
+    g_last_reset_ms = to_ms_since_boot(get_absolute_time());
+    g_reset_count++;
+    printf("[guardian] reset pulse #%lu sent to ESP32 (GPIO%u high %ums)\n",
+           (unsigned long)g_reset_count, ESP_RESET_REQ_PIN, ESP_RESET_PULSE_MS);
+}
+
+/* Decide + act on a guardian reset. Honors the cooldown (give the ESP time to
+ * boot+reconnect before judging it again) and the max-reset anti-boot-loop
+ * latch. Returns true if a pulse was actually sent. */
+static bool guardian_try_reset(const char *reason)
+{
+    if (g_esp_hard_failed) { return false; }
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if (g_last_reset_ms != 0 &&
+        (uint32_t)(now - g_last_reset_ms) < GUARD_RESET_COOLDOWN_MS) {
+        return false;   /* still inside the boot budget from the last pulse */
+    }
+    if (g_reset_count >= GUARD_RESET_MAX) {
+        g_esp_hard_failed = true;
+        printf("[guardian] ESP32 unrecovered after %u resets — HARD FAIL, "
+               "stop resetting (manual check needed). reason=%s\n",
+               GUARD_RESET_MAX, reason);
+        return false;
+    }
+    printf("[guardian] reset triggered (reason=%s)\n", reason);
+    esp_reset_pulse();
+    return true;
+}
+
+/* Call when the ESP proves it recovered (agent answered a relay). Clears reset
+ * bookkeeping so a later, unrelated hang starts clean and the hard-fail latch
+ * is released. */
+static void guardian_note_recovery(void)
+{
+    if (g_reset_count != 0 || g_esp_hard_failed) {
+        printf("[guardian] ESP32 recovered — clearing reset state\n");
+    }
+    g_reset_count     = 0;
+    g_last_reset_ms   = 0;
+    g_esp_hard_failed = false;
 }
 
 /* Parse a staged ESP_STATUS payload on Core0 (called from the main loop).
@@ -258,6 +327,9 @@ static void check_esp32_alive_timeout(void)
         printf("[health] ESP32 STATUS timeout (%lums) — relay disabled, "
                "falling back to local until PING/STATUS resumes\n",
                (unsigned long)ESP32_ALIVE_TIMEOUT_MS);
+        /* DEAD (P-5): heartbeat stopped. Kick the reset line — if the ESP is
+         * merely wedged it reboots; if unpowered the pulse is harmless. */
+        guardian_try_reset("DEAD");
     }
 }
 
@@ -922,6 +994,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                 uint32_t boot_epoch = g_esp_boot_epoch;
                 bool got = false;
                 bool rebooted = false;
+                bool proxied = false;  /* ESP made a proxy HTTP call during this wait */
                 while (to_ms_since_boot(get_absolute_time()) < deadline) {
                     save = spin_lock_blocking(g_llm_spin);
                     got = g_llm_resp_ready;
@@ -948,6 +1021,7 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                         g_proxy_body_len = 0;
                         g_proxy_body_rcv = 0;
                         g_proxy_ready    = false;
+                        proxied          = true;
                     }
 
                     sleep_ms(10);
@@ -958,10 +1032,12 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                     used_relay = true;
                     g_stat_relay_ok++;
                     g_relay_to_streak = 0;   /* agent answered → alive */
+                    guardian_note_recovery();
                     printf("[relay] ESP32 CLAW response received\n");
                 } else if (got) {
                     g_stat_relay_err++;
                     g_relay_to_streak = 0;   /* got a response (err) → agent alive */
+                    guardian_note_recovery();
                     esp_reachable_err = true; /* ESP is UP; the LLM request itself failed */
                     printf("[relay] ESP32 returned error — immediate local Groq fallback\n");
                     /* g_llm_resp_ok=false: ESP32 context/LLM 실패, 로컬 fallback 시도 */
@@ -980,6 +1056,15 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                         send_text = "기기가 계속 재시작 중이에요. 잠시 후 다시 보내주세요.";
                     }
                     used_relay = true;   /* honest msg ready; skip local fallback */
+                } else if (proxied) {
+                    /* ESP serviced a proxy HTTP round trip during this wait —
+                     * direct evidence the agent is processing, just slower than
+                     * the deadline. A timeout here is "busy", not "hung": do
+                     * NOT feed the guardian streak (a false HUNG verdict resets
+                     * a healthy ESP mid-work, 2026-07-16 incident). */
+                    g_stat_relay_timeout++;
+                    printf("[relay] timeout after proxy activity — agent busy, "
+                           "not hung (streak untouched)\n");
                 } else {
                     g_stat_relay_timeout++;
                     g_relay_to_streak++;
@@ -987,13 +1072,14 @@ static void on_telegram_message(const wiz_claw_tg_message_t *msg,
                            (unsigned long)g_relay_to_streak);
                     /* g_esp32_alive 유지: ESP32 STATUS 패킷 오면 자동 복구 */
                     if (g_esp32_alive && g_relay_to_streak >= RELAY_HUNG_STREAK) {
-                        /* STATUS still arriving but agent not answering →
-                         * agent logically hung (not crashed). This is the case a
-                         * dumb watchdog IC cannot see. Guardian would HW-reset the
-                         * ESP here via the EN line — NEXT step, not wired yet. */
-                        printf("[guardian] ESP32 agent HUNG (streak=%lu, STATUS alive) "
-                               "— HW reset pending (EN line TODO)\n",
+                        /* STATUS still arriving but agent not answering → agent
+                         * logically hung (not crashed). The case a dumb watchdog
+                         * IC cannot see: its heartbeat input keeps toggling. */
+                        printf("[guardian] ESP32 agent HUNG (streak=%lu, STATUS alive)\n",
                                (unsigned long)g_relay_to_streak);
+                        if (g_relay_to_streak >= GUARD_RESET_STREAK) {
+                            guardian_try_reset("HUNG");
+                        }
                     }
                 }
             }
@@ -1321,6 +1407,11 @@ int main(void)
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 0);
+
+    /* Guardian reset line (U-1): idle low, pulsed high only to reboot the ESP. */
+    gpio_init(ESP_RESET_REQ_PIN);
+    gpio_set_dir(ESP_RESET_REQ_PIN, GPIO_OUT);
+    gpio_put(ESP_RESET_REQ_PIN, 0);
 
     /* flash에서 설정 로드 (magic 불일치 시 기본값) */
     wiz_claw_settings_load(&g_settings);

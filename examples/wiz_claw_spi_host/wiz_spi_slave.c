@@ -50,17 +50,34 @@ static uint8_t _calc_crc(const uint8_t *hdr_bytes, const uint8_t *payload, uint1
     return crc;
 }
 
-/* ── RX FIFO 직접 읽기 (TX FIFO 오염 없음) ──────────────────────────
+/* ── RX FIFO 직접 읽기 (TX FIFO 오염 없음, 타임아웃 적용) ─────────────
  * spi_read_blocking은 RX마다 TX에 0x00을 써서 TX FIFO를 오염시킨다.
  * CS 해제 후 TX FIFO에 남은 0x00이 다음 PONG 앞에 나가 ESP32가
  * 잘못된 데이터를 받는 버그를 막기 위해 DR 레지스터를 직접 읽는다.
- */
-static inline void _rx_bytes(uint8_t *dst, size_t n)
+ *
+ * 타임아웃 적용 이유(프레임 desync 방어):
+ * 헤더의 len 필드는 CRC 검증 전에는 신뢰할 수 없다. 전송 중 len 바이트가
+ * 비트 손상되어 실제보다 큰 값이 되면, 무기한 대기하는 읽기는 이번
+ * 프레임에 없는 나머지 바이트를 "다음에 도착하는" 진짜 프레임의 선두
+ * 바이트로 채워버린다 — 그 뒤로 모든 프레임이 영구적으로 오프셋 밀려
+ * CRC가 항상 불일치하고 재동기될 기회가 사실상 없다(2026-07-16 실기 관측:
+ * CRC 에러 1회 후 RX 영구 사망, TX는 정상). 타임아웃을 두면 마스터가 이번
+ * 프레임 전송을 이미 끝내고 클럭을 멈췄을 때 즉시 포기하고 돌아가서,
+ * poll()의 매직바이트 스캔이 다음 진짜 프레임 경계에서 재동기할 기회를
+ * 보존한다. */
+#define SPI_SLAVE_RX_TIMEOUT_MS 100u
+
+static inline bool _rx_bytes_timeout(uint8_t *dst, size_t n, uint32_t timeout_ms)
 {
+    uint32_t deadline = to_ms_since_boot(get_absolute_time()) + timeout_ms;
     for (size_t i = 0; i < n; i++) {
-        while (!spi_is_readable(spi0)) { tight_loop_contents(); }
+        while (!spi_is_readable(spi0)) {
+            if (to_ms_since_boot(get_absolute_time()) >= deadline) { return false; }
+            tight_loop_contents();
+        }
         dst[i] = (uint8_t)spi_get_hw(spi0)->dr;
     }
+    return true;
 }
 
 /* TX FIFO 잔여 바이트 폐기 (PONG 전송 전 클린업) */
@@ -110,7 +127,10 @@ static void _handle_rx(void)
     hdr_buf[1] = SPI_CLAW_MAGIC_1;
 
     /* 나머지 헤더 5바이트: cmd, len_lo, len_hi, seq, crc */
-    _rx_bytes(&hdr_buf[2], SPI_CLAW_HDR_SIZE - 2);
+    if (!_rx_bytes_timeout(&hdr_buf[2], SPI_CLAW_HDR_SIZE - 2, SPI_SLAVE_RX_TIMEOUT_MS)) {
+        printf("[spi_slave] RX timeout reading header remainder — resyncing\n");
+        return;
+    }
 
     uint16_t plen = (uint16_t)(hdr_buf[3] | ((uint16_t)hdr_buf[4] << 8));
     /* Static: SPI_CLAW_MAX_CHUNK (4096) on stack would overflow core1's default 4KB stack. */
@@ -121,7 +141,13 @@ static void _handle_rx(void)
         return;
     }
     if (plen > 0) {
-        _rx_bytes(payload, plen);
+        if (!_rx_bytes_timeout(payload, plen, SPI_SLAVE_RX_TIMEOUT_MS)) {
+            /* len field likely bit-corrupted larger than what was actually sent —
+             * bail out now instead of stealing the next real frame's bytes. */
+            printf("[spi_slave] RX timeout reading %u-byte payload (cmd=0x%02X) — resyncing\n",
+                   plen, hdr_buf[2]);
+            return;
+        }
     }
 
     /* CRC 검증 */
@@ -228,7 +254,10 @@ void wiz_spi_slave_poll(void)
     b = (uint8_t)spi_get_hw(spi0)->dr;
     if (b != SPI_CLAW_MAGIC_0) { return; }
 
-    _rx_bytes(&b, 1);
+    /* b might be a coincidental MAGIC_0 match inside garbage data, not a real
+     * frame start — if it's the last byte the master clocks this transaction,
+     * an unbounded wait here hangs until the next unrelated frame arrives. */
+    if (!_rx_bytes_timeout(&b, 1, SPI_SLAVE_RX_TIMEOUT_MS)) { return; }
     if (b != SPI_CLAW_MAGIC_1) { return; }
 
     _handle_rx();
