@@ -10,7 +10,8 @@ cmake_minimum_required(VERSION 3.12)
 # set(BOARD_NAME W6300_EVB_PICO)
 # set(BOARD_NAME W5500_EVB_PICO2)
 # set(BOARD_NAME W6100_EVB_PICO2)
-set(BOARD_NAME W6300_EVB_PICO2)
+# set(BOARD_NAME W6300_EVB_PICO2)
+set(BOARD_NAME W6300_RP2354B_CAM)
 
 
 if(${BOARD_NAME} STREQUAL WIZnet_Ethernet_HAT)
@@ -81,9 +82,48 @@ elseif(${BOARD_NAME} STREQUAL W6300_EVB_PICO2)
     
     add_definitions(-D_WIZCHIP_QSPI_MODE_=${WIZCHIP_QSPI_MODE})
 
-else() 
+elseif(${BOARD_NAME} STREQUAL W6300_RP2354B_CAM)
+    # RP2354-B + W6300, with a DVP camera, a microSD socket and a PDM mic.
+    #
+    # PICO_BOARD is what makes this build different from every other entry
+    # above. The others run on stock Raspberry Pi boards, so the SDK's own board
+    # header describes them. This one does not exist upstream, so the project
+    # supplies its own -- see boards/w6300_rp2354b_cam.h, and the
+    # PICO_BOARD_HEADER_DIRS line further down that lets the SDK find it.
+    #
+    # Getting this wrong is not a build error. PICO_BOARD defaults to pico2,
+    # which sets PICO_RP2350A=1, which tells the SDK this part has 30 GPIOs.
+    # Everything above GPIO29 -- the whole camera bus, both SCCB lines, the
+    # microphone -- then quietly stops working while the build stays green.
+    set(PICO_PLATFORM rp2350)
+    set(PICO_BOARD w6300_rp2354b_cam)
+
+    set(WIZNET_CHIP W6300)
+    add_definitions(-D_WIZCHIP_=W6300)
+    add_definitions(-DDEVICE_BOARD_NAME=W6300_RP2354B_CAM)
+
+    # QSPI mode for the W6300. All four data lines are wired on this board
+    # (GPIO16..19), so quad is available; drop to single while bringing the
+    # board up, because a single-line failure is much easier to read on a scope.
+    set(WIZCHIP_QSPI_MODE QSPI_QUAD_MODE)
+    # set(WIZCHIP_QSPI_MODE QSPI_DUAL_MODE)
+    # set(WIZCHIP_QSPI_MODE QSPI_SINGLE_MODE)
+
+    add_definitions(-D_WIZCHIP_QSPI_MODE_=${WIZCHIP_QSPI_MODE})
+
+else()
     message(FATAL_ERROR "BOARD_NAME is wrong = ${BOARD_NAME}")
 endif()
+
+# Board headers this project supplies itself.
+#
+# The SDK appends its own boards directory to this list inside
+# cmake/generic_board.cmake and then searches the whole list for
+# ${PICO_BOARD}.h, so an out-of-tree header only has to be on the list before
+# pico_sdk_init() runs. Putting it here rather than in
+# libraries/pico-sdk/src/boards keeps it from being erased the next time the
+# submodule is updated.
+list(APPEND PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
 
 message(STATUS "WIZNET_CHIP = ${WIZNET_CHIP}")
 

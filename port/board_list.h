@@ -9,3 +9,4 @@
 #define W6100_EVB_PICO2 7
 #define W6300_EVB_PICO 8
 #define W6300_EVB_PICO2 9
+#define W6300_RP2354B_CAM 10

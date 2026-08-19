@@ -43,6 +43,41 @@
 #define PIO_SPI_DATA_IO3_PIN    21
 #define PIN_RST                 22
 
+#elif (DEVICE_BOARD_NAME == W6300_RP2354B_CAM)
+
+/*
+ * RP2354-B + W6300, with a DVP camera and a microSD on the same board.
+ *
+ * PIO, not the PL022 -- and not only because quad mode needs it. The clock
+ * lands on GPIO20, and on RP2350 the SPI function repeats every four pins:
+ *
+ *      GPIO16 RX    GPIO20 RX     <- the clock is here
+ *      GPIO17 CSn   GPIO21 CSn
+ *      GPIO18 SCK   GPIO22 SCK
+ *      GPIO19 TX    GPIO23 TX
+ *
+ * GPIO20 is an SPI RX pin. There is no hardware SPI arrangement that puts SCK
+ * there, so this pinout cannot be driven by the SPI block in any mode.
+ *
+ * What the PIO driver does require is that the four data lines are consecutive
+ * and ascending from IO0: sm_config_set_out_pins/in_pins/set_pins all use
+ * data_io0_pin as their base. GPIO16..19 satisfies that. The clock is a
+ * side-set pin and is configured on its own, so it does not have to sit next to
+ * them -- which is what makes this layout work at all.
+ */
+#define USE_PIO
+#define WIZNET_SPI_CLKDIV_MAJOR_DEFAULT   2
+#define WIZNET_SPI_CLKDIV_MINOR_DEFAULT   0
+
+#define PIO_SPI_DATA_IO0_PIN    16
+#define PIO_SPI_DATA_IO1_PIN    17
+#define PIO_SPI_DATA_IO2_PIN    18
+#define PIO_SPI_DATA_IO3_PIN    19
+#define PIO_SPI_SCK_PIN         20
+#define PIN_CS                  21
+#define PIN_RST                 22
+#define PIN_INT                 23
+
 #else
 /* SPI */
 #define SPI_PORT spi0
