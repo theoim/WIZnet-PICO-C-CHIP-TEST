@@ -1,0 +1,56 @@
+{
+  "nodes": [
+    {
+      "id": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/opcua_usb_stdio/CMakeLists.txt",
+      "summary": "CMake build configuration for the opcua_usb_stdio example, defining the target executable from six C source files, linking against WIZnet Ethernet/IO libraries and the open62541 OPC UA port, and enabling USB CDC stdio while disabling UART.",
+      "tags": ["configuration", "build-system", "cmake", "opcua", "embedded"],
+      "complexity": "simple",
+      "languageNotes": "Uses pico_enable_stdio_usb to route all printf output over USB CDC, a common pattern for Pico-based examples that avoids needing a UART adapter."
+    },
+    {
+      "id": "document:examples/opcua_usb_stdio/README_eng.md",
+      "type": "document",
+      "name": "README_eng.md",
+      "filePath": "examples/opcua_usb_stdio/README_eng.md",
+      "summary": "English user guide for the OPC UA USB stdio example, covering firmware upload, Tera Term serial setup, UaExpert server discovery and connection, real-time node browsing via Data Access View, and the full set of USB serial commands.",
+      "tags": ["documentation", "opcua", "user-guide", "wiznet", "embedded"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:examples/opcua_usb_stdio/README_kor.md",
+      "type": "document",
+      "name": "README_kor.md",
+      "filePath": "examples/opcua_usb_stdio/README_kor.md",
+      "summary": "Korean-language user guide for the OPC UA USB stdio example, providing the same step-by-step instructions as the English README for firmware upload, Tera Term configuration, UaExpert connection, and USB serial data commands.",
+      "tags": ["documentation", "opcua", "user-guide", "korean", "embedded"],
+      "complexity": "moderate",
+      "languageNotes": "Bilingual documentation pattern (README_eng.md + README_kor.md) is used consistently across WIZnet example directories to serve both English and Korean audiences."
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:examples/opcua_usb_stdio/README_eng.md",
+      "target": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/opcua_usb_stdio/README_kor.md",
+      "target": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/opcua_usb_stdio/README_kor.md",
+      "target": "document:examples/opcua_usb_stdio/README_eng.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -3,6 +3,12 @@
 # W6300_RP2354B_CAM it is the first test that has to pass.
 add_subdirectory(loopback)
 
+# Camera streaming. The DVP pinout, the PIO GPIO base it needs and the 48-GPIO
+# part are all specific to this board, so it is not offered anywhere else.
+if(${BOARD_NAME} STREQUAL W6300_RP2354B_CAM)
+    add_subdirectory(cam_web_streaming)
+endif()
+
 # add_subdirectory(buffer_read)
 # add_subdirectory(PING_TEST)
 # add_subdirectory(10M_Complience_Test)

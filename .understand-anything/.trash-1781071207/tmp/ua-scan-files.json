@@ -1,0 +1,474 @@
+{
+  "scriptCompleted": true,
+  "files": [
+    {
+      "path": ".gitmodules",
+      "language": "unknown",
+      "sizeLines": 15,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "unknown",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 151,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "language": "c",
+      "sizeLines": 308,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/10M_Complience_Test/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 25,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/10M_Complience_Test/README.md",
+      "language": "markdown",
+      "sizeLines": 195,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/buffer_read/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/buffer_read/README.md",
+      "language": "markdown",
+      "sizeLines": 195,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "language": "c",
+      "sizeLines": 277,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 4,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/loopback/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/loopback/README.md",
+      "language": "markdown",
+      "sizeLines": 195,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/loopback/wizchip_loopback.c",
+      "language": "c",
+      "sizeLines": 299,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 39,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/images/.gitkeep",
+      "language": "unknown",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/data_table.h",
+      "language": "c",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "language": "c",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_server.h",
+      "language": "c",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "language": "c",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "language": "c",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "language": "c",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/README_eng.md",
+      "language": "markdown",
+      "sizeLines": 141,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/README_kor.md",
+      "language": "markdown",
+      "sizeLines": 141,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/data_table.c",
+      "language": "c",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/main.c",
+      "language": "c",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "language": "c",
+      "sizeLines": 502,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "language": "c",
+      "sizeLines": 342,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "language": "c",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "language": "c",
+      "sizeLines": 208,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/PING_TEST/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/PING_TEST/PING_TEST.c",
+      "language": "c",
+      "sizeLines": 209,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/PING_TEST/README.md",
+      "language": "markdown",
+      "sizeLines": 195,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/wiz_claw_agent/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "examples/wiz_claw_agent/main.c",
+      "language": "c",
+      "sizeLines": 293,
+      "fileCategory": "code"
+    },
+    {
+      "path": "examples/wiz_claw_agent/README_kr.md",
+      "language": "markdown",
+      "sizeLines": 137,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "libraries/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 256,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "pico_sdk_import.cmake",
+      "language": "cmake",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/board_list.h",
+      "language": "c",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/board/can/can.c",
+      "language": "c",
+      "sizeLines": 1449,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/board/can/can.h",
+      "language": "c",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/board/can/can.pio",
+      "language": "pio",
+      "sizeLines": 183,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 154,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "language": "c",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "language": "c",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "language": "c",
+      "sizeLines": 236,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "language": "c",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "language": "c",
+      "sizeLines": 752,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "language": "pio",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "language": "c",
+      "sizeLines": 395,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/mbedtls/inc/ssl_config.h",
+      "language": "c",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/open62541/CMakeLists.txt",
+      "language": "txt",
+      "sizeLines": 100,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "port/open62541/lwip/sockets.h",
+      "language": "c",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/open62541/open62541_wiznet_eventloop.c",
+      "language": "c",
+      "sizeLines": 705,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/port_common.h",
+      "language": "c",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/timer/timer.c",
+      "language": "c",
+      "sizeLines": 47,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/timer/timer.h",
+      "language": "c",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/cJSON.h",
+      "language": "c",
+      "sizeLines": 306,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_agent.h",
+      "language": "c",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "language": "c",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_http.h",
+      "language": "c",
+      "sizeLines": 124,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_llm.h",
+      "language": "c",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_net.h",
+      "language": "c",
+      "sizeLines": 61,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_telegram.h",
+      "language": "c",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_tls.h",
+      "language": "c",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw.h",
+      "language": "c",
+      "sizeLines": 63,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/cJSON.c",
+      "language": "c",
+      "sizeLines": 3164,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_agent.c",
+      "language": "c",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_http.c",
+      "language": "c",
+      "sizeLines": 600,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_llm.c",
+      "language": "c",
+      "sizeLines": 315,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_net.c",
+      "language": "c",
+      "sizeLines": 148,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "language": "c",
+      "sizeLines": 227,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_tls.c",
+      "language": "c",
+      "sizeLines": 327,
+      "fileCategory": "code"
+    },
+    {
+      "path": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "language": "python",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 117,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "wiznet_pico_c_sdk_version.cmake",
+      "language": "cmake",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 75,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "stats": {
+    "filesScanned": 75,
+    "byCategory": {
+      "code": 56,
+      "docs": 19
+    },
+    "byLanguage": {
+      "unknown": 3,
+      "txt": 11,
+      "c": 48,
+      "markdown": 8,
+      "cmake": 2,
+      "pio": 2,
+      "python": 1
+    }
+  }
+}

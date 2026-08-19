@@ -1,0 +1,8 @@
+# INFO: OpenAI leaf cert 제외 (CA:FALSE)
+# INFO: OpenAI (api.openai.com) — CA cert 2개
+# INFO: Telegram leaf cert 제외 (CA:FALSE)
+# INFO: Telegram (api.telegram.org) — CA cert 2개
+# INFO: Cloudflare leaf cert 제외 (CA:FALSE)
+# INFO: Cloudflare (gateway.ai.cloudflare.com) — CA cert 2개
+# INFO: Cloudflare cert 중복 (이미 OpenAI에서 포함)
+# INFO: Cloudflare cert 중복 (이미 OpenAI에서 포함)

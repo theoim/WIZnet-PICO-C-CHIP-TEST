@@ -1,0 +1,18 @@
+{
+  "fixedSectionOk": true,
+  "nodesRecovered": 0,
+  "edgesRestored": 4,
+  "crossBatchEdgesAdded": 0,
+  "typesRemapped": 0,
+  "complexityRemapped": 0,
+  "notes": [
+    "Fixed section: no heavy-skew patterns; only 2 issues reported, both addressed here.",
+    "Two CMakeLists.txt nodes (examples/PING_TEST and examples/wiz_claw_agent) were stored by the merge script under 'file:' IDs because the LLM output used 'file:' as the id prefix while correctly setting type='config'. The merge script preserved the wrong id prefix. Corrected both node IDs to use the 'config:' prefix.",
+    "Restored 2 dropped 'configures' edges that referenced the now-corrected config: IDs: config:examples/PING_TEST/CMakeLists.txt -> file:examples/PING_TEST/PING_TEST.c and config:examples/wiz_claw_agent/CMakeLists.txt -> file:examples/wiz_claw_agent/main.c.",
+    "Added 2 additional 'configures' edges from config:examples/CMakeLists.txt to the two corrected sub-example CMakeLists.txt nodes, consistent with the pattern applied to all other example subdirectories.",
+    "Import map verification: all 75 entries scanned; the 4 edges previously recovered by the merge script (port/timer/timer.c->timer.h, port/board/can/can.c->can.h, port/wiz-claw/include/wiz_claw_llm.h->cJSON.h, port/wiz-claw/include/wiz_claw_net.h->wiz_claw.h) are present. All remaining import map edges were already present in the graph from batch analysis.",
+    "No nodes with missing IDs, unknown node types, or unknown complexity values were found.",
+    "The README.md nodes for PING_TEST and wiz_claw_agent were produced with id prefix 'file:' but type 'document'. These are consistently referenced by their 'file:' IDs in edges (documents/related), so no ID correction is needed for those nodes.",
+    "No upstream data quality concern: the overall ID mismatch rate is low (2 CMakeLists.txt nodes out of 157 total, ~1.3%), which is within acceptable range."
+  ]
+}

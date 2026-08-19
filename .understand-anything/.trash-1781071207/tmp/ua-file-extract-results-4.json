@@ -1,0 +1,2833 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".gitmodules",
+      "language": "text",
+      "fileCategory": "config",
+      "totalLines": 15,
+      "nonEmptyLines": 15,
+      "metrics": {}
+    },
+    {
+      "path": "CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 151,
+      "nonEmptyLines": 120,
+      "metrics": {}
+    },
+    {
+      "path": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 309,
+      "nonEmptyLines": 255,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 48,
+          "endLine": 169,
+          "params": []
+        },
+        {
+          "name": "send_test_frame",
+          "startLine": 171,
+          "endLine": 233,
+          "params": [
+            "packet_type"
+          ]
+        },
+        {
+          "name": "set_clock_khz",
+          "startLine": 235,
+          "endLine": 241,
+          "params": []
+        },
+        {
+          "name": "set_force_mdi_and_link",
+          "startLine": 243,
+          "endLine": 253,
+          "params": []
+        },
+        {
+          "name": "W6300_PHY_CONFIG",
+          "startLine": 255,
+          "endLine": 269,
+          "params": [
+            "mode",
+            "speed",
+            "duplex"
+          ]
+        },
+        {
+          "name": "complience_test_initialize",
+          "startLine": 272,
+          "endLine": 309,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "set_force_mdi_and_link",
+          "line": 243,
+          "isDefault": false
+        },
+        {
+          "name": "W6300_PHY_CONFIG",
+          "line": 255,
+          "isDefault": false
+        },
+        {
+          "name": "complience_test_initialize",
+          "line": 272,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "set_clock_khz",
+          "lineNumber": 49
+        },
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 50
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 51
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 53
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 54
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 55
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 57
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 58
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_reset",
+          "lineNumber": 59
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 61
+        },
+        {
+          "caller": "main",
+          "callee": "memset",
+          "lineNumber": 69
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 71
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 74
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 75
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 78
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 79
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 82
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 83
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 86
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 87
+        },
+        {
+          "caller": "main",
+          "callee": "getchar",
+          "lineNumber": 90
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 93
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 96
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 100
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 101
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 110
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 111
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 117
+        },
+        {
+          "caller": "main",
+          "callee": "strcmp",
+          "lineNumber": 118
+        },
+        {
+          "caller": "main",
+          "callee": "complience_test_initialize",
+          "lineNumber": 125
+        },
+        {
+          "caller": "main",
+          "callee": "set_force_mdi_and_link",
+          "lineNumber": 126
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_check",
+          "lineNumber": 127
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 132
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 133
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 134
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 135
+        },
+        {
+          "caller": "main",
+          "callee": "getchar",
+          "lineNumber": 138
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 141
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 144
+        },
+        {
+          "caller": "main",
+          "callee": "getchar_timeout_us",
+          "lineNumber": 146
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 155
+        },
+        {
+          "caller": "main",
+          "callee": "send_test_frame",
+          "lineNumber": 158
+        },
+        {
+          "caller": "main",
+          "callee": "getchar_timeout_us",
+          "lineNumber": 159
+        },
+        {
+          "caller": "main",
+          "callee": "getchar_timeout_us",
+          "lineNumber": 160
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 161
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 166
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "getSn_SR",
+          "lineNumber": 172
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "close",
+          "lineNumber": 173
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "socket",
+          "lineNumber": 174
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 175
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 178
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "memcpy",
+          "lineNumber": 186
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "get_rand_32",
+          "lineNumber": 196
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "wiz_send_data",
+          "lineNumber": 204
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "setSn_CR",
+          "lineNumber": 205
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "getSn_CR",
+          "lineNumber": 206
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 208
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 210
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 212
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 214
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 216
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 218
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 220
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 222
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 224
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 226
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 228
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 230
+        },
+        {
+          "caller": "send_test_frame",
+          "callee": "printf",
+          "lineNumber": 232
+        },
+        {
+          "caller": "set_clock_khz",
+          "callee": "set_sys_clock_khz",
+          "lineNumber": 236
+        },
+        {
+          "caller": "set_clock_khz",
+          "callee": "clock_configure",
+          "lineNumber": 237
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "wiz_mdio_write",
+          "lineNumber": 246
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "wiz_mdio_read",
+          "lineNumber": 247
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "printf",
+          "lineNumber": 248
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "wiz_mdio_write",
+          "lineNumber": 250
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "wiz_mdio_read",
+          "lineNumber": 251
+        },
+        {
+          "caller": "set_force_mdi_and_link",
+          "callee": "printf",
+          "lineNumber": 252
+        },
+        {
+          "caller": "W6300_PHY_CONFIG",
+          "callee": "printf",
+          "lineNumber": 265
+        },
+        {
+          "caller": "W6300_PHY_CONFIG",
+          "callee": "wizphy_setphyconf",
+          "lineNumber": 266
+        },
+        {
+          "caller": "W6300_PHY_CONFIG",
+          "callee": "printf",
+          "lineNumber": 268
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "frame_end",
+          "lineNumber": 276
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "reg_wizchip_qspi_cbfunc",
+          "lineNumber": 277
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "reg_wizchip_cs_cbfunc",
+          "lineNumber": 278
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 284
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "printf",
+          "lineNumber": 286
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "W6300_PHY_CONFIG",
+          "lineNumber": 290
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 295
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "printf",
+          "lineNumber": 297
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "wizphy_getphyconf",
+          "lineNumber": 303
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "printf",
+          "lineNumber": 304
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "printf",
+          "lineNumber": 306
+        },
+        {
+          "caller": "complience_test_initialize",
+          "callee": "printf",
+          "lineNumber": 307
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/10M_Complience_Test/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 25,
+      "nonEmptyLines": 21,
+      "metrics": {}
+    },
+    {
+      "path": "examples/10M_Complience_Test/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 195,
+      "nonEmptyLines": 127,
+      "sections": [
+        {
+          "heading": "How to Test Loopback Example",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Step 1: Prepare software",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: Prepare hardware",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Step 3: Setup Loopback Example",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "For **W55RP20-EVB-PICO**:",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "For **W6300-EVB-PICO** or **W6300-EVB-PICO2**:",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "For other generic SPI boards",
+          "level": 3,
+          "line": 73
+        },
+        {
+          "heading": "Step 4: Build",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "Step 5: Upload and Run",
+          "level": 2,
+          "line": 154
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "examples/buffer_read/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 22,
+      "nonEmptyLines": 18,
+      "metrics": {}
+    },
+    {
+      "path": "examples/buffer_read/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 195,
+      "nonEmptyLines": 127,
+      "sections": [
+        {
+          "heading": "How to Test Loopback Example",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Step 1: Prepare software",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: Prepare hardware",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Step 3: Setup Loopback Example",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "For **W55RP20-EVB-PICO**:",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "For **W6300-EVB-PICO** or **W6300-EVB-PICO2**:",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "For other generic SPI boards",
+          "level": 3,
+          "line": 73
+        },
+        {
+          "heading": "Step 4: Build",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "Step 5: Upload and Run",
+          "level": 2,
+          "line": 154
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 278,
+      "nonEmptyLines": 218,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 101,
+          "endLine": 263,
+          "params": []
+        },
+        {
+          "name": "repeating_timer_callback",
+          "startLine": 272,
+          "endLine": 278,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 101,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 121
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 122
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 124
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 125
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_reset",
+          "lineNumber": 126
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_initialize",
+          "lineNumber": 127
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 129
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 133
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 134
+        },
+        {
+          "caller": "main",
+          "callee": "getSn_TXBUF_SIZE",
+          "lineNumber": 134
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 135
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 143
+        },
+        {
+          "caller": "main",
+          "callee": "getSn_TX_WR",
+          "lineNumber": 145
+        },
+        {
+          "caller": "main",
+          "callee": "WIZCHIP_TXBUF_BLOCK",
+          "lineNumber": 149
+        },
+        {
+          "caller": "main",
+          "callee": "WIZCHIP_WRITE",
+          "lineNumber": 151
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 156
+        },
+        {
+          "caller": "main",
+          "callee": "getSn_TX_FSR",
+          "lineNumber": 156
+        },
+        {
+          "caller": "main",
+          "callee": "setSn_TX_WR",
+          "lineNumber": 161
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 162
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 163
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 171
+        },
+        {
+          "caller": "main",
+          "callee": "getSn_TX_WR",
+          "lineNumber": 173
+        },
+        {
+          "caller": "main",
+          "callee": "WIZCHIP_TXBUF_BLOCK",
+          "lineNumber": 176
+        },
+        {
+          "caller": "main",
+          "callee": "WIZCHIP_READ",
+          "lineNumber": 177
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 184
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 191
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 192
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 252
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 253
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 255
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 259
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "examples/loopback/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 22,
+      "nonEmptyLines": 18,
+      "metrics": {}
+    },
+    {
+      "path": "examples/loopback/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 195,
+      "nonEmptyLines": 127,
+      "sections": [
+        {
+          "heading": "How to Test Loopback Example",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Step 1: Prepare software",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: Prepare hardware",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Step 3: Setup Loopback Example",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "For **W55RP20-EVB-PICO**:",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "For **W6300-EVB-PICO** or **W6300-EVB-PICO2**:",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "For other generic SPI boards",
+          "level": 3,
+          "line": 73
+        },
+        {
+          "heading": "Step 4: Build",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "Step 5: Upload and Run",
+          "level": 2,
+          "line": 154
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "examples/loopback/wizchip_loopback.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 300,
+      "nonEmptyLines": 252,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 180,
+          "endLine": 285,
+          "params": []
+        },
+        {
+          "name": "repeating_timer_callback",
+          "startLine": 294,
+          "endLine": 300,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 180,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 188
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 190
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 192
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 193
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 194
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 196
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 197
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_reset",
+          "lineNumber": 198
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_initialize",
+          "lineNumber": 199
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_check",
+          "lineNumber": 200
+        },
+        {
+          "caller": "main",
+          "callee": "network_initialize",
+          "lineNumber": 204
+        },
+        {
+          "caller": "main",
+          "callee": "print_network_information",
+          "lineNumber": 207
+        },
+        {
+          "caller": "main",
+          "callee": "set_loopback_mode_W6x00",
+          "lineNumber": 212
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_tcps",
+          "lineNumber": 220
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 221
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_tcpc",
+          "lineNumber": 230
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 231
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_udps",
+          "lineNumber": 239
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 240
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_tcps",
+          "lineNumber": 249
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 250
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_tcpc",
+          "lineNumber": 258
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 259
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_udps",
+          "lineNumber": 267
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 268
+        },
+        {
+          "caller": "main",
+          "callee": "loopback_tcps",
+          "lineNumber": 276
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 277
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/images/.gitkeep",
+      "language": "text",
+      "fileCategory": "data",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {}
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/data_table.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 25,
+      "nonEmptyLines": 20,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 34,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_server.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 24,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 34,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 7,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 28,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/data_table.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 33,
+      "functions": [
+        {
+          "name": "now_ms",
+          "startLine": 9,
+          "endLine": 11,
+          "params": []
+        },
+        {
+          "name": "data_table_init",
+          "startLine": 13,
+          "endLine": 15,
+          "params": []
+        },
+        {
+          "name": "data_table_clear",
+          "startLine": 17,
+          "endLine": 20,
+          "params": []
+        },
+        {
+          "name": "data_table_set_channels",
+          "startLine": 22,
+          "endLine": 34,
+          "params": [
+            "ch1",
+            "ch2",
+            "ch3",
+            "raw_frame"
+          ]
+        },
+        {
+          "name": "data_table_record_parse_error",
+          "startLine": 36,
+          "endLine": 38,
+          "params": []
+        },
+        {
+          "name": "data_table_snapshot",
+          "startLine": 40,
+          "endLine": 43,
+          "params": [
+            "out"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "data_table_init",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "data_table_clear",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "data_table_set_channels",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "data_table_record_parse_error",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "data_table_snapshot",
+          "line": 40,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "now_ms",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 10
+        },
+        {
+          "caller": "now_ms",
+          "callee": "get_absolute_time",
+          "lineNumber": 10
+        },
+        {
+          "caller": "data_table_init",
+          "callee": "data_table_clear",
+          "lineNumber": 14
+        },
+        {
+          "caller": "data_table_clear",
+          "callee": "memset",
+          "lineNumber": 18
+        },
+        {
+          "caller": "data_table_clear",
+          "callee": "strncpy",
+          "lineNumber": 19
+        },
+        {
+          "caller": "data_table_set_channels",
+          "callee": "now_ms",
+          "lineNumber": 28
+        },
+        {
+          "caller": "data_table_set_channels",
+          "callee": "strncpy",
+          "lineNumber": 31
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/main.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 11,
+          "endLine": 34,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 12
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 13
+        },
+        {
+          "caller": "main",
+          "callee": "stdio_usb_connected",
+          "lineNumber": 15
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 16
+        },
+        {
+          "caller": "main",
+          "callee": "data_table_init",
+          "lineNumber": 18
+        },
+        {
+          "caller": "main",
+          "callee": "usb_stdio_link_init",
+          "lineNumber": 19
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 21
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 22
+        },
+        {
+          "caller": "main",
+          "callee": "wiznet_network_init",
+          "lineNumber": 23
+        },
+        {
+          "caller": "main",
+          "callee": "opcua_server_init",
+          "lineNumber": 24
+        },
+        {
+          "caller": "main",
+          "callee": "opcua_server_print_status",
+          "lineNumber": 25
+        },
+        {
+          "caller": "main",
+          "callee": "usb_stdio_print_help",
+          "lineNumber": 26
+        },
+        {
+          "caller": "main",
+          "callee": "usb_stdio_link_poll",
+          "lineNumber": 29
+        },
+        {
+          "caller": "main",
+          "callee": "wiznet_network_poll",
+          "lineNumber": 30
+        },
+        {
+          "caller": "main",
+          "callee": "opcua_server_poll",
+          "lineNumber": 31
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 32
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 502,
+      "nonEmptyLines": 442,
+      "functions": [
+        {
+          "name": "opcua_server_init",
+          "startLine": 387,
+          "endLine": 464,
+          "params": []
+        },
+        {
+          "name": "opcua_server_poll",
+          "startLine": 466,
+          "endLine": 473,
+          "params": []
+        },
+        {
+          "name": "opcua_server_get_status",
+          "startLine": 475,
+          "endLine": 478,
+          "params": [
+            "status"
+          ]
+        },
+        {
+          "name": "opcua_server_print_status",
+          "startLine": 480,
+          "endLine": 502,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "opcua_server_init",
+          "line": 387,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_server_poll",
+          "line": 466,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_server_get_status",
+          "line": 475,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_server_print_status",
+          "line": 480,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "copy_string_to_config",
+          "callee": "UA_STRING",
+          "lineNumber": 64
+        },
+        {
+          "caller": "copy_string_to_config",
+          "callee": "UA_String_clear",
+          "lineNumber": 65
+        },
+        {
+          "caller": "copy_string_to_config",
+          "callee": "UA_String_copy",
+          "lineNumber": 66
+        },
+        {
+          "caller": "set_server_url",
+          "callee": "UA_Array_delete",
+          "lineNumber": 71
+        },
+        {
+          "caller": "set_server_url",
+          "callee": "UA_Array_new",
+          "lineNumber": 76
+        },
+        {
+          "caller": "set_server_url",
+          "callee": "UA_STRING",
+          "lineNumber": 81
+        },
+        {
+          "caller": "set_server_url",
+          "callee": "UA_String_copy",
+          "lineNumber": 82
+        },
+        {
+          "caller": "set_server_url",
+          "callee": "UA_Array_delete",
+          "lineNumber": 84
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 94
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 99
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "UA_LocalizedText_clear",
+          "lineNumber": 104
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "UA_LOCALIZEDTEXT_ALLOC",
+          "lineNumber": 106
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 110
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 114
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 117
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 121
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "copy_string_to_config",
+          "lineNumber": 125
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "UA_DateTime_now",
+          "lineNumber": 129
+        },
+        {
+          "caller": "configure_server_identity",
+          "callee": "set_server_url",
+          "lineNumber": 131
+        },
+        {
+          "caller": "read_scalar_copy",
+          "callee": "UA_Variant_setScalarCopy",
+          "lineNumber": 137
+        },
+        {
+          "caller": "read_scalar_copy",
+          "callee": "UA_DateTime_now",
+          "lineNumber": 147
+        },
+        {
+          "caller": "format_ip",
+          "callee": "wiznet_network_get_status",
+          "lineNumber": 155
+        },
+        {
+          "caller": "format_ip",
+          "callee": "snprintf",
+          "lineNumber": 156
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "data_table_snapshot",
+          "lineNumber": 180
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "UA_STRING",
+          "lineNumber": 184
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 185
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "format_ip",
+          "lineNumber": 190
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "UA_STRING",
+          "lineNumber": 191
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 192
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "UA_STRING",
+          "lineNumber": 196
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 197
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "(UA_UInt32)",
+          "lineNumber": 202
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 202
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "get_absolute_time",
+          "lineNumber": 202
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 203
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "UA_STRING",
+          "lineNumber": 207
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 208
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 213
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 218
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 223
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 228
+        },
+        {
+          "caller": "opcua_read_value",
+          "callee": "read_scalar_copy",
+          "lineNumber": 233
+        },
+        {
+          "caller": "add_object_node",
+          "callee": "UA_LOCALIZEDTEXT",
+          "lineNumber": 250
+        },
+        {
+          "caller": "add_object_node",
+          "callee": "UA_Server_addObjectNode",
+          "lineNumber": 252
+        },
+        {
+          "caller": "add_object_node",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 253
+        },
+        {
+          "caller": "add_object_node",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 254
+        },
+        {
+          "caller": "add_object_node",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 255
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_LOCALIZEDTEXT",
+          "lineNumber": 266
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "memset",
+          "lineNumber": 273
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_Server_addDataSourceVariableNode",
+          "lineNumber": 276
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_NODEID_STRING",
+          "lineNumber": 277
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 278
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 279
+        },
+        {
+          "caller": "add_data_variable",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 280
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_Server_addNamespace",
+          "lineNumber": 285
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 288
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 290
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 292
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_object_node",
+          "lineNumber": 294
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 296
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 297
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_object_node",
+          "lineNumber": 302
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 304
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_object_node",
+          "lineNumber": 309
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 311
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 316
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 318
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 323
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 325
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 330
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 332
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 337
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 339
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 344
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 346
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 351
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 353
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 358
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 360
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 365
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 367
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 372
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 374
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "add_data_variable",
+          "lineNumber": 379
+        },
+        {
+          "caller": "add_address_space",
+          "callee": "UA_NODEID_NUMERIC",
+          "lineNumber": 382
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "memset",
+          "lineNumber": 396
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_ServerConfig_setMinimalCustomBuffer",
+          "lineNumber": 398
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "configure_server_identity",
+          "lineNumber": 401
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_Server_newWithConfig",
+          "lineNumber": 404
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_Server_run_startup",
+          "lineNumber": 411
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_Server_run_shutdown",
+          "lineNumber": 418
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_Server_delete",
+          "lineNumber": 419
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_ServerConfig_clear",
+          "lineNumber": 422
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_StatusCode_name",
+          "lineNumber": 427
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "printf",
+          "lineNumber": 428
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_StatusCode_name",
+          "lineNumber": 428
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "add_address_space",
+          "lineNumber": 432
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "printf",
+          "lineNumber": 436
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "UA_StatusCode_name",
+          "lineNumber": 437
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "printf",
+          "lineNumber": 438
+        },
+        {
+          "caller": "opcua_server_init",
+          "callee": "opcua_tcp_probe_init",
+          "lineNumber": 450
+        },
+        {
+          "caller": "opcua_server_poll",
+          "callee": "UA_Server_run_iterate",
+          "lineNumber": 469
+        },
+        {
+          "caller": "opcua_server_poll",
+          "callee": "opcua_tcp_probe_poll",
+          "lineNumber": 471
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "printf",
+          "lineNumber": 481
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "state_name",
+          "lineNumber": 482
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "printf",
+          "lineNumber": 485
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "printf",
+          "lineNumber": 487
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "opcua_tcp_probe_print_status",
+          "lineNumber": 490
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "printf",
+          "lineNumber": 494
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "printf",
+          "lineNumber": 497
+        },
+        {
+          "caller": "opcua_server_print_status",
+          "callee": "UA_StatusCode_name",
+          "lineNumber": 498
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 342,
+      "nonEmptyLines": 291,
+      "functions": [
+        {
+          "name": "read_u32le",
+          "startLine": 37,
+          "endLine": 42,
+          "params": [
+            "p"
+          ]
+        },
+        {
+          "name": "write_u32le",
+          "startLine": 44,
+          "endLine": 49,
+          "params": [
+            "p",
+            "value"
+          ]
+        },
+        {
+          "name": "send_all",
+          "startLine": 51,
+          "endLine": 69,
+          "params": [
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "parse_hello_endpoint",
+          "startLine": 71,
+          "endLine": 90,
+          "params": [
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "send_ack",
+          "startLine": 92,
+          "endLine": 117,
+          "params": []
+        },
+        {
+          "name": "send_error_and_disconnect",
+          "startLine": 119,
+          "endLine": 142,
+          "params": [
+            "reason"
+          ]
+        },
+        {
+          "name": "process_rx",
+          "startLine": 144,
+          "endLine": 188,
+          "params": [
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "close_probe_socket",
+          "startLine": 190,
+          "endLine": 194,
+          "params": []
+        },
+        {
+          "name": "poll_socket",
+          "startLine": 196,
+          "endLine": 282,
+          "params": []
+        },
+        {
+          "name": "opcua_tcp_probe_init",
+          "startLine": 284,
+          "endLine": 299,
+          "params": []
+        },
+        {
+          "name": "opcua_tcp_probe_poll",
+          "startLine": 301,
+          "endLine": 313,
+          "params": []
+        },
+        {
+          "name": "opcua_tcp_probe_get_status",
+          "startLine": 315,
+          "endLine": 318,
+          "params": [
+            "status"
+          ]
+        },
+        {
+          "name": "opcua_tcp_probe_print_status",
+          "startLine": 320,
+          "endLine": 342,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "opcua_tcp_probe_init",
+          "line": 284,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_tcp_probe_poll",
+          "line": 301,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_tcp_probe_get_status",
+          "line": 315,
+          "isDefault": false
+        },
+        {
+          "name": "opcua_tcp_probe_print_status",
+          "line": 320,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "send_all",
+          "callee": "send",
+          "lineNumber": 55
+        },
+        {
+          "caller": "parse_hello_endpoint",
+          "callee": "read_u32le",
+          "lineNumber": 77
+        },
+        {
+          "caller": "parse_hello_endpoint",
+          "callee": "memcpy",
+          "lineNumber": 88
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 103
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 104
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 105
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 106
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 107
+        },
+        {
+          "caller": "send_ack",
+          "callee": "write_u32le",
+          "lineNumber": 108
+        },
+        {
+          "caller": "send_ack",
+          "callee": "send_all",
+          "lineNumber": 110
+        },
+        {
+          "caller": "send_ack",
+          "callee": "printf",
+          "lineNumber": 113
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "strlen",
+          "lineNumber": 121
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "write_u32le",
+          "lineNumber": 130
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "write_u32le",
+          "lineNumber": 131
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "write_u32le",
+          "lineNumber": 132
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "memcpy",
+          "lineNumber": 133
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "send_all",
+          "lineNumber": 135
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "printf",
+          "lineNumber": 138
+        },
+        {
+          "caller": "send_error_and_disconnect",
+          "callee": "disconnect",
+          "lineNumber": 140
+        },
+        {
+          "caller": "process_rx",
+          "callee": "printf",
+          "lineNumber": 148
+        },
+        {
+          "caller": "process_rx",
+          "callee": "read_u32le",
+          "lineNumber": 158
+        },
+        {
+          "caller": "process_rx",
+          "callee": "printf",
+          "lineNumber": 159
+        },
+        {
+          "caller": "process_rx",
+          "callee": "memcmp",
+          "lineNumber": 164
+        },
+        {
+          "caller": "process_rx",
+          "callee": "parse_hello_endpoint",
+          "lineNumber": 166
+        },
+        {
+          "caller": "process_rx",
+          "callee": "printf",
+          "lineNumber": 168
+        },
+        {
+          "caller": "process_rx",
+          "callee": "send_ack",
+          "lineNumber": 172
+        },
+        {
+          "caller": "process_rx",
+          "callee": "memcmp",
+          "lineNumber": 177
+        },
+        {
+          "caller": "process_rx",
+          "callee": "send_error_and_disconnect",
+          "lineNumber": 181
+        },
+        {
+          "caller": "process_rx",
+          "callee": "send_error_and_disconnect",
+          "lineNumber": 187
+        },
+        {
+          "caller": "close_probe_socket",
+          "callee": "getSn_SR",
+          "lineNumber": 191
+        },
+        {
+          "caller": "close_probe_socket",
+          "callee": "close",
+          "lineNumber": 193
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "getSn_SR",
+          "lineNumber": 202
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "socket",
+          "lineNumber": 204
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 212
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "listen",
+          "lineNumber": 222
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 227
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 233
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "getSn_IR",
+          "lineNumber": 243
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "getSn_DIPR",
+          "lineNumber": 244
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "getSn_DPORT",
+          "lineNumber": 245
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "memcpy",
+          "lineNumber": 246
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "setSn_IR",
+          "lineNumber": 249
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 251
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "getSn_RX_RSR",
+          "lineNumber": 256
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "recv",
+          "lineNumber": 261
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "process_rx",
+          "lineNumber": 264
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 268
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "printf",
+          "lineNumber": 274
+        },
+        {
+          "caller": "poll_socket",
+          "callee": "disconnect",
+          "lineNumber": 275
+        },
+        {
+          "caller": "opcua_tcp_probe_init",
+          "callee": "memset",
+          "lineNumber": 285
+        },
+        {
+          "caller": "opcua_tcp_probe_init",
+          "callee": "close_probe_socket",
+          "lineNumber": 293
+        },
+        {
+          "caller": "opcua_tcp_probe_init",
+          "callee": "printf",
+          "lineNumber": 295
+        },
+        {
+          "caller": "opcua_tcp_probe_poll",
+          "callee": "wiznet_network_is_ready",
+          "lineNumber": 305
+        },
+        {
+          "caller": "opcua_tcp_probe_poll",
+          "callee": "close_probe_socket",
+          "lineNumber": 306
+        },
+        {
+          "caller": "opcua_tcp_probe_poll",
+          "callee": "poll_socket",
+          "lineNumber": 312
+        },
+        {
+          "caller": "opcua_tcp_probe_print_status",
+          "callee": "printf",
+          "lineNumber": 321
+        },
+        {
+          "caller": "opcua_tcp_probe_print_status",
+          "callee": "state_name",
+          "lineNumber": 322
+        },
+        {
+          "caller": "opcua_tcp_probe_print_status",
+          "callee": "printf",
+          "lineNumber": 328
+        },
+        {
+          "caller": "opcua_tcp_probe_print_status",
+          "callee": "printf",
+          "lineNumber": 337
+        },
+        {
+          "caller": "opcua_tcp_probe_print_status",
+          "callee": "printf",
+          "lineNumber": 340
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 13,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 200,
+      "nonEmptyLines": 162,
+      "functions": [
+        {
+          "name": "parse_float_token",
+          "startLine": 32,
+          "endLine": 44,
+          "params": [
+            "cursor",
+            "out"
+          ]
+        },
+        {
+          "name": "parse_data_payload",
+          "startLine": 46,
+          "endLine": 71,
+          "params": [
+            "payload",
+            "ch1",
+            "ch2",
+            "ch3"
+          ]
+        },
+        {
+          "name": "usb_stdio_print_help",
+          "startLine": 73,
+          "endLine": 82,
+          "params": []
+        },
+        {
+          "name": "usb_stdio_print_state",
+          "startLine": 84,
+          "endLine": 99,
+          "params": []
+        },
+        {
+          "name": "process_line",
+          "startLine": 101,
+          "endLine": 161,
+          "params": [
+            "line"
+          ]
+        },
+        {
+          "name": "usb_stdio_link_init",
+          "startLine": 163,
+          "endLine": 166,
+          "params": []
+        },
+        {
+          "name": "usb_stdio_link_poll",
+          "startLine": 168,
+          "endLine": 200,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "usb_stdio_print_help",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "usb_stdio_print_state",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "usb_stdio_link_init",
+          "line": 163,
+          "isDefault": false
+        },
+        {
+          "name": "usb_stdio_link_poll",
+          "line": 168,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "parse_float_token",
+          "callee": "strtof",
+          "lineNumber": 34
+        },
+        {
+          "caller": "parse_data_payload",
+          "callee": "parse_float_token",
+          "lineNumber": 53
+        },
+        {
+          "caller": "parse_data_payload",
+          "callee": "parse_float_token",
+          "lineNumber": 60
+        },
+        {
+          "caller": "parse_data_payload",
+          "callee": "parse_float_token",
+          "lineNumber": 67
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 74
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 75
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 76
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 77
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 78
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 79
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 80
+        },
+        {
+          "caller": "usb_stdio_print_help",
+          "callee": "printf",
+          "lineNumber": 81
+        },
+        {
+          "caller": "usb_stdio_print_state",
+          "callee": "data_table_snapshot",
+          "lineNumber": 86
+        },
+        {
+          "caller": "usb_stdio_print_state",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 88
+        },
+        {
+          "caller": "usb_stdio_print_state",
+          "callee": "get_absolute_time",
+          "lineNumber": 88
+        },
+        {
+          "caller": "usb_stdio_print_state",
+          "callee": "printf",
+          "lineNumber": 92
+        },
+        {
+          "caller": "process_line",
+          "callee": "trim",
+          "lineNumber": 102
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 106
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 106
+        },
+        {
+          "caller": "process_line",
+          "callee": "usb_stdio_print_help",
+          "lineNumber": 107
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 111
+        },
+        {
+          "caller": "process_line",
+          "callee": "usb_stdio_print_state",
+          "lineNumber": 112
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 116
+        },
+        {
+          "caller": "process_line",
+          "callee": "wiznet_network_print_status",
+          "lineNumber": 117
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 121
+        },
+        {
+          "caller": "process_line",
+          "callee": "opcua_server_print_status",
+          "lineNumber": 122
+        },
+        {
+          "caller": "process_line",
+          "callee": "strcmp",
+          "lineNumber": 126
+        },
+        {
+          "caller": "process_line",
+          "callee": "data_table_clear",
+          "lineNumber": 127
+        },
+        {
+          "caller": "process_line",
+          "callee": "printf",
+          "lineNumber": 128
+        },
+        {
+          "caller": "process_line",
+          "callee": "strncmp",
+          "lineNumber": 133
+        },
+        {
+          "caller": "process_line",
+          "callee": "strncmp",
+          "lineNumber": 135
+        },
+        {
+          "caller": "process_line",
+          "callee": "parse_data_payload",
+          "lineNumber": 143
+        },
+        {
+          "caller": "process_line",
+          "callee": "data_table_record_parse_error",
+          "lineNumber": 144
+        },
+        {
+          "caller": "process_line",
+          "callee": "printf",
+          "lineNumber": 145
+        },
+        {
+          "caller": "process_line",
+          "callee": "data_table_set_channels",
+          "lineNumber": 149
+        },
+        {
+          "caller": "process_line",
+          "callee": "data_table_snapshot",
+          "lineNumber": 152
+        },
+        {
+          "caller": "process_line",
+          "callee": "printf",
+          "lineNumber": 153
+        },
+        {
+          "caller": "process_line",
+          "callee": "data_table_record_parse_error",
+          "lineNumber": 159
+        },
+        {
+          "caller": "process_line",
+          "callee": "printf",
+          "lineNumber": 160
+        },
+        {
+          "caller": "usb_stdio_link_poll",
+          "callee": "getchar_timeout_us",
+          "lineNumber": 169
+        },
+        {
+          "caller": "usb_stdio_link_poll",
+          "callee": "printf",
+          "lineNumber": 178
+        },
+        {
+          "caller": "usb_stdio_link_poll",
+          "callee": "process_line",
+          "lineNumber": 181
+        },
+        {
+          "caller": "usb_stdio_link_poll",
+          "callee": "data_table_record_parse_error",
+          "lineNumber": 192
+        },
+        {
+          "caller": "usb_stdio_link_poll",
+          "callee": "getchar_timeout_us",
+          "lineNumber": 198
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "text",
+      "fileCategory": "config",
+      "totalLines": 21,
+      "nonEmptyLines": 17,
+      "metrics": {}
+    }
+  ]
+}

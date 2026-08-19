@@ -1,0 +1,71 @@
+;
+; 8-bit DVP capture.
+;
+; One byte per PCLK for as long as HREF says the line is active. The state
+; machine is free-running: it never waits for the CPU, so whatever it samples
+; has to be taken away by DMA or it is lost when the four-word RX FIFO fills.
+;
+; Pin numbering is relative to the 'in' base, which dvp_capture.c sets to the
+; first data line:
+;
+;   pin 0..7   D0..D7
+;   pin 8      PCLK
+;   pin 9      HREF
+;
+; On this board that is GPIO24..33 - ten consecutive pins in exactly that
+; order, which is what makes a single `in pins, 8` enough.
+;
+; VSYNC is deliberately not in the program. Framing is done in C by polling the
+; pin, which keeps the inner loop at four instructions; folding frame start into
+; the state machine would cost an extra wait on every byte.
+;
+
+.program dvp
+
+.wrap_target
+    wait 1 pin 9        ; HREF high: pixels are being driven
+    wait 1 pin 8        ; PCLK rising edge - data is valid here
+    in pins, 8
+    wait 0 pin 8        ; ride out the high half so the next wait sees an edge
+.wrap
+
+% c-sdk {
+#include "hardware/clocks.h"
+
+/*
+ * Returns PICO_OK, or an SDK error code. It is worth checking: with a 48-GPIO
+ * part these calls fail when the pins fall outside the block's 32-pin window,
+ * and a silently misconfigured state machine samples the wrong pins rather
+ * than doing nothing - which looks like a camera fault, not a setup fault.
+ */
+static inline int dvp_program_init(PIO pio, uint sm, uint offset, uint pin_base)
+{
+    int rc;
+    pio_sm_config c = dvp_program_get_default_config(offset);
+
+    sm_config_set_in_pins(&c, pin_base);
+
+    /*
+     * Shift right, autopush at 32 bits.
+     *
+     * Each `in` lands in the top byte of the ISR and everything already there
+     * moves down, so after four samples the first byte sits in bits 7:0. The
+     * DMA writes that word to memory little-endian, which puts the first byte
+     * at the lowest address - capture order preserved, with a quarter of the
+     * DMA transfers a byte-wide setup would need.
+     */
+    sm_config_set_in_shift(&c, true, true, 32);
+
+    /* All eight words of FIFO on the RX side; the TX half is unused here. */
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+
+    /* Full speed: one PIO cycle per instruction, so PCLK is the only limit. */
+    sm_config_set_clkdiv(&c, 1.0f);
+
+    rc = pio_sm_set_consecutive_pindirs(pio, sm, pin_base, 10, false);
+    if (rc != PICO_OK) {
+        return rc;
+    }
+    return pio_sm_init(pio, sm, offset, &c);
+}
+%}

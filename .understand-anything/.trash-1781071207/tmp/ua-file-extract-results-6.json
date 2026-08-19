@@ -1,0 +1,5669 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 14,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "port/port_common.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 19,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/timer/timer.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 47,
+      "nonEmptyLines": 39,
+      "functions": [
+        {
+          "name": "wizchip_1ms_timer_initialize",
+          "startLine": 33,
+          "endLine": 36,
+          "params": []
+        },
+        {
+          "name": "wizchip_1ms_timer_callback",
+          "startLine": 38,
+          "endLine": 42,
+          "params": [
+            "t"
+          ]
+        },
+        {
+          "name": "wizchip_delay_ms",
+          "startLine": 45,
+          "endLine": 47,
+          "params": [
+            "ms"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "repeating_timer",
+          "startLine": 24,
+          "endLine": 24,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "repeating_timer",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_1ms_timer_initialize",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_1ms_timer_callback",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_delay_ms",
+          "line": 45,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wizchip_1ms_timer_initialize",
+          "callee": "add_repeating_timer_us",
+          "lineNumber": 35
+        },
+        {
+          "caller": "wizchip_1ms_timer_callback",
+          "callee": "callback_ptr",
+          "lineNumber": 40
+        },
+        {
+          "caller": "wizchip_delay_ms",
+          "callee": "sleep_ms",
+          "lineNumber": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 4,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "port/timer/timer.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 52,
+      "nonEmptyLines": 39,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 25,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/cJSON.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 3164,
+      "nonEmptyLines": 2703,
+      "functions": [
+        {
+          "name": "cJSON_GetErrorPtr",
+          "startLine": 94,
+          "endLine": 97,
+          "params": []
+        },
+        {
+          "name": "cJSON_GetStringValue",
+          "startLine": 99,
+          "endLine": 107,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_GetNumberValue",
+          "startLine": 109,
+          "endLine": 117,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_Version",
+          "startLine": 124,
+          "endLine": 130,
+          "params": []
+        },
+        {
+          "name": "case_insensitive_strcmp",
+          "startLine": 133,
+          "endLine": 154,
+          "params": [
+            "string1",
+            "string2"
+          ]
+        },
+        {
+          "name": "cJSON_InitHooks",
+          "startLine": 209,
+          "endLine": 238,
+          "params": [
+            "hooks"
+          ]
+        },
+        {
+          "name": "cJSON_Delete",
+          "startLine": 253,
+          "endLine": 276,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "get_decimal_point",
+          "startLine": 279,
+          "endLine": 287,
+          "params": []
+        },
+        {
+          "name": "parse_number",
+          "startLine": 307,
+          "endLine": 381,
+          "params": [
+            "item",
+            "input_buffer"
+          ]
+        },
+        {
+          "name": "cJSON_SetNumberHelper",
+          "startLine": 384,
+          "endLine": 400,
+          "params": [
+            "object",
+            "number"
+          ]
+        },
+        {
+          "name": "cJSON_SetValuestring",
+          "startLine": 403,
+          "endLine": 444,
+          "params": [
+            "object",
+            "valuestring"
+          ]
+        },
+        {
+          "name": "update_offset",
+          "startLine": 544,
+          "endLine": 554,
+          "params": [
+            "buffer"
+          ]
+        },
+        {
+          "name": "compare_double",
+          "startLine": 557,
+          "endLine": 561,
+          "params": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "name": "print_number",
+          "startLine": 564,
+          "endLine": 631,
+          "params": [
+            "item",
+            "output_buffer"
+          ]
+        },
+        {
+          "name": "parse_hex4",
+          "startLine": 634,
+          "endLine": 667,
+          "params": [
+            "input"
+          ]
+        },
+        {
+          "name": "utf16_literal_to_utf8",
+          "startLine": 671,
+          "endLine": 789,
+          "params": [
+            "input_pointer",
+            "input_end",
+            "output_pointer"
+          ]
+        },
+        {
+          "name": "parse_string",
+          "startLine": 792,
+          "endLine": 919,
+          "params": [
+            "item",
+            "input_buffer"
+          ]
+        },
+        {
+          "name": "print_string_ptr",
+          "startLine": 922,
+          "endLine": 1041,
+          "params": [
+            "input",
+            "output_buffer"
+          ]
+        },
+        {
+          "name": "print_string",
+          "startLine": 1044,
+          "endLine": 1047,
+          "params": [
+            "item",
+            "p"
+          ]
+        },
+        {
+          "name": "cJSON_ParseWithOpts",
+          "startLine": 1099,
+          "endLine": 1112,
+          "params": [
+            "value",
+            "return_parse_end",
+            "require_null_terminated"
+          ]
+        },
+        {
+          "name": "cJSON_ParseWithLengthOpts",
+          "startLine": 1115,
+          "endLine": 1192,
+          "params": [
+            "value",
+            "buffer_length",
+            "return_parse_end",
+            "require_null_terminated"
+          ]
+        },
+        {
+          "name": "cJSON_Parse",
+          "startLine": 1195,
+          "endLine": 1198,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "cJSON_ParseWithLength",
+          "startLine": 1200,
+          "endLine": 1203,
+          "params": [
+            "value",
+            "buffer_length"
+          ]
+        },
+        {
+          "name": "cJSON_Print",
+          "startLine": 1275,
+          "endLine": 1278,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_PrintUnformatted",
+          "startLine": 1280,
+          "endLine": 1283,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_PrintBuffered",
+          "startLine": 1285,
+          "endLine": 1314,
+          "params": [
+            "item",
+            "prebuffer",
+            "fmt"
+          ]
+        },
+        {
+          "name": "cJSON_PrintPreallocated",
+          "startLine": 1316,
+          "endLine": 1333,
+          "params": [
+            "item",
+            "buffer",
+            "length",
+            "format"
+          ]
+        },
+        {
+          "name": "parse_value",
+          "startLine": 1336,
+          "endLine": 1388,
+          "params": [
+            "item",
+            "input_buffer"
+          ]
+        },
+        {
+          "name": "print_value",
+          "startLine": 1391,
+          "endLine": 1462,
+          "params": [
+            "item",
+            "output_buffer"
+          ]
+        },
+        {
+          "name": "parse_array",
+          "startLine": 1465,
+          "endLine": 1560,
+          "params": [
+            "item",
+            "input_buffer"
+          ]
+        },
+        {
+          "name": "print_array",
+          "startLine": 1563,
+          "endLine": 1622,
+          "params": [
+            "item",
+            "output_buffer"
+          ]
+        },
+        {
+          "name": "parse_object",
+          "startLine": 1625,
+          "endLine": 1740,
+          "params": [
+            "item",
+            "input_buffer"
+          ]
+        },
+        {
+          "name": "print_object",
+          "startLine": 1743,
+          "endLine": 1854,
+          "params": [
+            "item",
+            "output_buffer"
+          ]
+        },
+        {
+          "name": "cJSON_GetArraySize",
+          "startLine": 1857,
+          "endLine": 1878,
+          "params": [
+            "array"
+          ]
+        },
+        {
+          "name": "cJSON_GetArrayItem",
+          "startLine": 1899,
+          "endLine": 1907,
+          "params": [
+            "array",
+            "index"
+          ]
+        },
+        {
+          "name": "cJSON_GetObjectItem",
+          "startLine": 1941,
+          "endLine": 1944,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_GetObjectItemCaseSensitive",
+          "startLine": 1946,
+          "endLine": 1949,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_HasObjectItem",
+          "startLine": 1951,
+          "endLine": 1954,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "suffix_object",
+          "startLine": 1957,
+          "endLine": 1961,
+          "params": [
+            "prev",
+            "item"
+          ]
+        },
+        {
+          "name": "add_item_to_array",
+          "startLine": 1985,
+          "endLine": 2016,
+          "params": [
+            "array",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_AddItemToArray",
+          "startLine": 2019,
+          "endLine": 2022,
+          "params": [
+            "array",
+            "item"
+          ]
+        },
+        {
+          "name": "add_item_to_object",
+          "startLine": 2040,
+          "endLine": 2075,
+          "params": [
+            "object",
+            "string",
+            "item",
+            "hooks",
+            "constant_key"
+          ]
+        },
+        {
+          "name": "cJSON_AddItemToObject",
+          "startLine": 2077,
+          "endLine": 2080,
+          "params": [
+            "object",
+            "string",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_AddItemToObjectCS",
+          "startLine": 2083,
+          "endLine": 2086,
+          "params": [
+            "object",
+            "string",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_AddItemReferenceToArray",
+          "startLine": 2088,
+          "endLine": 2096,
+          "params": [
+            "array",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_AddItemReferenceToObject",
+          "startLine": 2098,
+          "endLine": 2106,
+          "params": [
+            "object",
+            "string",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_AddNullToObject",
+          "startLine": 2108,
+          "endLine": 2118,
+          "params": [
+            "object",
+            "name"
+          ]
+        },
+        {
+          "name": "cJSON_AddTrueToObject",
+          "startLine": 2120,
+          "endLine": 2130,
+          "params": [
+            "object",
+            "name"
+          ]
+        },
+        {
+          "name": "cJSON_AddFalseToObject",
+          "startLine": 2132,
+          "endLine": 2142,
+          "params": [
+            "object",
+            "name"
+          ]
+        },
+        {
+          "name": "cJSON_AddBoolToObject",
+          "startLine": 2144,
+          "endLine": 2154,
+          "params": [
+            "object",
+            "name",
+            "boolean"
+          ]
+        },
+        {
+          "name": "cJSON_AddNumberToObject",
+          "startLine": 2156,
+          "endLine": 2166,
+          "params": [
+            "object",
+            "name",
+            "number"
+          ]
+        },
+        {
+          "name": "cJSON_AddStringToObject",
+          "startLine": 2168,
+          "endLine": 2178,
+          "params": [
+            "object",
+            "name",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_AddRawToObject",
+          "startLine": 2180,
+          "endLine": 2190,
+          "params": [
+            "object",
+            "name",
+            "raw"
+          ]
+        },
+        {
+          "name": "cJSON_AddObjectToObject",
+          "startLine": 2192,
+          "endLine": 2202,
+          "params": [
+            "object",
+            "name"
+          ]
+        },
+        {
+          "name": "cJSON_AddArrayToObject",
+          "startLine": 2204,
+          "endLine": 2214,
+          "params": [
+            "object",
+            "name"
+          ]
+        },
+        {
+          "name": "cJSON_DetachItemViaPointer",
+          "startLine": 2216,
+          "endLine": 2250,
+          "params": [
+            "parent",
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_DetachItemFromArray",
+          "startLine": 2252,
+          "endLine": 2260,
+          "params": [
+            "array",
+            "which"
+          ]
+        },
+        {
+          "name": "cJSON_DeleteItemFromArray",
+          "startLine": 2262,
+          "endLine": 2265,
+          "params": [
+            "array",
+            "which"
+          ]
+        },
+        {
+          "name": "cJSON_DetachItemFromObject",
+          "startLine": 2267,
+          "endLine": 2272,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_DetachItemFromObjectCaseSensitive",
+          "startLine": 2274,
+          "endLine": 2279,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_DeleteItemFromObject",
+          "startLine": 2281,
+          "endLine": 2284,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_DeleteItemFromObjectCaseSensitive",
+          "startLine": 2286,
+          "endLine": 2289,
+          "params": [
+            "object",
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_InsertItemInArray",
+          "startLine": 2292,
+          "endLine": 2324,
+          "params": [
+            "array",
+            "which",
+            "newitem"
+          ]
+        },
+        {
+          "name": "cJSON_ReplaceItemViaPointer",
+          "startLine": 2326,
+          "endLine": 2373,
+          "params": [
+            "parent",
+            "item",
+            "replacement"
+          ]
+        },
+        {
+          "name": "cJSON_ReplaceItemInArray",
+          "startLine": 2375,
+          "endLine": 2383,
+          "params": [
+            "array",
+            "which",
+            "newitem"
+          ]
+        },
+        {
+          "name": "replace_item_in_object",
+          "startLine": 2385,
+          "endLine": 2406,
+          "params": [
+            "object",
+            "string",
+            "replacement",
+            "case_sensitive"
+          ]
+        },
+        {
+          "name": "cJSON_ReplaceItemInObject",
+          "startLine": 2408,
+          "endLine": 2411,
+          "params": [
+            "object",
+            "string",
+            "newitem"
+          ]
+        },
+        {
+          "name": "cJSON_ReplaceItemInObjectCaseSensitive",
+          "startLine": 2413,
+          "endLine": 2416,
+          "params": [
+            "object",
+            "string",
+            "newitem"
+          ]
+        },
+        {
+          "name": "cJSON_CreateNull",
+          "startLine": 2419,
+          "endLine": 2428,
+          "params": []
+        },
+        {
+          "name": "cJSON_CreateTrue",
+          "startLine": 2430,
+          "endLine": 2439,
+          "params": []
+        },
+        {
+          "name": "cJSON_CreateFalse",
+          "startLine": 2441,
+          "endLine": 2450,
+          "params": []
+        },
+        {
+          "name": "cJSON_CreateBool",
+          "startLine": 2452,
+          "endLine": 2461,
+          "params": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "cJSON_CreateNumber",
+          "startLine": 2463,
+          "endLine": 2487,
+          "params": [
+            "num"
+          ]
+        },
+        {
+          "name": "cJSON_CreateString",
+          "startLine": 2489,
+          "endLine": 2504,
+          "params": [
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_CreateStringReference",
+          "startLine": 2506,
+          "endLine": 2516,
+          "params": [
+            "string"
+          ]
+        },
+        {
+          "name": "cJSON_CreateObjectReference",
+          "startLine": 2518,
+          "endLine": 2527,
+          "params": [
+            "child"
+          ]
+        },
+        {
+          "name": "cJSON_CreateArrayReference",
+          "startLine": 2529,
+          "endLine": 2537,
+          "params": [
+            "child"
+          ]
+        },
+        {
+          "name": "cJSON_CreateRaw",
+          "startLine": 2539,
+          "endLine": 2554,
+          "params": [
+            "raw"
+          ]
+        },
+        {
+          "name": "cJSON_CreateArray",
+          "startLine": 2556,
+          "endLine": 2565,
+          "params": []
+        },
+        {
+          "name": "cJSON_CreateObject",
+          "startLine": 2567,
+          "endLine": 2576,
+          "params": []
+        },
+        {
+          "name": "cJSON_CreateIntArray",
+          "startLine": 2579,
+          "endLine": 2617,
+          "params": [
+            "numbers",
+            "count"
+          ]
+        },
+        {
+          "name": "cJSON_CreateFloatArray",
+          "startLine": 2619,
+          "endLine": 2657,
+          "params": [
+            "numbers",
+            "count"
+          ]
+        },
+        {
+          "name": "cJSON_CreateDoubleArray",
+          "startLine": 2659,
+          "endLine": 2697,
+          "params": [
+            "numbers",
+            "count"
+          ]
+        },
+        {
+          "name": "cJSON_CreateStringArray",
+          "startLine": 2699,
+          "endLine": 2737,
+          "params": [
+            "strings",
+            "count"
+          ]
+        },
+        {
+          "name": "cJSON_Duplicate",
+          "startLine": 2742,
+          "endLine": 2745,
+          "params": [
+            "item",
+            "recurse"
+          ]
+        },
+        {
+          "name": "skip_oneline_comment",
+          "startLine": 2833,
+          "endLine": 2844,
+          "params": [
+            "input"
+          ]
+        },
+        {
+          "name": "skip_multiline_comment",
+          "startLine": 2846,
+          "endLine": 2858,
+          "params": [
+            "input"
+          ]
+        },
+        {
+          "name": "minify_string",
+          "startLine": 2860,
+          "endLine": 2880,
+          "params": [
+            "input",
+            "output"
+          ]
+        },
+        {
+          "name": "cJSON_Minify",
+          "startLine": 2882,
+          "endLine": 2928,
+          "params": [
+            "json"
+          ]
+        },
+        {
+          "name": "cJSON_IsInvalid",
+          "startLine": 2930,
+          "endLine": 2938,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsFalse",
+          "startLine": 2940,
+          "endLine": 2948,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsTrue",
+          "startLine": 2950,
+          "endLine": 2958,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsBool",
+          "startLine": 2961,
+          "endLine": 2969,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsNull",
+          "startLine": 2970,
+          "endLine": 2978,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsNumber",
+          "startLine": 2980,
+          "endLine": 2988,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsString",
+          "startLine": 2990,
+          "endLine": 2998,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsArray",
+          "startLine": 3000,
+          "endLine": 3008,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsObject",
+          "startLine": 3010,
+          "endLine": 3018,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_IsRaw",
+          "startLine": 3020,
+          "endLine": 3028,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "cJSON_Compare",
+          "startLine": 3030,
+          "endLine": 3153,
+          "params": [
+            "a",
+            "b",
+            "case_sensitive"
+          ]
+        },
+        {
+          "name": "cJSON_malloc",
+          "startLine": 3155,
+          "endLine": 3158,
+          "params": [
+            "size"
+          ]
+        },
+        {
+          "name": "cJSON_free",
+          "startLine": 3160,
+          "endLine": 3164,
+          "params": [
+            "object"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "cJSON_GetErrorPtr",
+          "line": 94,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetStringValue",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetNumberValue",
+          "line": 109,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Version",
+          "line": 124,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_InitHooks",
+          "line": 209,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Delete",
+          "line": 253,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_SetNumberHelper",
+          "line": 384,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_SetValuestring",
+          "line": 403,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ParseWithOpts",
+          "line": 1099,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ParseWithLengthOpts",
+          "line": 1115,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Parse",
+          "line": 1195,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ParseWithLength",
+          "line": 1200,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Print",
+          "line": 1275,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_PrintUnformatted",
+          "line": 1280,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_PrintBuffered",
+          "line": 1285,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_PrintPreallocated",
+          "line": 1316,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetArraySize",
+          "line": 1857,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetArrayItem",
+          "line": 1899,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetObjectItem",
+          "line": 1941,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_GetObjectItemCaseSensitive",
+          "line": 1946,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_HasObjectItem",
+          "line": 1951,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddItemToArray",
+          "line": 2019,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddItemToObject",
+          "line": 2077,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddItemToObjectCS",
+          "line": 2083,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddItemReferenceToArray",
+          "line": 2088,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddItemReferenceToObject",
+          "line": 2098,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddNullToObject",
+          "line": 2108,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddTrueToObject",
+          "line": 2120,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddFalseToObject",
+          "line": 2132,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddBoolToObject",
+          "line": 2144,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddNumberToObject",
+          "line": 2156,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddStringToObject",
+          "line": 2168,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddRawToObject",
+          "line": 2180,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddObjectToObject",
+          "line": 2192,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_AddArrayToObject",
+          "line": 2204,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DetachItemViaPointer",
+          "line": 2216,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DetachItemFromArray",
+          "line": 2252,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DeleteItemFromArray",
+          "line": 2262,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DetachItemFromObject",
+          "line": 2267,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DetachItemFromObjectCaseSensitive",
+          "line": 2274,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DeleteItemFromObject",
+          "line": 2281,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_DeleteItemFromObjectCaseSensitive",
+          "line": 2286,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_InsertItemInArray",
+          "line": 2292,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ReplaceItemViaPointer",
+          "line": 2326,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ReplaceItemInArray",
+          "line": 2375,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ReplaceItemInObject",
+          "line": 2408,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_ReplaceItemInObjectCaseSensitive",
+          "line": 2413,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateNull",
+          "line": 2419,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateTrue",
+          "line": 2430,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateFalse",
+          "line": 2441,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateBool",
+          "line": 2452,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateNumber",
+          "line": 2463,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateString",
+          "line": 2489,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateStringReference",
+          "line": 2506,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateObjectReference",
+          "line": 2518,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateArrayReference",
+          "line": 2529,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateRaw",
+          "line": 2539,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateArray",
+          "line": 2556,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateObject",
+          "line": 2567,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateIntArray",
+          "line": 2579,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateFloatArray",
+          "line": 2619,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateDoubleArray",
+          "line": 2659,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_CreateStringArray",
+          "line": 2699,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Duplicate",
+          "line": 2742,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Minify",
+          "line": 2882,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsInvalid",
+          "line": 2930,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsFalse",
+          "line": 2940,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsTrue",
+          "line": 2950,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsBool",
+          "line": 2961,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsNull",
+          "line": 2970,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsNumber",
+          "line": 2980,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsString",
+          "line": 2990,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsArray",
+          "line": 3000,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsObject",
+          "line": 3010,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_IsRaw",
+          "line": 3020,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_Compare",
+          "line": 3030,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_malloc",
+          "line": 3155,
+          "isDefault": false
+        },
+        {
+          "name": "cJSON_free",
+          "line": 3160,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "cJSON_GetStringValue",
+          "callee": "cJSON_IsString",
+          "lineNumber": 101
+        },
+        {
+          "caller": "cJSON_GetNumberValue",
+          "callee": "cJSON_IsNumber",
+          "lineNumber": 111
+        },
+        {
+          "caller": "cJSON_Version",
+          "callee": "sprintf",
+          "lineNumber": 127
+        },
+        {
+          "caller": "case_insensitive_strcmp",
+          "callee": "tolower",
+          "lineNumber": 145
+        },
+        {
+          "caller": "case_insensitive_strcmp",
+          "callee": "tolower",
+          "lineNumber": 145
+        },
+        {
+          "caller": "case_insensitive_strcmp",
+          "callee": "tolower",
+          "lineNumber": 153
+        },
+        {
+          "caller": "case_insensitive_strcmp",
+          "callee": "tolower",
+          "lineNumber": 153
+        },
+        {
+          "caller": "internal_free",
+          "callee": "free",
+          "lineNumber": 171
+        },
+        {
+          "caller": "cJSON_Delete",
+          "callee": "cJSON_Delete",
+          "lineNumber": 261
+        },
+        {
+          "caller": "cJSON_Delete",
+          "callee": "deallocate",
+          "lineNumber": 265
+        },
+        {
+          "caller": "cJSON_Delete",
+          "callee": "deallocate",
+          "lineNumber": 270
+        },
+        {
+          "caller": "cJSON_Delete",
+          "callee": "deallocate",
+          "lineNumber": 273
+        },
+        {
+          "caller": "get_decimal_point",
+          "callee": "localeconv",
+          "lineNumber": 282
+        },
+        {
+          "caller": "parse_number",
+          "callee": "get_decimal_point",
+          "lineNumber": 312
+        },
+        {
+          "caller": "parse_number",
+          "callee": "can_access_at_index",
+          "lineNumber": 323
+        },
+        {
+          "caller": "parse_number",
+          "callee": "buffer_at_offset",
+          "lineNumber": 325
+        },
+        {
+          "caller": "parse_number",
+          "callee": "buffer_at_offset",
+          "lineNumber": 341
+        },
+        {
+          "caller": "parse_number",
+          "callee": "strtod",
+          "lineNumber": 355
+        },
+        {
+          "caller": "cJSON_SetValuestring",
+          "callee": "strlen",
+          "lineNumber": 419
+        },
+        {
+          "caller": "cJSON_SetValuestring",
+          "callee": "strlen",
+          "lineNumber": 420
+        },
+        {
+          "caller": "cJSON_SetValuestring",
+          "callee": "strcpy",
+          "lineNumber": 429
+        },
+        {
+          "caller": "cJSON_SetValuestring",
+          "callee": "cJSON_strdup",
+          "lineNumber": 432
+        },
+        {
+          "caller": "cJSON_SetValuestring",
+          "callee": "cJSON_free",
+          "lineNumber": 439
+        },
+        {
+          "caller": "update_offset",
+          "callee": "strlen",
+          "lineNumber": 553
+        },
+        {
+          "caller": "compare_double",
+          "callee": "fabs",
+          "lineNumber": 559
+        },
+        {
+          "caller": "compare_double",
+          "callee": "fabs",
+          "lineNumber": 559
+        },
+        {
+          "caller": "compare_double",
+          "callee": "fabs",
+          "lineNumber": 559
+        },
+        {
+          "caller": "compare_double",
+          "callee": "fabs",
+          "lineNumber": 559
+        },
+        {
+          "caller": "compare_double",
+          "callee": "fabs",
+          "lineNumber": 560
+        },
+        {
+          "caller": "print_number",
+          "callee": "get_decimal_point",
+          "lineNumber": 571
+        },
+        {
+          "caller": "print_number",
+          "callee": "isnan",
+          "lineNumber": 580
+        },
+        {
+          "caller": "print_number",
+          "callee": "isinf",
+          "lineNumber": 580
+        },
+        {
+          "caller": "print_number",
+          "callee": "sprintf",
+          "lineNumber": 582
+        },
+        {
+          "caller": "print_number",
+          "callee": "sprintf",
+          "lineNumber": 586
+        },
+        {
+          "caller": "print_number",
+          "callee": "sprintf",
+          "lineNumber": 591
+        },
+        {
+          "caller": "print_number",
+          "callee": "sscanf",
+          "lineNumber": 594
+        },
+        {
+          "caller": "print_number",
+          "callee": "compare_double",
+          "lineNumber": 594
+        },
+        {
+          "caller": "print_number",
+          "callee": "sprintf",
+          "lineNumber": 597
+        },
+        {
+          "caller": "print_number",
+          "callee": "ensure",
+          "lineNumber": 608
+        },
+        {
+          "caller": "utf16_literal_to_utf8",
+          "callee": "parse_hex4",
+          "lineNumber": 688
+        },
+        {
+          "caller": "utf16_literal_to_utf8",
+          "callee": "parse_hex4",
+          "lineNumber": 716
+        },
+        {
+          "caller": "parse_string",
+          "callee": "buffer_at_offset",
+          "lineNumber": 794
+        },
+        {
+          "caller": "parse_string",
+          "callee": "buffer_at_offset",
+          "lineNumber": 795
+        },
+        {
+          "caller": "parse_string",
+          "callee": "buffer_at_offset",
+          "lineNumber": 800
+        },
+        {
+          "caller": "parse_string",
+          "callee": "buffer_at_offset",
+          "lineNumber": 830
+        },
+        {
+          "caller": "parse_string",
+          "callee": "allocate",
+          "lineNumber": 831
+        },
+        {
+          "caller": "parse_string",
+          "callee": "utf16_literal_to_utf8",
+          "lineNumber": 880
+        },
+        {
+          "caller": "parse_string",
+          "callee": "deallocate",
+          "lineNumber": 909
+        },
+        {
+          "caller": "print_string_ptr",
+          "callee": "ensure",
+          "lineNumber": 939
+        },
+        {
+          "caller": "print_string_ptr",
+          "callee": "strcpy",
+          "lineNumber": 944
+        },
+        {
+          "caller": "print_string_ptr",
+          "callee": "ensure",
+          "lineNumber": 975
+        },
+        {
+          "caller": "print_string_ptr",
+          "callee": "memcpy",
+          "lineNumber": 985
+        },
+        {
+          "caller": "print_string_ptr",
+          "callee": "sprintf",
+          "lineNumber": 1031
+        },
+        {
+          "caller": "print_string",
+          "callee": "print_string_ptr",
+          "lineNumber": 1046
+        },
+        {
+          "caller": "cJSON_ParseWithOpts",
+          "callee": "strlen",
+          "lineNumber": 1109
+        },
+        {
+          "caller": "cJSON_ParseWithOpts",
+          "callee": "cJSON_ParseWithLengthOpts",
+          "lineNumber": 1111
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 1134
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "parse_value",
+          "lineNumber": 1140
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1140
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "skip_utf8_bom",
+          "lineNumber": 1140
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1149
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1150
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1157
+        },
+        {
+          "caller": "cJSON_ParseWithLengthOpts",
+          "callee": "cJSON_Delete",
+          "lineNumber": 1165
+        },
+        {
+          "caller": "cJSON_Parse",
+          "callee": "cJSON_ParseWithOpts",
+          "lineNumber": 1197
+        },
+        {
+          "caller": "cJSON_ParseWithLength",
+          "callee": "cJSON_ParseWithLengthOpts",
+          "lineNumber": 1202
+        },
+        {
+          "caller": "cJSON_Print",
+          "callee": "print",
+          "lineNumber": 1277
+        },
+        {
+          "caller": "cJSON_PrintUnformatted",
+          "callee": "print",
+          "lineNumber": 1282
+        },
+        {
+          "caller": "cJSON_PrintBuffered",
+          "callee": "allocate",
+          "lineNumber": 1294
+        },
+        {
+          "caller": "cJSON_PrintBuffered",
+          "callee": "print_value",
+          "lineNumber": 1306
+        },
+        {
+          "caller": "cJSON_PrintBuffered",
+          "callee": "deallocate",
+          "lineNumber": 1308
+        },
+        {
+          "caller": "cJSON_PrintPreallocated",
+          "callee": "print_value",
+          "lineNumber": 1332
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_read",
+          "lineNumber": 1345
+        },
+        {
+          "caller": "parse_value",
+          "callee": "strncmp",
+          "lineNumber": 1345
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1345
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_read",
+          "lineNumber": 1352
+        },
+        {
+          "caller": "parse_value",
+          "callee": "strncmp",
+          "lineNumber": 1352
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1352
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_read",
+          "lineNumber": 1359
+        },
+        {
+          "caller": "parse_value",
+          "callee": "strncmp",
+          "lineNumber": 1359
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1359
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_access_at_index",
+          "lineNumber": 1367
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1367
+        },
+        {
+          "caller": "parse_value",
+          "callee": "parse_string",
+          "lineNumber": 1369
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_access_at_index",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "parse_value",
+          "callee": "parse_number",
+          "lineNumber": 1374
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_access_at_index",
+          "lineNumber": 1377
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1377
+        },
+        {
+          "caller": "parse_value",
+          "callee": "parse_array",
+          "lineNumber": 1379
+        },
+        {
+          "caller": "parse_value",
+          "callee": "can_access_at_index",
+          "lineNumber": 1382
+        },
+        {
+          "caller": "parse_value",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1382
+        },
+        {
+          "caller": "parse_value",
+          "callee": "parse_object",
+          "lineNumber": 1384
+        },
+        {
+          "caller": "print_value",
+          "callee": "ensure",
+          "lineNumber": 1403
+        },
+        {
+          "caller": "print_value",
+          "callee": "strcpy",
+          "lineNumber": 1408
+        },
+        {
+          "caller": "print_value",
+          "callee": "ensure",
+          "lineNumber": 1412
+        },
+        {
+          "caller": "print_value",
+          "callee": "strcpy",
+          "lineNumber": 1417
+        },
+        {
+          "caller": "print_value",
+          "callee": "ensure",
+          "lineNumber": 1421
+        },
+        {
+          "caller": "print_value",
+          "callee": "strcpy",
+          "lineNumber": 1426
+        },
+        {
+          "caller": "print_value",
+          "callee": "print_number",
+          "lineNumber": 1430
+        },
+        {
+          "caller": "print_value",
+          "callee": "strlen",
+          "lineNumber": 1440
+        },
+        {
+          "caller": "print_value",
+          "callee": "ensure",
+          "lineNumber": 1441
+        },
+        {
+          "caller": "print_value",
+          "callee": "memcpy",
+          "lineNumber": 1446
+        },
+        {
+          "caller": "print_value",
+          "callee": "print_string",
+          "lineNumber": 1451
+        },
+        {
+          "caller": "print_value",
+          "callee": "print_array",
+          "lineNumber": 1454
+        },
+        {
+          "caller": "print_value",
+          "callee": "print_object",
+          "lineNumber": 1457
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1476
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1483
+        },
+        {
+          "caller": "parse_array",
+          "callee": "can_access_at_index",
+          "lineNumber": 1484
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1484
+        },
+        {
+          "caller": "parse_array",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1491
+        },
+        {
+          "caller": "parse_array",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 1503
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1525
+        },
+        {
+          "caller": "parse_array",
+          "callee": "parse_value",
+          "lineNumber": 1526
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1530
+        },
+        {
+          "caller": "parse_array",
+          "callee": "can_access_at_index",
+          "lineNumber": 1532
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1532
+        },
+        {
+          "caller": "parse_array",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1534
+        },
+        {
+          "caller": "parse_array",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1534
+        },
+        {
+          "caller": "parse_array",
+          "callee": "cJSON_Delete",
+          "lineNumber": 1556
+        },
+        {
+          "caller": "print_array",
+          "callee": "ensure",
+          "lineNumber": 1576
+        },
+        {
+          "caller": "print_array",
+          "callee": "print_value",
+          "lineNumber": 1588
+        },
+        {
+          "caller": "print_array",
+          "callee": "update_offset",
+          "lineNumber": 1592
+        },
+        {
+          "caller": "print_array",
+          "callee": "ensure",
+          "lineNumber": 1596
+        },
+        {
+          "caller": "print_array",
+          "callee": "ensure",
+          "lineNumber": 1612
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1636
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1636
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1642
+        },
+        {
+          "caller": "parse_object",
+          "callee": "can_access_at_index",
+          "lineNumber": 1643
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1643
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1649
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 1661
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1681
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1688
+        },
+        {
+          "caller": "parse_object",
+          "callee": "parse_string",
+          "lineNumber": 1689
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1693
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1699
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1699
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1706
+        },
+        {
+          "caller": "parse_object",
+          "callee": "parse_value",
+          "lineNumber": 1707
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_skip_whitespace",
+          "lineNumber": 1711
+        },
+        {
+          "caller": "parse_object",
+          "callee": "can_access_at_index",
+          "lineNumber": 1713
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1713
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cannot_access_at_index",
+          "lineNumber": 1715
+        },
+        {
+          "caller": "parse_object",
+          "callee": "buffer_at_offset",
+          "lineNumber": 1715
+        },
+        {
+          "caller": "parse_object",
+          "callee": "cJSON_Delete",
+          "lineNumber": 1736
+        },
+        {
+          "caller": "print_object",
+          "callee": "ensure",
+          "lineNumber": 1756
+        },
+        {
+          "caller": "print_object",
+          "callee": "ensure",
+          "lineNumber": 1775
+        },
+        {
+          "caller": "print_object",
+          "callee": "print_string_ptr",
+          "lineNumber": 1788
+        },
+        {
+          "caller": "print_object",
+          "callee": "update_offset",
+          "lineNumber": 1792
+        },
+        {
+          "caller": "print_object",
+          "callee": "ensure",
+          "lineNumber": 1795
+        },
+        {
+          "caller": "print_object",
+          "callee": "print_value",
+          "lineNumber": 1808
+        },
+        {
+          "caller": "print_object",
+          "callee": "update_offset",
+          "lineNumber": 1812
+        },
+        {
+          "caller": "print_object",
+          "callee": "ensure",
+          "lineNumber": 1816
+        },
+        {
+          "caller": "print_object",
+          "callee": "ensure",
+          "lineNumber": 1836
+        },
+        {
+          "caller": "cJSON_GetArrayItem",
+          "callee": "get_array_item",
+          "lineNumber": 1906
+        },
+        {
+          "caller": "cJSON_GetObjectItem",
+          "callee": "get_object_item",
+          "lineNumber": 1943
+        },
+        {
+          "caller": "cJSON_GetObjectItemCaseSensitive",
+          "callee": "get_object_item",
+          "lineNumber": 1948
+        },
+        {
+          "caller": "cJSON_HasObjectItem",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 1953
+        },
+        {
+          "caller": "add_item_to_array",
+          "callee": "suffix_object",
+          "lineNumber": 2010
+        },
+        {
+          "caller": "cJSON_AddItemToArray",
+          "callee": "add_item_to_array",
+          "lineNumber": 2021
+        },
+        {
+          "caller": "add_item_to_object",
+          "callee": "cast_away_const",
+          "lineNumber": 2052
+        },
+        {
+          "caller": "add_item_to_object",
+          "callee": "cJSON_strdup",
+          "lineNumber": 2057
+        },
+        {
+          "caller": "add_item_to_object",
+          "callee": "deallocate",
+          "lineNumber": 2068
+        },
+        {
+          "caller": "add_item_to_object",
+          "callee": "add_item_to_array",
+          "lineNumber": 2074
+        },
+        {
+          "caller": "cJSON_AddItemToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2079
+        },
+        {
+          "caller": "cJSON_AddItemToObjectCS",
+          "callee": "add_item_to_object",
+          "lineNumber": 2085
+        },
+        {
+          "caller": "cJSON_AddItemReferenceToArray",
+          "callee": "add_item_to_array",
+          "lineNumber": 2095
+        },
+        {
+          "caller": "cJSON_AddItemReferenceToArray",
+          "callee": "create_reference",
+          "lineNumber": 2095
+        },
+        {
+          "caller": "cJSON_AddItemReferenceToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2105
+        },
+        {
+          "caller": "cJSON_AddItemReferenceToObject",
+          "callee": "create_reference",
+          "lineNumber": 2105
+        },
+        {
+          "caller": "cJSON_AddNullToObject",
+          "callee": "cJSON_CreateNull",
+          "lineNumber": 2110
+        },
+        {
+          "caller": "cJSON_AddNullToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2111
+        },
+        {
+          "caller": "cJSON_AddNullToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2116
+        },
+        {
+          "caller": "cJSON_AddTrueToObject",
+          "callee": "cJSON_CreateTrue",
+          "lineNumber": 2122
+        },
+        {
+          "caller": "cJSON_AddTrueToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2123
+        },
+        {
+          "caller": "cJSON_AddTrueToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2128
+        },
+        {
+          "caller": "cJSON_AddFalseToObject",
+          "callee": "cJSON_CreateFalse",
+          "lineNumber": 2134
+        },
+        {
+          "caller": "cJSON_AddFalseToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2135
+        },
+        {
+          "caller": "cJSON_AddFalseToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2140
+        },
+        {
+          "caller": "cJSON_AddBoolToObject",
+          "callee": "cJSON_CreateBool",
+          "lineNumber": 2146
+        },
+        {
+          "caller": "cJSON_AddBoolToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2147
+        },
+        {
+          "caller": "cJSON_AddBoolToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2152
+        },
+        {
+          "caller": "cJSON_AddNumberToObject",
+          "callee": "cJSON_CreateNumber",
+          "lineNumber": 2158
+        },
+        {
+          "caller": "cJSON_AddNumberToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2159
+        },
+        {
+          "caller": "cJSON_AddNumberToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2164
+        },
+        {
+          "caller": "cJSON_AddStringToObject",
+          "callee": "cJSON_CreateString",
+          "lineNumber": 2170
+        },
+        {
+          "caller": "cJSON_AddStringToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2171
+        },
+        {
+          "caller": "cJSON_AddStringToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2176
+        },
+        {
+          "caller": "cJSON_AddRawToObject",
+          "callee": "cJSON_CreateRaw",
+          "lineNumber": 2182
+        },
+        {
+          "caller": "cJSON_AddRawToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2183
+        },
+        {
+          "caller": "cJSON_AddRawToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2188
+        },
+        {
+          "caller": "cJSON_AddObjectToObject",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 2194
+        },
+        {
+          "caller": "cJSON_AddObjectToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2195
+        },
+        {
+          "caller": "cJSON_AddObjectToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2200
+        },
+        {
+          "caller": "cJSON_AddArrayToObject",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 2206
+        },
+        {
+          "caller": "cJSON_AddArrayToObject",
+          "callee": "add_item_to_object",
+          "lineNumber": 2207
+        },
+        {
+          "caller": "cJSON_AddArrayToObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2212
+        },
+        {
+          "caller": "cJSON_DetachItemFromArray",
+          "callee": "cJSON_DetachItemViaPointer",
+          "lineNumber": 2259
+        },
+        {
+          "caller": "cJSON_DetachItemFromArray",
+          "callee": "get_array_item",
+          "lineNumber": 2259
+        },
+        {
+          "caller": "cJSON_DeleteItemFromArray",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2264
+        },
+        {
+          "caller": "cJSON_DeleteItemFromArray",
+          "callee": "cJSON_DetachItemFromArray",
+          "lineNumber": 2264
+        },
+        {
+          "caller": "cJSON_DetachItemFromObject",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 2269
+        },
+        {
+          "caller": "cJSON_DetachItemFromObject",
+          "callee": "cJSON_DetachItemViaPointer",
+          "lineNumber": 2271
+        },
+        {
+          "caller": "cJSON_DetachItemFromObjectCaseSensitive",
+          "callee": "cJSON_GetObjectItemCaseSensitive",
+          "lineNumber": 2276
+        },
+        {
+          "caller": "cJSON_DetachItemFromObjectCaseSensitive",
+          "callee": "cJSON_DetachItemViaPointer",
+          "lineNumber": 2278
+        },
+        {
+          "caller": "cJSON_DeleteItemFromObject",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2283
+        },
+        {
+          "caller": "cJSON_DeleteItemFromObject",
+          "callee": "cJSON_DetachItemFromObject",
+          "lineNumber": 2283
+        },
+        {
+          "caller": "cJSON_DeleteItemFromObjectCaseSensitive",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2288
+        },
+        {
+          "caller": "cJSON_DeleteItemFromObjectCaseSensitive",
+          "callee": "cJSON_DetachItemFromObjectCaseSensitive",
+          "lineNumber": 2288
+        },
+        {
+          "caller": "cJSON_InsertItemInArray",
+          "callee": "get_array_item",
+          "lineNumber": 2301
+        },
+        {
+          "caller": "cJSON_InsertItemInArray",
+          "callee": "add_item_to_array",
+          "lineNumber": 2304
+        },
+        {
+          "caller": "cJSON_ReplaceItemViaPointer",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2370
+        },
+        {
+          "caller": "cJSON_ReplaceItemInArray",
+          "callee": "cJSON_ReplaceItemViaPointer",
+          "lineNumber": 2382
+        },
+        {
+          "caller": "cJSON_ReplaceItemInArray",
+          "callee": "get_array_item",
+          "lineNumber": 2382
+        },
+        {
+          "caller": "replace_item_in_object",
+          "callee": "cJSON_free",
+          "lineNumber": 2395
+        },
+        {
+          "caller": "replace_item_in_object",
+          "callee": "cJSON_strdup",
+          "lineNumber": 2397
+        },
+        {
+          "caller": "replace_item_in_object",
+          "callee": "cJSON_ReplaceItemViaPointer",
+          "lineNumber": 2405
+        },
+        {
+          "caller": "replace_item_in_object",
+          "callee": "get_object_item",
+          "lineNumber": 2405
+        },
+        {
+          "caller": "cJSON_ReplaceItemInObject",
+          "callee": "replace_item_in_object",
+          "lineNumber": 2410
+        },
+        {
+          "caller": "cJSON_ReplaceItemInObjectCaseSensitive",
+          "callee": "replace_item_in_object",
+          "lineNumber": 2415
+        },
+        {
+          "caller": "cJSON_CreateNull",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2421
+        },
+        {
+          "caller": "cJSON_CreateTrue",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2432
+        },
+        {
+          "caller": "cJSON_CreateFalse",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2443
+        },
+        {
+          "caller": "cJSON_CreateBool",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2454
+        },
+        {
+          "caller": "cJSON_CreateNumber",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2465
+        },
+        {
+          "caller": "cJSON_CreateString",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2491
+        },
+        {
+          "caller": "cJSON_CreateString",
+          "callee": "cJSON_strdup",
+          "lineNumber": 2495
+        },
+        {
+          "caller": "cJSON_CreateString",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2498
+        },
+        {
+          "caller": "cJSON_CreateStringReference",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2508
+        },
+        {
+          "caller": "cJSON_CreateStringReference",
+          "callee": "cast_away_const",
+          "lineNumber": 2512
+        },
+        {
+          "caller": "cJSON_CreateObjectReference",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2520
+        },
+        {
+          "caller": "cJSON_CreateObjectReference",
+          "callee": "cast_away_const",
+          "lineNumber": 2523
+        },
+        {
+          "caller": "cJSON_CreateArrayReference",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2530
+        },
+        {
+          "caller": "cJSON_CreateArrayReference",
+          "callee": "cast_away_const",
+          "lineNumber": 2533
+        },
+        {
+          "caller": "cJSON_CreateRaw",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2541
+        },
+        {
+          "caller": "cJSON_CreateRaw",
+          "callee": "cJSON_strdup",
+          "lineNumber": 2545
+        },
+        {
+          "caller": "cJSON_CreateRaw",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2548
+        },
+        {
+          "caller": "cJSON_CreateArray",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2558
+        },
+        {
+          "caller": "cJSON_CreateObject",
+          "callee": "cJSON_New_Item",
+          "lineNumber": 2569
+        },
+        {
+          "caller": "cJSON_CreateIntArray",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 2591
+        },
+        {
+          "caller": "cJSON_CreateIntArray",
+          "callee": "cJSON_CreateNumber",
+          "lineNumber": 2595
+        },
+        {
+          "caller": "cJSON_CreateIntArray",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2598
+        },
+        {
+          "caller": "cJSON_CreateIntArray",
+          "callee": "suffix_object",
+          "lineNumber": 2607
+        },
+        {
+          "caller": "cJSON_CreateFloatArray",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 2631
+        },
+        {
+          "caller": "cJSON_CreateFloatArray",
+          "callee": "cJSON_CreateNumber",
+          "lineNumber": 2635
+        },
+        {
+          "caller": "cJSON_CreateFloatArray",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2638
+        },
+        {
+          "caller": "cJSON_CreateFloatArray",
+          "callee": "suffix_object",
+          "lineNumber": 2647
+        },
+        {
+          "caller": "cJSON_CreateDoubleArray",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 2671
+        },
+        {
+          "caller": "cJSON_CreateDoubleArray",
+          "callee": "cJSON_CreateNumber",
+          "lineNumber": 2675
+        },
+        {
+          "caller": "cJSON_CreateDoubleArray",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2678
+        },
+        {
+          "caller": "cJSON_CreateDoubleArray",
+          "callee": "suffix_object",
+          "lineNumber": 2687
+        },
+        {
+          "caller": "cJSON_CreateStringArray",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 2711
+        },
+        {
+          "caller": "cJSON_CreateStringArray",
+          "callee": "cJSON_CreateString",
+          "lineNumber": 2715
+        },
+        {
+          "caller": "cJSON_CreateStringArray",
+          "callee": "cJSON_Delete",
+          "lineNumber": 2718
+        },
+        {
+          "caller": "cJSON_CreateStringArray",
+          "callee": "suffix_object",
+          "lineNumber": 2727
+        },
+        {
+          "caller": "cJSON_Duplicate",
+          "callee": "cJSON_Duplicate_rec",
+          "lineNumber": 2744
+        },
+        {
+          "caller": "skip_oneline_comment",
+          "callee": "static_strlen",
+          "lineNumber": 2835
+        },
+        {
+          "caller": "skip_oneline_comment",
+          "callee": "static_strlen",
+          "lineNumber": 2840
+        },
+        {
+          "caller": "skip_multiline_comment",
+          "callee": "static_strlen",
+          "lineNumber": 2848
+        },
+        {
+          "caller": "skip_multiline_comment",
+          "callee": "static_strlen",
+          "lineNumber": 2854
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2862
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2863
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2871
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2872
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2876
+        },
+        {
+          "caller": "minify_string",
+          "callee": "static_strlen",
+          "lineNumber": 2877
+        },
+        {
+          "caller": "cJSON_Minify",
+          "callee": "skip_oneline_comment",
+          "lineNumber": 2905
+        },
+        {
+          "caller": "cJSON_Minify",
+          "callee": "skip_multiline_comment",
+          "lineNumber": 2909
+        },
+        {
+          "caller": "cJSON_Minify",
+          "callee": "minify_string",
+          "lineNumber": 2916
+        },
+        {
+          "caller": "cJSON_Compare",
+          "callee": "compare_double",
+          "lineNumber": 3069
+        },
+        {
+          "caller": "cJSON_Compare",
+          "callee": "strcmp",
+          "lineNumber": 3081
+        },
+        {
+          "caller": "cJSON_Compare",
+          "callee": "cJSON_Compare",
+          "lineNumber": 3095
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "get_object_item",
+          "lineNumber": 3119
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_Compare",
+          "lineNumber": 3125
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "get_object_item",
+          "lineNumber": 3135
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_Compare",
+          "lineNumber": 3141
+        },
+        {
+          "caller": "cJSON_malloc",
+          "callee": "allocate",
+          "lineNumber": 3157
+        },
+        {
+          "caller": "cJSON_free",
+          "callee": "deallocate",
+          "lineNumber": 3162
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 78,
+        "functionCount": 102,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_agent.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 85,
+      "functions": [
+        {
+          "name": "wiz_claw_agent_run",
+          "startLine": 14,
+          "endLine": 104,
+          "params": [
+            "config",
+            "session_messages",
+            "user_text",
+            "out_reply",
+            "out_error_message"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_agent_run",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_session_append_user",
+          "lineNumber": 38
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 43
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_llm_chat",
+          "lineNumber": 45
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 54
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_session_append_assistant_text",
+          "lineNumber": 61
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_llm_response_free",
+          "lineNumber": 64
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 69
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_session_append_assistant_tool_calls",
+          "lineNumber": 70
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 76
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "tool_handler",
+          "lineNumber": 79
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 82
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "free",
+          "lineNumber": 84
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "strdup",
+          "lineNumber": 85
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "strdup",
+          "lineNumber": 88
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_session_append_tool_result",
+          "lineNumber": 91
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "free",
+          "lineNumber": 94
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "wiz_claw_llm_response_free",
+          "lineNumber": 97
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 101
+        },
+        {
+          "caller": "wiz_claw_agent_run",
+          "callee": "strdup",
+          "lineNumber": 102
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_http.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 600,
+      "nonEmptyLines": 518,
+      "functions": [
+        {
+          "name": "wiz_claw_http_parse_url",
+          "startLine": 27,
+          "endLine": 82,
+          "params": [
+            "url",
+            "out"
+          ]
+        },
+        {
+          "name": "wiz_claw_tcp_connect",
+          "startLine": 86,
+          "endLine": 136,
+          "params": [
+            "sn",
+            "ip",
+            "port",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tcp_close",
+          "startLine": 138,
+          "endLine": 145,
+          "params": [
+            "sn"
+          ]
+        },
+        {
+          "name": "wiz_claw_tcp_send_all",
+          "startLine": 147,
+          "endLine": 178,
+          "params": [
+            "sn",
+            "data",
+            "len",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tcp_recv_wait",
+          "startLine": 180,
+          "endLine": 210,
+          "params": [
+            "sn",
+            "buf",
+            "len",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "transport_recv",
+          "startLine": 224,
+          "endLine": 231,
+          "params": [
+            "t",
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "transport_send",
+          "startLine": 233,
+          "endLine": 241,
+          "params": [
+            "t",
+            "data",
+            "len"
+          ]
+        },
+        {
+          "name": "transport_close",
+          "startLine": 243,
+          "endLine": 251,
+          "params": [
+            "t"
+          ]
+        },
+        {
+          "name": "recv_headers",
+          "startLine": 255,
+          "endLine": 282,
+          "params": [
+            "t",
+            "hbuf",
+            "hbuf_size",
+            "out_hlen"
+          ]
+        },
+        {
+          "name": "parse_status_code",
+          "startLine": 306,
+          "endLine": 311,
+          "params": [
+            "headers"
+          ]
+        },
+        {
+          "name": "recv_chunked_body",
+          "startLine": 313,
+          "endLine": 368,
+          "params": [
+            "t",
+            "inout_buf",
+            "inout_cap",
+            "out_len"
+          ]
+        },
+        {
+          "name": "recv_body_by_length",
+          "startLine": 370,
+          "endLine": 402,
+          "params": [
+            "t",
+            "inout_buf",
+            "inout_cap",
+            "content_len",
+            "out_len"
+          ]
+        },
+        {
+          "name": "do_http_request",
+          "startLine": 409,
+          "endLine": 553,
+          "params": [
+            "sn",
+            "method",
+            "url",
+            "auth_header",
+            "extra_headers",
+            "body",
+            "out_response",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_http_post_cb",
+          "startLine": 557,
+          "endLine": 580,
+          "params": [
+            "url",
+            "auth_header",
+            "body_json",
+            "out_response",
+            "user_ctx"
+          ]
+        },
+        {
+          "name": "wiz_claw_http_call_cb",
+          "startLine": 582,
+          "endLine": 600,
+          "params": [
+            "url",
+            "body_json",
+            "out_response",
+            "user_ctx"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_http_parse_url",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tcp_connect",
+          "line": 86,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tcp_close",
+          "line": 138,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tcp_send_all",
+          "line": 147,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tcp_recv_wait",
+          "line": 180,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_http_post_cb",
+          "line": 557,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_http_call_cb",
+          "line": 582,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "memset",
+          "lineNumber": 37
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "strncmp",
+          "lineNumber": 40
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "strncmp",
+          "lineNumber": 44
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 49
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "strchr",
+          "lineNumber": 54
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "strlen",
+          "lineNumber": 55
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "memchr",
+          "lineNumber": 57
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "atoi",
+          "lineNumber": 60
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "memcpy",
+          "lineNumber": 68
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "strlen",
+          "lineNumber": 75
+        },
+        {
+          "caller": "wiz_claw_http_parse_url",
+          "callee": "memcpy",
+          "lineNumber": 77
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "getSn_SR",
+          "lineNumber": 96
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "disconnect",
+          "lineNumber": 97
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "close",
+          "lineNumber": 98
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "sleep_ms",
+          "lineNumber": 99
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "socket",
+          "lineNumber": 102
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 104
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "connect",
+          "lineNumber": 108
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 110
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "close",
+          "lineNumber": 112
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "getSn_SR",
+          "lineNumber": 116
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "getSn_SR",
+          "lineNumber": 117
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 119
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "close",
+          "lineNumber": 120
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "sleep_ms",
+          "lineNumber": 123
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 126
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "disconnect",
+          "lineNumber": 127
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "close",
+          "lineNumber": 128
+        },
+        {
+          "caller": "wiz_claw_tcp_connect",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 133
+        },
+        {
+          "caller": "wiz_claw_tcp_close",
+          "callee": "getSn_SR",
+          "lineNumber": 140
+        },
+        {
+          "caller": "wiz_claw_tcp_close",
+          "callee": "disconnect",
+          "lineNumber": 141
+        },
+        {
+          "caller": "wiz_claw_tcp_close",
+          "callee": "sleep_ms",
+          "lineNumber": 142
+        },
+        {
+          "caller": "wiz_claw_tcp_close",
+          "callee": "close",
+          "lineNumber": 143
+        },
+        {
+          "caller": "wiz_claw_tcp_send_all",
+          "callee": "send",
+          "lineNumber": 160
+        },
+        {
+          "caller": "wiz_claw_tcp_send_all",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 162
+        },
+        {
+          "caller": "wiz_claw_tcp_send_all",
+          "callee": "sleep_ms",
+          "lineNumber": 166
+        },
+        {
+          "caller": "wiz_claw_tcp_send_all",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 169
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "getSn_RX_RSR",
+          "lineNumber": 191
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "recv",
+          "lineNumber": 192
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 195
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "getSn_SR",
+          "lineNumber": 199
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "getSn_RX_RSR",
+          "lineNumber": 201
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "sleep_ms",
+          "lineNumber": 203
+        },
+        {
+          "caller": "wiz_claw_tcp_recv_wait",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 206
+        },
+        {
+          "caller": "transport_recv",
+          "callee": "wiz_claw_tls_read",
+          "lineNumber": 228
+        },
+        {
+          "caller": "transport_recv",
+          "callee": "wiz_claw_tcp_recv_wait",
+          "lineNumber": 230
+        },
+        {
+          "caller": "transport_send",
+          "callee": "wiz_claw_tls_write",
+          "lineNumber": 237
+        },
+        {
+          "caller": "transport_send",
+          "callee": "wiz_claw_tcp_send_all",
+          "lineNumber": 240
+        },
+        {
+          "caller": "transport_close",
+          "callee": "wiz_claw_tls_close",
+          "lineNumber": 246
+        },
+        {
+          "caller": "transport_close",
+          "callee": "wiz_claw_tls_free",
+          "lineNumber": 247
+        },
+        {
+          "caller": "transport_close",
+          "callee": "wiz_claw_tcp_close",
+          "lineNumber": 249
+        },
+        {
+          "caller": "recv_headers",
+          "callee": "transport_recv",
+          "lineNumber": 265
+        },
+        {
+          "caller": "recv_headers",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 267
+        },
+        {
+          "caller": "recv_headers",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 280
+        },
+        {
+          "caller": "parse_status_code",
+          "callee": "strchr",
+          "lineNumber": 308
+        },
+        {
+          "caller": "parse_status_code",
+          "callee": "atoi",
+          "lineNumber": 310
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "transport_recv",
+          "lineNumber": 329
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "strtoul",
+          "lineNumber": 336
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 342
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "realloc",
+          "lineNumber": 345
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "transport_recv",
+          "lineNumber": 355
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "transport_recv",
+          "lineNumber": 361
+        },
+        {
+          "caller": "recv_chunked_body",
+          "callee": "transport_recv",
+          "lineNumber": 362
+        },
+        {
+          "caller": "recv_body_by_length",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 381
+        },
+        {
+          "caller": "recv_body_by_length",
+          "callee": "realloc",
+          "lineNumber": 384
+        },
+        {
+          "caller": "recv_body_by_length",
+          "callee": "transport_recv",
+          "lineNumber": 393
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_http_parse_url",
+          "lineNumber": 433
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_net_dns_resolve",
+          "lineNumber": 437
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_tls_init",
+          "lineNumber": 449
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_tls_connect",
+          "lineNumber": 452
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_tcp_connect",
+          "lineNumber": 454
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strlen",
+          "lineNumber": 459
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strlen",
+          "lineNumber": 460
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strlen",
+          "lineNumber": 461
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strlen",
+          "lineNumber": 462
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strlen",
+          "lineNumber": 462
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "malloc",
+          "lineNumber": 464
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "snprintf",
+          "lineNumber": 467
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "transport_send",
+          "lineNumber": 481
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "transport_send",
+          "lineNumber": 485
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "malloc",
+          "lineNumber": 490
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "recv_headers",
+          "lineNumber": 493
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "parse_status_code",
+          "lineNumber": 497
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 498
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "malloc",
+          "lineNumber": 503
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "find_header_value",
+          "lineNumber": 506
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "find_header_value",
+          "lineNumber": 507
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "strncasecmp",
+          "lineNumber": 509
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "recv_chunked_body",
+          "lineNumber": 510
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "atoi",
+          "lineNumber": 512
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "recv_body_by_length",
+          "lineNumber": 513
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "realloc",
+          "lineNumber": 519
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "transport_recv",
+          "lineNumber": 524
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "transport_close",
+          "lineNumber": 540
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "wiz_claw_tls_free",
+          "lineNumber": 545
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "free",
+          "lineNumber": 549
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "free",
+          "lineNumber": 550
+        },
+        {
+          "caller": "do_http_request",
+          "callee": "free",
+          "lineNumber": 551
+        },
+        {
+          "caller": "wiz_claw_http_post_cb",
+          "callee": "snprintf",
+          "lineNumber": 569
+        },
+        {
+          "caller": "wiz_claw_http_post_cb",
+          "callee": "do_http_request",
+          "lineNumber": 572
+        },
+        {
+          "caller": "wiz_claw_http_call_cb",
+          "callee": "do_http_request",
+          "lineNumber": 592
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 7,
+        "functionCount": 15,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_llm.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 315,
+      "nonEmptyLines": 266,
+      "functions": [
+        {
+          "name": "parse_response_json",
+          "startLine": 76,
+          "endLine": 163,
+          "params": [
+            "body",
+            "out",
+            "out_error"
+          ]
+        },
+        {
+          "name": "wiz_claw_llm_chat",
+          "startLine": 167,
+          "endLine": 227,
+          "params": [
+            "config",
+            "system_prompt",
+            "messages",
+            "tools_json",
+            "out_response",
+            "out_error_message"
+          ]
+        },
+        {
+          "name": "wiz_claw_llm_response_free",
+          "startLine": 231,
+          "endLine": 245,
+          "params": [
+            "resp"
+          ]
+        },
+        {
+          "name": "wiz_claw_session_append_user",
+          "startLine": 254,
+          "endLine": 261,
+          "params": [
+            "messages",
+            "text"
+          ]
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_text",
+          "startLine": 263,
+          "endLine": 270,
+          "params": [
+            "messages",
+            "text"
+          ]
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_tool_calls",
+          "startLine": 272,
+          "endLine": 302,
+          "params": [
+            "messages",
+            "resp"
+          ]
+        },
+        {
+          "name": "wiz_claw_session_append_tool_result",
+          "startLine": 304,
+          "endLine": 315,
+          "params": [
+            "messages",
+            "tool_call_id",
+            "result_json"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_llm_chat",
+          "line": 167,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_llm_response_free",
+          "line": 231,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_session_append_user",
+          "line": 254,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_text",
+          "line": 263,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_tool_calls",
+          "line": 272,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_session_append_tool_result",
+          "line": 304,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_Duplicate",
+          "lineNumber": 46
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 47
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 48
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "memset",
+          "lineNumber": 93
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_Parse",
+          "lineNumber": 95
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "strdup",
+          "lineNumber": 96
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 98
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_IsArray",
+          "lineNumber": 99
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetArrayItem",
+          "lineNumber": 99
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 100
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_IsObject",
+          "lineNumber": 102
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "strdup",
+          "lineNumber": 103
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 108
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_IsString",
+          "lineNumber": 109
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "strdup",
+          "lineNumber": 110
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 114
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_IsString",
+          "lineNumber": 115
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "strdup",
+          "lineNumber": 116
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 119
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_IsArray",
+          "lineNumber": 120
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_GetArraySize",
+          "lineNumber": 121
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "calloc",
+          "lineNumber": 124
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 131
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 132
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 133
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 134
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 137
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 141
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 142
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 143
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "strdup",
+          "lineNumber": 153
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "cJSON_Delete",
+          "lineNumber": 158
+        },
+        {
+          "caller": "parse_response_json",
+          "callee": "wiz_claw_llm_response_free",
+          "lineNumber": 160
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "wiz_claw_dup_printf",
+          "lineNumber": 189
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "wiz_claw_dup_printf",
+          "lineNumber": 192
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "free",
+          "lineNumber": 193
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "build_request_json",
+          "lineNumber": 195
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 202
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "http_post",
+          "lineNumber": 204
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 207
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "strdup",
+          "lineNumber": 209
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "parse_response_json",
+          "lineNumber": 214
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 216
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "free",
+          "lineNumber": 222
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "free",
+          "lineNumber": 223
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "free",
+          "lineNumber": 224
+        },
+        {
+          "caller": "wiz_claw_llm_chat",
+          "callee": "free",
+          "lineNumber": 225
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 236
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 237
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 239
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 240
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 241
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "free",
+          "lineNumber": 243
+        },
+        {
+          "caller": "wiz_claw_llm_response_free",
+          "callee": "memset",
+          "lineNumber": 244
+        },
+        {
+          "caller": "wiz_claw_session_append_user",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 256
+        },
+        {
+          "caller": "wiz_claw_session_append_user",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 258
+        },
+        {
+          "caller": "wiz_claw_session_append_user",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 259
+        },
+        {
+          "caller": "wiz_claw_session_append_user",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 260
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_text",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 265
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_text",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 267
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_text",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 268
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_text",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 269
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 277
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_CreateArray",
+          "lineNumber": 278
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_Delete",
+          "lineNumber": 279
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_Delete",
+          "lineNumber": 279
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 281
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddNullToObject",
+          "lineNumber": 282
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 286
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 287
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_Delete",
+          "lineNumber": 288
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_Delete",
+          "lineNumber": 288
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 290
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 291
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 292
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 295
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddItemToObject",
+          "lineNumber": 296
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 297
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddItemToObject",
+          "lineNumber": 300
+        },
+        {
+          "caller": "wiz_claw_session_append_assistant_tool_calls",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 301
+        },
+        {
+          "caller": "wiz_claw_session_append_tool_result",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 309
+        },
+        {
+          "caller": "wiz_claw_session_append_tool_result",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 311
+        },
+        {
+          "caller": "wiz_claw_session_append_tool_result",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 312
+        },
+        {
+          "caller": "wiz_claw_session_append_tool_result",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 313
+        },
+        {
+          "caller": "wiz_claw_session_append_tool_result",
+          "callee": "cJSON_AddItemToArray",
+          "lineNumber": 314
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 6,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_net.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 148,
+      "nonEmptyLines": 118,
+      "functions": [
+        {
+          "name": "wiz_claw_net_init",
+          "startLine": 24,
+          "endLine": 37,
+          "params": [
+            "config"
+          ]
+        },
+        {
+          "name": "wiz_claw_net_dns_resolve",
+          "startLine": 41,
+          "endLine": 59,
+          "params": [
+            "hostname",
+            "out_ip"
+          ]
+        },
+        {
+          "name": "dhcp_assign_cb",
+          "startLine": 64,
+          "endLine": 64,
+          "params": []
+        },
+        {
+          "name": "dhcp_update_cb",
+          "startLine": 65,
+          "endLine": 65,
+          "params": []
+        },
+        {
+          "name": "dhcp_conflict_cb",
+          "startLine": 66,
+          "endLine": 66,
+          "params": []
+        },
+        {
+          "name": "wiz_claw_net_dhcp_run",
+          "startLine": 68,
+          "endLine": 112,
+          "params": [
+            "inout_net_info"
+          ]
+        },
+        {
+          "name": "wiz_claw_net_1s_tick",
+          "startLine": 116,
+          "endLine": 122,
+          "params": []
+        },
+        {
+          "name": "wiz_claw_net_print_info",
+          "startLine": 126,
+          "endLine": 148,
+          "params": [
+            "net_info"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_net_init",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_net_dns_resolve",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_net_dhcp_run",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_net_1s_tick",
+          "line": 116,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_net_print_info",
+          "line": 126,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wiz_claw_net_init",
+          "callee": "memcpy",
+          "lineNumber": 30
+        },
+        {
+          "caller": "wiz_claw_net_init",
+          "callee": "DNS_init",
+          "lineNumber": 32
+        },
+        {
+          "caller": "wiz_claw_net_init",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 33
+        },
+        {
+          "caller": "wiz_claw_net_dns_resolve",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 47
+        },
+        {
+          "caller": "wiz_claw_net_dns_resolve",
+          "callee": "DNS_run",
+          "lineNumber": 50
+        },
+        {
+          "caller": "wiz_claw_net_dns_resolve",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 52
+        },
+        {
+          "caller": "wiz_claw_net_dns_resolve",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 56
+        },
+        {
+          "caller": "dhcp_assign_cb",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 64
+        },
+        {
+          "caller": "dhcp_update_cb",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 65
+        },
+        {
+          "caller": "dhcp_conflict_cb",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 66
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "DHCP_init",
+          "lineNumber": 75
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "reg_dhcp_cbfunc",
+          "lineNumber": 76
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 79
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "DHCP_run",
+          "lineNumber": 83
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "getIPfromDHCP",
+          "lineNumber": 86
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "getGWfromDHCP",
+          "lineNumber": 87
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "getSNfromDHCP",
+          "lineNumber": 88
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "getDNSfromDHCP",
+          "lineNumber": 89
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 91
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 98
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "sleep_ms",
+          "lineNumber": 104
+        },
+        {
+          "caller": "wiz_claw_net_dhcp_run",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 107
+        },
+        {
+          "caller": "wiz_claw_net_1s_tick",
+          "callee": "DNS_time_handler",
+          "lineNumber": 118
+        },
+        {
+          "caller": "wiz_claw_net_1s_tick",
+          "callee": "DHCP_time_handler",
+          "lineNumber": 120
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "ctlnetwork",
+          "lineNumber": 131
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 135
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 136
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 139
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 141
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 143
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 145
+        },
+        {
+          "caller": "wiz_claw_net_print_info",
+          "callee": "printf",
+          "lineNumber": 147
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 8,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 227,
+      "nonEmptyLines": 182,
+      "functions": [
+        {
+          "name": "wiz_claw_tg_message_free",
+          "startLine": 32,
+          "endLine": 39,
+          "params": [
+            "msg"
+          ]
+        },
+        {
+          "name": "wiz_claw_tg_parse_updates",
+          "startLine": 43,
+          "endLine": 135,
+          "params": [
+            "response_json",
+            "inout_next_offset",
+            "callback",
+            "user_ctx"
+          ]
+        },
+        {
+          "name": "wiz_claw_tg_poll",
+          "startLine": 139,
+          "endLine": 186,
+          "params": [
+            "config",
+            "timeout_s",
+            "inout_next_offset",
+            "callback",
+            "user_ctx"
+          ]
+        },
+        {
+          "name": "wiz_claw_tg_send_text",
+          "startLine": 190,
+          "endLine": 227,
+          "params": [
+            "config",
+            "chat_id",
+            "text"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_tg_message_free",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tg_parse_updates",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tg_poll",
+          "line": 139,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tg_send_text",
+          "line": 190,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wiz_claw_tg_message_free",
+          "callee": "free",
+          "lineNumber": 37
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_Parse",
+          "lineNumber": 58
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 60
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 64
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_IsTrue",
+          "lineNumber": 65
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 66
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_Delete",
+          "lineNumber": 67
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 71
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_IsArray",
+          "lineNumber": 72
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_Delete",
+          "lineNumber": 73
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 78
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 79
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsNumber",
+          "lineNumber": 85
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsObject",
+          "lineNumber": 85
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 94
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsString",
+          "lineNumber": 95
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 99
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 100
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 103
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsObject",
+          "lineNumber": 104
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 105
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_GetObjectItem",
+          "lineNumber": 106
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsNumber",
+          "lineNumber": 108
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "snprintf",
+          "lineNumber": 112
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "snprintf",
+          "lineNumber": 114
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsNumber",
+          "lineNumber": 116
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "cJSON_IsNumber",
+          "lineNumber": 118
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "snprintf",
+          "lineNumber": 119
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "strdup",
+          "lineNumber": 123
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 125
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "callback",
+          "lineNumber": 129
+        },
+        {
+          "caller": "cJSON_ArrayForEach",
+          "callee": "wiz_claw_tg_message_free",
+          "lineNumber": 130
+        },
+        {
+          "caller": "wiz_claw_tg_parse_updates",
+          "callee": "cJSON_Delete",
+          "lineNumber": 133
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "tg_build_url",
+          "lineNumber": 156
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 161
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 162
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "cJSON_AddNumberToObject",
+          "lineNumber": 164
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "cJSON_AddNumberToObject",
+          "lineNumber": 165
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "cJSON_PrintUnformatted",
+          "lineNumber": 166
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "cJSON_Delete",
+          "lineNumber": 167
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 169
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 171
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "http_call",
+          "lineNumber": 173
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 174
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 175
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 178
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 179
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "wiz_claw_tg_parse_updates",
+          "lineNumber": 183
+        },
+        {
+          "caller": "wiz_claw_tg_poll",
+          "callee": "free",
+          "lineNumber": 184
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "tg_build_url",
+          "lineNumber": 205
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "cJSON_CreateObject",
+          "lineNumber": 208
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "free",
+          "lineNumber": 209
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 211
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "cJSON_AddStringToObject",
+          "lineNumber": 212
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "cJSON_PrintUnformatted",
+          "lineNumber": 213
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "cJSON_Delete",
+          "lineNumber": 214
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "free",
+          "lineNumber": 216
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "http_call",
+          "lineNumber": 218
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "free",
+          "lineNumber": 219
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "free",
+          "lineNumber": 220
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "free",
+          "lineNumber": 221
+        },
+        {
+          "caller": "wiz_claw_tg_send_text",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 224
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/src/wiz_claw_tls.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 327,
+      "nonEmptyLines": 278,
+      "functions": [
+        {
+          "name": "trng_entropy_poll",
+          "startLine": 42,
+          "endLine": 62,
+          "params": [
+            "data",
+            "output",
+            "len",
+            "olen"
+          ]
+        },
+        {
+          "name": "bio_send",
+          "startLine": 68,
+          "endLine": 77,
+          "params": [
+            "ctx",
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "bio_recv",
+          "startLine": 79,
+          "endLine": 94,
+          "params": [
+            "ctx",
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "bio_recv_timeout",
+          "startLine": 96,
+          "endLine": 119,
+          "params": [
+            "ctx",
+            "buf",
+            "len",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_init",
+          "startLine": 123,
+          "endLine": 215,
+          "params": [
+            "tls",
+            "socket_no",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_connect",
+          "startLine": 219,
+          "endLine": 262,
+          "params": [
+            "tls",
+            "ip",
+            "port",
+            "hostname",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_write",
+          "startLine": 266,
+          "endLine": 280,
+          "params": [
+            "tls",
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_read",
+          "startLine": 284,
+          "endLine": 300,
+          "params": [
+            "tls",
+            "buf",
+            "len",
+            "timeout_ms"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_close",
+          "startLine": 304,
+          "endLine": 315,
+          "params": [
+            "tls"
+          ]
+        },
+        {
+          "name": "wiz_claw_tls_free",
+          "startLine": 319,
+          "endLine": 327,
+          "params": [
+            "tls"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiz_claw_tls_init",
+          "line": 123,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tls_connect",
+          "line": 219,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tls_write",
+          "line": 266,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tls_read",
+          "line": 284,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tls_close",
+          "line": 304,
+          "isDefault": false
+        },
+        {
+          "name": "wiz_claw_tls_free",
+          "line": 319,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "trng_entropy_poll",
+          "callee": "get_rand_32",
+          "lineNumber": 52
+        },
+        {
+          "caller": "trng_entropy_poll",
+          "callee": "memcpy",
+          "lineNumber": 53
+        },
+        {
+          "caller": "trng_entropy_poll",
+          "callee": "get_rand_32",
+          "lineNumber": 57
+        },
+        {
+          "caller": "trng_entropy_poll",
+          "callee": "memcpy",
+          "lineNumber": 58
+        },
+        {
+          "caller": "bio_send",
+          "callee": "send",
+          "lineNumber": 72
+        },
+        {
+          "caller": "bio_recv",
+          "callee": "getsockopt",
+          "lineNumber": 84
+        },
+        {
+          "caller": "bio_recv",
+          "callee": "recv",
+          "lineNumber": 89
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 100
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "get_absolute_time",
+          "lineNumber": 100
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "getsockopt",
+          "lineNumber": 104
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "recv",
+          "lineNumber": 107
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "getSn_SR",
+          "lineNumber": 111
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "sleep_ms",
+          "lineNumber": 115
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 116
+        },
+        {
+          "caller": "bio_recv_timeout",
+          "callee": "get_absolute_time",
+          "lineNumber": 116
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "memset",
+          "lineNumber": 132
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_entropy_init",
+          "lineNumber": 135
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ctr_drbg_init",
+          "lineNumber": 136
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_init",
+          "lineNumber": 137
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_config_init",
+          "lineNumber": 138
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_x509_crt_init",
+          "lineNumber": 139
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_entropy_add_source",
+          "lineNumber": 142
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 147
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ctr_drbg_seed",
+          "lineNumber": 152
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 156
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_config_defaults",
+          "lineNumber": 161
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 166
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_rng",
+          "lineNumber": 170
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_read_timeout",
+          "lineNumber": 171
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_x509_crt_parse",
+          "lineNumber": 177
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "strlen",
+          "lineNumber": 179
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 181
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_authmode",
+          "lineNumber": 182
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 185
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_ca_chain",
+          "lineNumber": 187
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_authmode",
+          "lineNumber": 188
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 189
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_W",
+          "lineNumber": 193
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_conf_authmode",
+          "lineNumber": 195
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_setup",
+          "lineNumber": 199
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 201
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "mbedtls_ssl_set_bio",
+          "lineNumber": 205
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 209
+        },
+        {
+          "caller": "wiz_claw_tls_init",
+          "callee": "wiz_claw_tls_free",
+          "lineNumber": 213
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "mbedtls_ssl_set_hostname",
+          "lineNumber": 232
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 234
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "wiz_claw_tcp_connect",
+          "lineNumber": 240
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 244
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "mbedtls_ssl_handshake",
+          "lineNumber": 248
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "mbedtls_strerror",
+          "lineNumber": 254
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "WIZ_CLAW_LOG_E",
+          "lineNumber": 255
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "wiz_claw_tcp_close",
+          "lineNumber": 256
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "WIZ_CLAW_LOG_I",
+          "lineNumber": 260
+        },
+        {
+          "caller": "wiz_claw_tls_connect",
+          "callee": "mbedtls_ssl_get_ciphersuite",
+          "lineNumber": 260
+        },
+        {
+          "caller": "wiz_claw_tls_write",
+          "callee": "mbedtls_ssl_write",
+          "lineNumber": 274
+        },
+        {
+          "caller": "wiz_claw_tls_read",
+          "callee": "mbedtls_ssl_read",
+          "lineNumber": 293
+        },
+        {
+          "caller": "wiz_claw_tls_close",
+          "callee": "mbedtls_ssl_close_notify",
+          "lineNumber": 311
+        },
+        {
+          "caller": "wiz_claw_tls_close",
+          "callee": "wiz_claw_tcp_close",
+          "lineNumber": 314
+        },
+        {
+          "caller": "wiz_claw_tls_free",
+          "callee": "mbedtls_ssl_free",
+          "lineNumber": 322
+        },
+        {
+          "caller": "wiz_claw_tls_free",
+          "callee": "mbedtls_ssl_config_free",
+          "lineNumber": 323
+        },
+        {
+          "caller": "wiz_claw_tls_free",
+          "callee": "mbedtls_ctr_drbg_free",
+          "lineNumber": 324
+        },
+        {
+          "caller": "wiz_claw_tls_free",
+          "callee": "mbedtls_entropy_free",
+          "lineNumber": 325
+        },
+        {
+          "caller": "wiz_claw_tls_free",
+          "callee": "mbedtls_x509_crt_free",
+          "lineNumber": 326
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "language": "python",
+      "fileCategory": "script",
+      "totalLines": 125,
+      "nonEmptyLines": 102,
+      "functions": [
+        {
+          "name": "fetch_chain_pems",
+          "startLine": 31,
+          "endLine": 59,
+          "params": [
+            "host",
+            "port"
+          ]
+        },
+        {
+          "name": "get_root_ca",
+          "startLine": 62,
+          "endLine": 71,
+          "params": [
+            "host",
+            "port",
+            "label"
+          ]
+        },
+        {
+          "name": "pem_to_c_string",
+          "startLine": 74,
+          "endLine": 79,
+          "params": [
+            "pem"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 82,
+          "endLine": 121,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "fetch_chain_pems",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "get_root_ca",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "pem_to_c_string",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "main",
+          "line": 82,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "subprocess.run",
+          "lineNumber": 34
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "print",
+          "lineNumber": 45
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "print",
+          "lineNumber": 46
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "sys.exit",
+          "lineNumber": 47
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "print",
+          "lineNumber": 49
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "result.stdout.decode",
+          "lineNumber": 52
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "re.findall",
+          "lineNumber": 54
+        },
+        {
+          "caller": "fetch_chain_pems",
+          "callee": "p.strip",
+          "lineNumber": 59
+        },
+        {
+          "caller": "get_root_ca",
+          "callee": "fetch_chain_pems",
+          "lineNumber": 64
+        },
+        {
+          "caller": "get_root_ca",
+          "callee": "print",
+          "lineNumber": 66
+        },
+        {
+          "caller": "get_root_ca",
+          "callee": "print",
+          "lineNumber": 69
+        },
+        {
+          "caller": "get_root_ca",
+          "callee": "len",
+          "lineNumber": 69
+        },
+        {
+          "caller": "pem_to_c_string",
+          "callee": "pem.splitlines",
+          "lineNumber": 77
+        },
+        {
+          "caller": "pem_to_c_string",
+          "callee": "lines.append",
+          "lineNumber": 78
+        },
+        {
+          "caller": "main",
+          "callee": "get_root_ca",
+          "lineNumber": 86
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 91
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 92
+        },
+        {
+          "caller": "main",
+          "callee": "sys.exit",
+          "lineNumber": 93
+        },
+        {
+          "caller": "main",
+          "callee": "os.path.basename",
+          "lineNumber": 96
+        },
+        {
+          "caller": "main",
+          "callee": "\", \".join",
+          "lineNumber": 97
+        },
+        {
+          "caller": "main",
+          "callee": "seen.values",
+          "lineNumber": 97
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 99
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 100
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 101
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 102
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 103
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 104
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 105
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 106
+        },
+        {
+          "caller": "main",
+          "callee": "seen.items",
+          "lineNumber": 109
+        },
+        {
+          "caller": "main",
+          "callee": "all_lines.append",
+          "lineNumber": 110
+        },
+        {
+          "caller": "main",
+          "callee": "all_lines.extend",
+          "lineNumber": 111
+        },
+        {
+          "caller": "main",
+          "callee": "pem_to_c_string",
+          "lineNumber": 111
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 114
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 116
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 117
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 119
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 121
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 117,
+      "nonEmptyLines": 82,
+      "sections": [
+        {
+          "heading": "WIZnet PICO C Chip Test Lab",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "프로젝트 목표",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "기본 보드 설정",
+          "level": 2,
+          "line": 16
+        },
+        {
+          "heading": "예제 목록",
+          "level": 2,
+          "line": 34
+        },
+        {
+          "heading": "디렉터리 구조",
+          "level": 2,
+          "line": 59
+        },
+        {
+          "heading": "빌드 환경",
+          "level": 2,
+          "line": 74
+        },
+        {
+          "heading": "포팅 코드",
+          "level": 2,
+          "line": 93
+        },
+        {
+          "heading": "응용 예제 메모",
+          "level": 2,
+          "line": 107
+        },
+        {
+          "heading": "원본 프로젝트",
+          "level": 2,
+          "line": 113
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "wiznet_pico_c_sdk_version.cmake",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 10,
+      "nonEmptyLines": 9,
+      "metrics": {}
+    }
+  ]
+}

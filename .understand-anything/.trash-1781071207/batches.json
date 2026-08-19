@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 75,
+  "totalBatches": 6,
+  "exportsByPath": {
+    ".gitmodules": [],
+    ".understand-anything/.understandignore": [],
+    "examples/10M_Complience_Test/10M_Complience_Test.c": [
+      "main",
+      "set_force_mdi_and_link",
+      "W6300_PHY_CONFIG",
+      "complience_test_initialize"
+    ],
+    "examples/buffer_read/WIZnet_Chip_Buffer_Test.c": [
+      "main"
+    ],
+    "examples/loopback/wizchip_loopback.c": [
+      "main"
+    ],
+    "examples/opcua_usb_stdio/images/.gitkeep": [],
+    "examples/opcua_usb_stdio/inc/data_table.h": [],
+    "examples/opcua_usb_stdio/inc/opcua_node_map.h": [],
+    "examples/opcua_usb_stdio/inc/opcua_server.h": [],
+    "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h": [],
+    "examples/opcua_usb_stdio/inc/usb_stdio_link.h": [],
+    "examples/opcua_usb_stdio/inc/wiznet_network.h": [],
+    "examples/opcua_usb_stdio/src/data_table.c": [
+      "data_table_init",
+      "data_table_clear",
+      "data_table_set_channels",
+      "data_table_record_parse_error",
+      "data_table_snapshot"
+    ],
+    "examples/opcua_usb_stdio/src/main.c": [
+      "main"
+    ],
+    "examples/opcua_usb_stdio/src/opcua_server.c": [
+      "opcua_server_init",
+      "opcua_server_poll",
+      "opcua_server_get_status",
+      "opcua_server_print_status"
+    ],
+    "examples/opcua_usb_stdio/src/opcua_tcp_probe.c": [
+      "opcua_tcp_probe_init",
+      "opcua_tcp_probe_poll",
+      "opcua_tcp_probe_get_status",
+      "opcua_tcp_probe_print_status"
+    ],
+    "examples/opcua_usb_stdio/src/usb_stdio_link.c": [
+      "usb_stdio_print_help",
+      "usb_stdio_print_state",
+      "usb_stdio_link_init",
+      "usb_stdio_link_poll"
+    ],
+    "examples/opcua_usb_stdio/src/wiznet_network.c": [
+      "wiznet_network_init",
+      "wiznet_network_poll",
+      "wiznet_network_get_status",
+      "wiznet_network_print_status",
+      "wiznet_network_is_ready"
+    ],
+    "examples/PING_TEST/PING_TEST.c": [
+      "main"
+    ],
+    "examples/wiz_claw_agent/main.c": [
+      "repeating_timer",
+      "main"
+    ],
+    "pico_sdk_import.cmake": [],
+    "port/board_list.h": [],
+    "port/board/can/can.c": [
+      "bitstuffer_s",
+      "can2040_pio_irq_handler",
+      "can2040_check_transmit",
+      "can2040_transmit",
+      "can2040_setup",
+      "can2040_callback_config",
+      "can2040_start",
+      "can2040_stop",
+      "can2040_get_statistics"
+    ],
+    "port/board/can/can.h": [],
+    "port/board/can/can.pio": [],
+    "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h": [],
+    "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h": [],
+    "port/ioLibrary_Driver/inc/wizchip_spi.h": [],
+    "port/ioLibrary_Driver/src/wizchip_gpio_irq.c": [
+      "wizchip_gpio_interrupt_initialize"
+    ],
+    "port/ioLibrary_Driver/src/wizchip_qspi_pio.c": [
+      "wiznet_spi_pio_open"
+    ],
+    "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio": [],
+    "port/ioLibrary_Driver/src/wizchip_spi.c": [
+      "wizchip_reset",
+      "wizchip_spi_initialize",
+      "wizchip_cris_initialize",
+      "wizchip_initialize",
+      "wizchip_check",
+      "network_initialize",
+      "print_network_information",
+      "print_ipv6_addr"
+    ],
+    "port/mbedtls/inc/ssl_config.h": [],
+    "port/open62541/lwip/sockets.h": [],
+    "port/open62541/open62541_wiznet_eventloop.c": [
+      "UA_DateTime_now",
+      "UA_DateTime_nowMonotonic",
+      "UA_DateTime_localTimeUtcOffset"
+    ],
+    "port/port_common.h": [],
+    "port/timer/timer.c": [
+      "repeating_timer",
+      "wizchip_1ms_timer_initialize",
+      "wizchip_1ms_timer_callback",
+      "wizchip_delay_ms"
+    ],
+    "port/timer/timer.h": [],
+    "port/wiz-claw/include/cJSON.h": [],
+    "port/wiz-claw/include/wiz_claw_agent.h": [],
+    "port/wiz-claw/include/wiz_claw_ca_bundle.h": [],
+    "port/wiz-claw/include/wiz_claw_http.h": [],
+    "port/wiz-claw/include/wiz_claw_llm.h": [],
+    "port/wiz-claw/include/wiz_claw_net.h": [],
+    "port/wiz-claw/include/wiz_claw_telegram.h": [],
+    "port/wiz-claw/include/wiz_claw_tls.h": [],
+    "port/wiz-claw/include/wiz_claw.h": [],
+    "port/wiz-claw/src/cJSON.c": [
+      "cJSON_GetErrorPtr",
+      "cJSON_GetStringValue",
+      "cJSON_GetNumberValue",
+      "cJSON_Version",
+      "cJSON_InitHooks",
+      "cJSON_Delete",
+      "cJSON_SetNumberHelper",
+      "cJSON_SetValuestring",
+      "cJSON_ParseWithOpts",
+      "cJSON_ParseWithLengthOpts",
+      "cJSON_Parse",
+      "cJSON_ParseWithLength",
+      "cJSON_Print",
+      "cJSON_PrintUnformatted",
+      "cJSON_PrintBuffered",
+      "cJSON_PrintPreallocated",
+      "cJSON_GetArraySize",
+      "cJSON_GetArrayItem",
+      "cJSON_GetObjectItem",
+      "cJSON_GetObjectItemCaseSensitive",
+      "cJSON_HasObjectItem",
+      "cJSON_AddItemToArray",
+      "cJSON_AddItemToObject",
+      "cJSON_AddItemToObjectCS",
+      "cJSON_AddItemReferenceToArray",
+      "cJSON_AddItemReferenceToObject",
+      "cJSON_AddNullToObject",
+      "cJSON_AddTrueToObject",
+      "cJSON_AddFalseToObject",
+      "cJSON_AddBoolToObject",
+      "cJSON_AddNumberToObject",
+      "cJSON_AddStringToObject",
+      "cJSON_AddRawToObject",
+      "cJSON_AddObjectToObject",
+      "cJSON_AddArrayToObject",
+      "cJSON_DetachItemViaPointer",
+      "cJSON_DetachItemFromArray",
+      "cJSON_DeleteItemFromArray",
+      "cJSON_DetachItemFromObject",
+      "cJSON_DetachItemFromObjectCaseSensitive",
+      "cJSON_DeleteItemFromObject",
+      "cJSON_DeleteItemFromObjectCaseSensitive",
+      "cJSON_InsertItemInArray",
+      "cJSON_ReplaceItemViaPointer",
+      "cJSON_ReplaceItemInArray",
+      "cJSON_ReplaceItemInObject",
+      "cJSON_ReplaceItemInObjectCaseSensitive",
+      "cJSON_CreateNull",
+      "cJSON_CreateTrue",
+      "cJSON_CreateFalse",
+      "cJSON_CreateBool",
+      "cJSON_CreateNumber",
+      "cJSON_CreateString",
+      "cJSON_CreateStringReference",
+      "cJSON_CreateObjectReference",
+      "cJSON_CreateArrayReference",
+      "cJSON_CreateRaw",
+      "cJSON_CreateArray",
+      "cJSON_CreateObject",
+      "cJSON_CreateIntArray",
+      "cJSON_CreateFloatArray",
+      "cJSON_CreateDoubleArray",
+      "cJSON_CreateStringArray",
+      "cJSON_Duplicate",
+      "cJSON_Minify",
+      "cJSON_IsInvalid",
+      "cJSON_IsFalse",
+      "cJSON_IsTrue",
+      "cJSON_IsBool",
+      "cJSON_IsNull",
+      "cJSON_IsNumber",
+      "cJSON_IsString",
+      "cJSON_IsArray",
+      "cJSON_IsObject",
+      "cJSON_IsRaw",
+      "cJSON_Compare",
+      "cJSON_malloc",
+      "cJSON_free"
+    ],
+    "port/wiz-claw/src/wiz_claw_agent.c": [
+      "wiz_claw_agent_run"
+    ],
+    "port/wiz-claw/src/wiz_claw_http.c": [
+      "wiz_claw_http_parse_url",
+      "wiz_claw_tcp_connect",
+      "wiz_claw_tcp_close",
+      "wiz_claw_tcp_send_all",
+      "wiz_claw_tcp_recv_wait",
+      "wiz_claw_http_post_cb",
+      "wiz_claw_http_call_cb"
+    ],
+    "port/wiz-claw/src/wiz_claw_llm.c": [
+      "wiz_claw_llm_chat",
+      "wiz_claw_llm_response_free",
+      "wiz_claw_session_append_user",
+      "wiz_claw_session_append_assistant_text",
+      "wiz_claw_session_append_assistant_tool_calls",
+      "wiz_claw_session_append_tool_result"
+    ],
+    "port/wiz-claw/src/wiz_claw_net.c": [
+      "wiz_claw_net_init",
+      "wiz_claw_net_dns_resolve",
+      "wiz_claw_net_dhcp_run",
+      "wiz_claw_net_1s_tick",
+      "wiz_claw_net_print_info"
+    ],
+    "port/wiz-claw/src/wiz_claw_telegram.c": [
+      "wiz_claw_tg_message_free",
+      "wiz_claw_tg_parse_updates",
+      "wiz_claw_tg_poll",
+      "wiz_claw_tg_send_text"
+    ],
+    "port/wiz-claw/src/wiz_claw_tls.c": [
+      "wiz_claw_tls_init",
+      "wiz_claw_tls_connect",
+      "wiz_claw_tls_write",
+      "wiz_claw_tls_read",
+      "wiz_claw_tls_close",
+      "wiz_claw_tls_free"
+    ],
+    "port/wiz-claw/tools/gen_ca_bundle.py": [
+      "fetch_chain_pems",
+      "get_root_ca",
+      "pem_to_c_string",
+      "main"
+    ],
+    "wiznet_pico_c_sdk_version.cmake": []
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": "port/wiz-claw/include/wiz_claw.h",
+          "language": "c",
+          "sizeLines": 63,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_http.h",
+          "language": "c",
+          "sizeLines": 124,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_net.h",
+          "language": "c",
+          "sizeLines": 61,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_telegram.h",
+          "language": "c",
+          "sizeLines": 77,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_tls.h",
+          "language": "c",
+          "sizeLines": 92,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "port/wiz-claw/include/wiz_claw.h": [],
+        "port/wiz-claw/include/wiz_claw_http.h": [
+          "port/wiz-claw/include/wiz_claw_llm.h",
+          "port/wiz-claw/include/wiz_claw_telegram.h",
+          "port/wiz-claw/include/wiz_claw.h"
+        ],
+        "port/wiz-claw/include/wiz_claw_net.h": [
+          "port/wiz-claw/include/wiz_claw.h"
+        ],
+        "port/wiz-claw/include/wiz_claw_telegram.h": [
+          "port/wiz-claw/include/wiz_claw.h"
+        ],
+        "port/wiz-claw/include/wiz_claw_tls.h": [
+          "port/wiz-claw/include/wiz_claw.h"
+        ]
+      },
+      "neighborMap": {
+        "port/wiz-claw/include/wiz_claw.h": [
+          {
+            "path": "port/wiz-claw/include/wiz_claw_agent.h",
+            "batchIndex": 2,
+            "symbols": []
+          },
+          {
+            "path": "port/wiz-claw/include/wiz_claw_llm.h",
+            "batchIndex": 2,
+            "symbols": []
+          }
+        ],
+        "port/wiz-claw/include/wiz_claw_http.h": [
+          {
+            "path": "port/wiz-claw/include/wiz_claw_llm.h",
+            "batchIndex": 2,
+            "symbols": []
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "port/wiz-claw/include/cJSON.h",
+          "language": "c",
+          "sizeLines": 306,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_agent.h",
+          "language": "c",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_llm.h",
+          "language": "c",
+          "sizeLines": 98,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "port/wiz-claw/include/cJSON.h": [],
+        "port/wiz-claw/include/wiz_claw_agent.h": [
+          "port/wiz-claw/include/wiz_claw_llm.h",
+          "port/wiz-claw/include/wiz_claw.h"
+        ],
+        "port/wiz-claw/include/wiz_claw_llm.h": [
+          "port/wiz-claw/include/cJSON.h",
+          "port/wiz-claw/include/wiz_claw.h"
+        ]
+      },
+      "neighborMap": {
+        "port/wiz-claw/include/wiz_claw_agent.h": [
+          {
+            "path": "port/wiz-claw/include/wiz_claw.h",
+            "batchIndex": 1,
+            "symbols": []
+          }
+        ],
+        "port/wiz-claw/include/wiz_claw_llm.h": [
+          {
+            "path": "port/wiz-claw/include/wiz_claw.h",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "port/wiz-claw/include/wiz_claw_http.h",
+            "batchIndex": 1,
+            "symbols": []
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "examples/opcua_usb_stdio/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 39,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/README_eng.md",
+          "language": "markdown",
+          "sizeLines": 141,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/README_kor.md",
+          "language": "markdown",
+          "sizeLines": 141,
+          "fileCategory": "docs"
+        }
+      ],
+      "batchImportData": {
+        "examples/opcua_usb_stdio/CMakeLists.txt": [],
+        "examples/opcua_usb_stdio/README_eng.md": [],
+        "examples/opcua_usb_stdio/README_kor.md": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": ".gitmodules",
+          "language": "unknown",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": ".understand-anything/.understandignore",
+          "language": "unknown",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 151,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/10M_Complience_Test/10M_Complience_Test.c",
+          "language": "c",
+          "sizeLines": 308,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/10M_Complience_Test/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 25,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/10M_Complience_Test/README.md",
+          "language": "markdown",
+          "sizeLines": 195,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/buffer_read/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/buffer_read/README.md",
+          "language": "markdown",
+          "sizeLines": 195,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+          "language": "c",
+          "sizeLines": 277,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 4,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/loopback/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/loopback/README.md",
+          "language": "markdown",
+          "sizeLines": 195,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/loopback/wizchip_loopback.c",
+          "language": "c",
+          "sizeLines": 299,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/images/.gitkeep",
+          "language": "unknown",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/data_table.h",
+          "language": "c",
+          "sizeLines": 25,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+          "language": "c",
+          "sizeLines": 39,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/opcua_server.h",
+          "language": "c",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+          "language": "c",
+          "sizeLines": 39,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+          "language": "c",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+          "language": "c",
+          "sizeLines": 34,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/src/data_table.c",
+          "language": "c",
+          "sizeLines": 43,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/src/main.c",
+          "language": "c",
+          "sizeLines": 34,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/src/opcua_server.c",
+          "language": "c",
+          "sizeLines": 502,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+          "language": "c",
+          "sizeLines": 342,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+          "language": "c",
+          "sizeLines": 200,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        ".gitmodules": [],
+        ".understand-anything/.understandignore": [],
+        "CMakeLists.txt": [],
+        "examples/10M_Complience_Test/10M_Complience_Test.c": [],
+        "examples/10M_Complience_Test/CMakeLists.txt": [],
+        "examples/10M_Complience_Test/README.md": [],
+        "examples/buffer_read/CMakeLists.txt": [],
+        "examples/buffer_read/README.md": [],
+        "examples/buffer_read/WIZnet_Chip_Buffer_Test.c": [],
+        "examples/CMakeLists.txt": [],
+        "examples/loopback/CMakeLists.txt": [],
+        "examples/loopback/README.md": [],
+        "examples/loopback/wizchip_loopback.c": [],
+        "examples/opcua_usb_stdio/images/.gitkeep": [],
+        "examples/opcua_usb_stdio/inc/data_table.h": [],
+        "examples/opcua_usb_stdio/inc/opcua_node_map.h": [],
+        "examples/opcua_usb_stdio/inc/opcua_server.h": [],
+        "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h": [],
+        "examples/opcua_usb_stdio/inc/usb_stdio_link.h": [],
+        "examples/opcua_usb_stdio/inc/wiznet_network.h": [],
+        "examples/opcua_usb_stdio/src/data_table.c": [],
+        "examples/opcua_usb_stdio/src/main.c": [],
+        "examples/opcua_usb_stdio/src/opcua_server.c": [],
+        "examples/opcua_usb_stdio/src/opcua_tcp_probe.c": [],
+        "examples/opcua_usb_stdio/src/usb_stdio_link.c": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "examples/opcua_usb_stdio/src/wiznet_network.c",
+          "language": "c",
+          "sizeLines": 208,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/PING_TEST/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/PING_TEST/PING_TEST.c",
+          "language": "c",
+          "sizeLines": 209,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/PING_TEST/README.md",
+          "language": "markdown",
+          "sizeLines": 195,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/wiz_claw_agent/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 22,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "examples/wiz_claw_agent/main.c",
+          "language": "c",
+          "sizeLines": 293,
+          "fileCategory": "code"
+        },
+        {
+          "path": "examples/wiz_claw_agent/README_kr.md",
+          "language": "markdown",
+          "sizeLines": 137,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "libraries/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 256,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "pico_sdk_import.cmake",
+          "language": "cmake",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/board_list.h",
+          "language": "c",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/board/can/can.c",
+          "language": "c",
+          "sizeLines": 1449,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/board/can/can.h",
+          "language": "c",
+          "sizeLines": 86,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/board/can/can.pio",
+          "language": "pio",
+          "sizeLines": 183,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 154,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+          "language": "c",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+          "language": "c",
+          "sizeLines": 78,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+          "language": "c",
+          "sizeLines": 236,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+          "language": "c",
+          "sizeLines": 56,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+          "language": "c",
+          "sizeLines": 752,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+          "language": "pio",
+          "sizeLines": 95,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/ioLibrary_Driver/src/wizchip_spi.c",
+          "language": "c",
+          "sizeLines": 395,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/mbedtls/inc/ssl_config.h",
+          "language": "c",
+          "sizeLines": 104,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/open62541/CMakeLists.txt",
+          "language": "txt",
+          "sizeLines": 100,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "port/open62541/lwip/sockets.h",
+          "language": "c",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/open62541/open62541_wiznet_eventloop.c",
+          "language": "c",
+          "sizeLines": 705,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "examples/opcua_usb_stdio/src/wiznet_network.c": [],
+        "examples/PING_TEST/CMakeLists.txt": [],
+        "examples/PING_TEST/PING_TEST.c": [],
+        "examples/PING_TEST/README.md": [],
+        "examples/wiz_claw_agent/CMakeLists.txt": [],
+        "examples/wiz_claw_agent/main.c": [],
+        "examples/wiz_claw_agent/README_kr.md": [],
+        "libraries/CMakeLists.txt": [],
+        "pico_sdk_import.cmake": [],
+        "port/board_list.h": [],
+        "port/board/can/can.c": [
+          "port/board/can/can.h"
+        ],
+        "port/board/can/can.h": [],
+        "port/board/can/can.pio": [],
+        "port/CMakeLists.txt": [],
+        "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h": [
+          "port/ioLibrary_Driver/inc/wizchip_spi.h"
+        ],
+        "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h": [],
+        "port/ioLibrary_Driver/inc/wizchip_spi.h": [],
+        "port/ioLibrary_Driver/src/wizchip_gpio_irq.c": [],
+        "port/ioLibrary_Driver/src/wizchip_qspi_pio.c": [],
+        "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio": [],
+        "port/ioLibrary_Driver/src/wizchip_spi.c": [],
+        "port/mbedtls/inc/ssl_config.h": [],
+        "port/open62541/CMakeLists.txt": [],
+        "port/open62541/lwip/sockets.h": [],
+        "port/open62541/open62541_wiznet_eventloop.c": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 6,
+      "files": [
+        {
+          "path": "port/port_common.h",
+          "language": "c",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/timer/timer.c",
+          "language": "c",
+          "sizeLines": 47,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/timer/timer.h",
+          "language": "c",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/include/wiz_claw_ca_bundle.h",
+          "language": "c",
+          "sizeLines": 26,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/cJSON.c",
+          "language": "c",
+          "sizeLines": 3164,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_agent.c",
+          "language": "c",
+          "sizeLines": 104,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_http.c",
+          "language": "c",
+          "sizeLines": 600,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_llm.c",
+          "language": "c",
+          "sizeLines": 315,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_net.c",
+          "language": "c",
+          "sizeLines": 148,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_telegram.c",
+          "language": "c",
+          "sizeLines": 227,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/src/wiz_claw_tls.c",
+          "language": "c",
+          "sizeLines": 327,
+          "fileCategory": "code"
+        },
+        {
+          "path": "port/wiz-claw/tools/gen_ca_bundle.py",
+          "language": "python",
+          "sizeLines": 125,
+          "fileCategory": "code"
+        },
+        {
+          "path": "README.md",
+          "language": "markdown",
+          "sizeLines": 117,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "wiznet_pico_c_sdk_version.cmake",
+          "language": "cmake",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "port/port_common.h": [],
+        "port/timer/timer.c": [
+          "port/timer/timer.h"
+        ],
+        "port/timer/timer.h": [],
+        "port/wiz-claw/include/wiz_claw_ca_bundle.h": [],
+        "port/wiz-claw/src/cJSON.c": [],
+        "port/wiz-claw/src/wiz_claw_agent.c": [],
+        "port/wiz-claw/src/wiz_claw_http.c": [],
+        "port/wiz-claw/src/wiz_claw_llm.c": [],
+        "port/wiz-claw/src/wiz_claw_net.c": [],
+        "port/wiz-claw/src/wiz_claw_telegram.c": [],
+        "port/wiz-claw/src/wiz_claw_tls.c": [],
+        "port/wiz-claw/tools/gen_ca_bundle.py": [],
+        "README.md": [],
+        "wiznet_pico_c_sdk_version.cmake": []
+      },
+      "neighborMap": {}
+    }
+  ]
+}

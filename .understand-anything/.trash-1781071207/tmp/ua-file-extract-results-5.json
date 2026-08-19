@@ -1,0 +1,6175 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 208,
+      "nonEmptyLines": 179,
+      "functions": [
+        {
+          "name": "copy_net_info_to_status",
+          "startLine": 77,
+          "endLine": 82,
+          "params": []
+        },
+        {
+          "name": "update_link_status",
+          "startLine": 84,
+          "endLine": 98,
+          "params": [
+            "print_on_change"
+          ]
+        },
+        {
+          "name": "print_phy_details",
+          "startLine": 100,
+          "endLine": 110,
+          "params": []
+        },
+        {
+          "name": "wiznet_chip_initialize_nonblocking",
+          "startLine": 112,
+          "endLine": 138,
+          "params": []
+        },
+        {
+          "name": "wiznet_network_init",
+          "startLine": 140,
+          "endLine": 169,
+          "params": []
+        },
+        {
+          "name": "wiznet_network_poll",
+          "startLine": 171,
+          "endLine": 181,
+          "params": []
+        },
+        {
+          "name": "wiznet_network_get_status",
+          "startLine": 183,
+          "endLine": 186,
+          "params": [
+            "status"
+          ]
+        },
+        {
+          "name": "wiznet_network_print_status",
+          "startLine": 188,
+          "endLine": 204,
+          "params": []
+        },
+        {
+          "name": "wiznet_network_is_ready",
+          "startLine": 206,
+          "endLine": 208,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiznet_network_init",
+          "line": 140,
+          "isDefault": false
+        },
+        {
+          "name": "wiznet_network_poll",
+          "line": 171,
+          "isDefault": false
+        },
+        {
+          "name": "wiznet_network_get_status",
+          "line": 183,
+          "isDefault": false
+        },
+        {
+          "name": "wiznet_network_print_status",
+          "line": 188,
+          "isDefault": false
+        },
+        {
+          "name": "wiznet_network_is_ready",
+          "line": 206,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "copy_net_info_to_status",
+          "callee": "memcpy",
+          "lineNumber": 78
+        },
+        {
+          "caller": "copy_net_info_to_status",
+          "callee": "memcpy",
+          "lineNumber": 79
+        },
+        {
+          "caller": "copy_net_info_to_status",
+          "callee": "memcpy",
+          "lineNumber": 80
+        },
+        {
+          "caller": "copy_net_info_to_status",
+          "callee": "memcpy",
+          "lineNumber": 81
+        },
+        {
+          "caller": "update_link_status",
+          "callee": "wizphy_getphylink",
+          "lineNumber": 86
+        },
+        {
+          "caller": "update_link_status",
+          "callee": "printf",
+          "lineNumber": 96
+        },
+        {
+          "caller": "print_phy_details",
+          "callee": "wizphy_getphyconf",
+          "lineNumber": 106
+        },
+        {
+          "caller": "print_phy_details",
+          "callee": "printf",
+          "lineNumber": 107
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "frame_end",
+          "lineNumber": 124
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "reg_wizchip_qspi_cbfunc",
+          "lineNumber": 125
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "reg_wizchip_cs_cbfunc",
+          "lineNumber": 126
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "ctlwizchip",
+          "lineNumber": 128
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "printf",
+          "lineNumber": 129
+        },
+        {
+          "caller": "wiznet_chip_initialize_nonblocking",
+          "callee": "wizchip_initialize",
+          "lineNumber": 135
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "memset",
+          "lineNumber": 141
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "copy_net_info_to_status",
+          "lineNumber": 142
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "printf",
+          "lineNumber": 146
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 148
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 149
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wizchip_reset",
+          "lineNumber": 150
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wiznet_chip_initialize_nonblocking",
+          "lineNumber": 151
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wiznet_network_print_status",
+          "lineNumber": 154
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wizchip_check",
+          "lineNumber": 157
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "network_initialize",
+          "lineNumber": 159
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "print_network_information",
+          "lineNumber": 160
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "copy_net_info_to_status",
+          "lineNumber": 163
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "update_link_status",
+          "lineNumber": 164
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "print_phy_details",
+          "lineNumber": 165
+        },
+        {
+          "caller": "wiznet_network_init",
+          "callee": "wiznet_network_print_status",
+          "lineNumber": 166
+        },
+        {
+          "caller": "wiznet_network_poll",
+          "callee": "to_ms_since_boot",
+          "lineNumber": 175
+        },
+        {
+          "caller": "wiznet_network_poll",
+          "callee": "get_absolute_time",
+          "lineNumber": 175
+        },
+        {
+          "caller": "wiznet_network_poll",
+          "callee": "update_link_status",
+          "lineNumber": 180
+        },
+        {
+          "caller": "wiznet_network_print_status",
+          "callee": "printf",
+          "lineNumber": 189
+        },
+        {
+          "caller": "wiznet_network_print_status",
+          "callee": "state_name",
+          "lineNumber": 190
+        },
+        {
+          "caller": "wiznet_network_print_status",
+          "callee": "printf",
+          "lineNumber": 195
+        },
+        {
+          "caller": "wiznet_network_print_status",
+          "callee": "printf",
+          "lineNumber": 202
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/PING_TEST/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 22,
+      "nonEmptyLines": 18,
+      "metrics": {}
+    },
+    {
+      "path": "examples/PING_TEST/PING_TEST.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 210,
+      "nonEmptyLines": 167,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 102,
+          "endLine": 195,
+          "params": []
+        },
+        {
+          "name": "repeating_timer_callback",
+          "startLine": 204,
+          "endLine": 210,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 102,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 110
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 112
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 114
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 115
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 116
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 118
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 119
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_reset",
+          "lineNumber": 120
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_initialize",
+          "lineNumber": 121
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_check",
+          "lineNumber": 122
+        },
+        {
+          "caller": "main",
+          "callee": "network_initialize",
+          "lineNumber": 126
+        },
+        {
+          "caller": "main",
+          "callee": "print_network_information",
+          "lineNumber": 129
+        },
+        {
+          "caller": "main",
+          "callee": "socket",
+          "lineNumber": 131
+        },
+        {
+          "caller": "main",
+          "callee": "listen",
+          "lineNumber": 132
+        },
+        {
+          "caller": "main",
+          "callee": "getSn_IR",
+          "lineNumber": 139
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 141
+        },
+        {
+          "caller": "main",
+          "callee": "setSn_IRCLR",
+          "lineNumber": 144
+        },
+        {
+          "caller": "main",
+          "callee": "setSLRTR",
+          "lineNumber": 154
+        },
+        {
+          "caller": "main",
+          "callee": "setSLRCR",
+          "lineNumber": 155
+        },
+        {
+          "caller": "main",
+          "callee": "setSLIMR",
+          "lineNumber": 158
+        },
+        {
+          "caller": "main",
+          "callee": "setSLDIP4R",
+          "lineNumber": 163
+        },
+        {
+          "caller": "main",
+          "callee": "setPINGSEQR",
+          "lineNumber": 168
+        },
+        {
+          "caller": "main",
+          "callee": "setPINGIDR",
+          "lineNumber": 169
+        },
+        {
+          "caller": "main",
+          "callee": "setSLCR",
+          "lineNumber": 172
+        },
+        {
+          "caller": "main",
+          "callee": "getSLCR",
+          "lineNumber": 175
+        },
+        {
+          "caller": "main",
+          "callee": "getSLIR",
+          "lineNumber": 178
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 182
+        },
+        {
+          "caller": "main",
+          "callee": "setSLIRCLR",
+          "lineNumber": 183
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 187
+        },
+        {
+          "caller": "main",
+          "callee": "setSLIRCLR",
+          "lineNumber": 188
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 191
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "examples/PING_TEST/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 195,
+      "nonEmptyLines": 127,
+      "sections": [
+        {
+          "heading": "How to Test Loopback Example",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Step 1: Prepare software",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: Prepare hardware",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Step 3: Setup Loopback Example",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "For **W55RP20-EVB-PICO**:",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "For **W6300-EVB-PICO** or **W6300-EVB-PICO2**:",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "For other generic SPI boards",
+          "level": 3,
+          "line": 73
+        },
+        {
+          "heading": "Step 4: Build",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "Step 5: Upload and Run",
+          "level": 2,
+          "line": 154
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "examples/wiz_claw_agent/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 22,
+      "nonEmptyLines": 18,
+      "metrics": {}
+    },
+    {
+      "path": "examples/wiz_claw_agent/main.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 293,
+      "nonEmptyLines": 247,
+      "functions": [
+        {
+          "name": "timer_1s_cb",
+          "startLine": 67,
+          "endLine": 72,
+          "params": [
+            "t"
+          ]
+        },
+        {
+          "name": "gpio_tool_handler",
+          "startLine": 79,
+          "endLine": 125,
+          "params": [
+            "name",
+            "arguments_json",
+            "out_result_json",
+            "user_ctx"
+          ]
+        },
+        {
+          "name": "on_telegram_message",
+          "startLine": 166,
+          "endLine": 200,
+          "params": [
+            "msg",
+            "user_ctx"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 204,
+          "endLine": 293,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "repeating_timer",
+          "startLine": 65,
+          "endLine": 65,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "repeating_timer",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "main",
+          "line": 204,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "timer_1s_cb",
+          "callee": "wiz_claw_net_1s_tick",
+          "lineNumber": 70
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strcmp",
+          "lineNumber": 86
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strdup",
+          "lineNumber": 87
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strstr",
+          "lineNumber": 94
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strchr",
+          "lineNumber": 96
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "atoi",
+          "lineNumber": 97
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strstr",
+          "lineNumber": 100
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strstr",
+          "lineNumber": 102
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strstr",
+          "lineNumber": 103
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "gpio_init",
+          "lineNumber": 107
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "gpio_set_dir",
+          "lineNumber": 108
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "gpio_get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strcmp",
+          "lineNumber": 113
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strcmp",
+          "lineNumber": 114
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "gpio_put",
+          "lineNumber": 117
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "printf",
+          "lineNumber": 118
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "snprintf",
+          "lineNumber": 121
+        },
+        {
+          "caller": "gpio_tool_handler",
+          "callee": "strdup",
+          "lineNumber": 123
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "printf",
+          "lineNumber": 173
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "wiz_claw_session_create",
+          "lineNumber": 176
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "wiz_claw_agent_run",
+          "lineNumber": 182
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "printf",
+          "lineNumber": 189
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "cJSON_Delete",
+          "lineNumber": 191
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "wiz_claw_tg_send_text",
+          "lineNumber": 195
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "printf",
+          "lineNumber": 196
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "free",
+          "lineNumber": 198
+        },
+        {
+          "caller": "on_telegram_message",
+          "callee": "free",
+          "lineNumber": 199
+        },
+        {
+          "caller": "main",
+          "callee": "stdio_init_all",
+          "lineNumber": 207
+        },
+        {
+          "caller": "main",
+          "callee": "sleep_ms",
+          "lineNumber": 208
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 209
+        },
+        {
+          "caller": "main",
+          "callee": "gpio_init",
+          "lineNumber": 212
+        },
+        {
+          "caller": "main",
+          "callee": "gpio_set_dir",
+          "lineNumber": 213
+        },
+        {
+          "caller": "main",
+          "callee": "gpio_put",
+          "lineNumber": 214
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_spi_initialize",
+          "lineNumber": 217
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_cris_initialize",
+          "lineNumber": 218
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_reset",
+          "lineNumber": 219
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_initialize",
+          "lineNumber": 220
+        },
+        {
+          "caller": "main",
+          "callee": "wizchip_check",
+          "lineNumber": 221
+        },
+        {
+          "caller": "main",
+          "callee": "wiz_claw_net_init",
+          "lineNumber": 229
+        },
+        {
+          "caller": "main",
+          "callee": "add_repeating_timer_ms",
+          "lineNumber": 232
+        },
+        {
+          "caller": "main",
+          "callee": "network_initialize",
+          "lineNumber": 235
+        },
+        {
+          "caller": "main",
+          "callee": "wiz_claw_net_print_info",
+          "lineNumber": 236
+        },
+        {
+          "caller": "main",
+          "callee": "printf",
+          "lineNumber": 281
+        },
+        {
+          "caller": "main",
+          "callee": "wiz_claw_tg_poll",
+          "lineNumber": 287
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 4,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "examples/wiz_claw_agent/README_kr.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 137,
+      "nonEmptyLines": 99,
+      "sections": [
+        {
+          "heading": "wiz_claw_agent 예제",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "동작 흐름",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "네트워크 설정",
+          "level": 2,
+          "line": 19
+        },
+        {
+          "heading": "API 설정",
+          "level": 2,
+          "line": 36
+        },
+        {
+          "heading": "소켓 사용",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "GPIO Tool",
+          "level": 2,
+          "line": 66
+        },
+        {
+          "heading": "Telegram에서 테스트하기",
+          "level": 2,
+          "line": 89
+        },
+        {
+          "heading": "빌드 관련 주의사항",
+          "level": 2,
+          "line": 108
+        },
+        {
+          "heading": "관련 파일",
+          "level": 2,
+          "line": 127
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "libraries/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 257,
+      "nonEmptyLines": 202,
+      "metrics": {}
+    },
+    {
+      "path": "pico_sdk_import.cmake",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 62,
+      "nonEmptyLines": 52,
+      "metrics": {}
+    },
+    {
+      "path": "port/board_list.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 11,
+      "nonEmptyLines": 11,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/board/can/can.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 1449,
+      "nonEmptyLines": 1305,
+      "functions": [
+        {
+          "name": "writel",
+          "startLine": 38,
+          "endLine": 41,
+          "params": [
+            "addr",
+            "val"
+          ]
+        },
+        {
+          "name": "readl",
+          "startLine": 42,
+          "endLine": 46,
+          "params": [
+            "addr"
+          ]
+        },
+        {
+          "name": "rp2040_clear_reset",
+          "startLine": 49,
+          "endLine": 56,
+          "params": [
+            "reset_bit"
+          ]
+        },
+        {
+          "name": "rp2040_gpio_peripheral",
+          "startLine": 59,
+          "endLine": 67,
+          "params": [
+            "gpio",
+            "func",
+            "pull_up"
+          ]
+        },
+        {
+          "name": "pio_gpiobase",
+          "startLine": 132,
+          "endLine": 138,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_sync_setup",
+          "startLine": 141,
+          "endLine": 158,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_rx_setup",
+          "startLine": 161,
+          "endLine": 175,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_match_setup",
+          "startLine": 178,
+          "endLine": 192,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_tx_setup",
+          "startLine": 195,
+          "endLine": 213,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_sync_normal_start_signal",
+          "startLine": 216,
+          "endLine": 221,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_sync_slow_start_signal",
+          "startLine": 224,
+          "endLine": 229,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_rx_check_stall",
+          "startLine": 232,
+          "endLine": 236,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_match_check",
+          "startLine": 239,
+          "endLine": 243,
+          "params": [
+            "cd",
+            "match_key"
+          ]
+        },
+        {
+          "name": "pio_match_calc_key",
+          "startLine": 246,
+          "endLine": 249,
+          "params": [
+            "raw_bits",
+            "rx_bit_pos"
+          ]
+        },
+        {
+          "name": "pio_match_clear",
+          "startLine": 252,
+          "endLine": 255,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_tx_reset",
+          "startLine": 258,
+          "endLine": 270,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_tx_send",
+          "startLine": 273,
+          "endLine": 288,
+          "params": [
+            "cd",
+            "data",
+            "count"
+          ]
+        },
+        {
+          "name": "pio_tx_inject_ack",
+          "startLine": 291,
+          "endLine": 305,
+          "params": [
+            "cd",
+            "match_key"
+          ]
+        },
+        {
+          "name": "pio_tx_did_fail",
+          "startLine": 308,
+          "endLine": 318,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_irq_set",
+          "startLine": 321,
+          "endLine": 325,
+          "params": [
+            "cd",
+            "sm_irqs"
+          ]
+        },
+        {
+          "name": "pio_irq_disable",
+          "startLine": 328,
+          "endLine": 332,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_irq_get",
+          "startLine": 335,
+          "endLine": 339,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_signal_set_txpending",
+          "startLine": 342,
+          "endLine": 346,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_signal_clear_txpending",
+          "startLine": 349,
+          "endLine": 353,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_sm_setup",
+          "startLine": 356,
+          "endLine": 379,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "pio_setup",
+          "startLine": 382,
+          "endLine": 413,
+          "params": [
+            "cd",
+            "sys_clock",
+            "bitrate"
+          ]
+        },
+        {
+          "name": "crc_byte",
+          "startLine": 451,
+          "endLine": 454,
+          "params": [
+            "crc",
+            "data"
+          ]
+        },
+        {
+          "name": "crc_bytes",
+          "startLine": 457,
+          "endLine": 466,
+          "params": [
+            "crc",
+            "data",
+            "num"
+          ]
+        },
+        {
+          "name": "unstuf_add_bits",
+          "startLine": 474,
+          "endLine": 479,
+          "params": [
+            "bu",
+            "data",
+            "count"
+          ]
+        },
+        {
+          "name": "unstuf_set_count",
+          "startLine": 482,
+          "endLine": 486,
+          "params": [
+            "bu",
+            "num_bits"
+          ]
+        },
+        {
+          "name": "unstuf_clear_state",
+          "startLine": 489,
+          "endLine": 493,
+          "params": [
+            "bu"
+          ]
+        },
+        {
+          "name": "unstuf_restore_state",
+          "startLine": 496,
+          "endLine": 500,
+          "params": [
+            "bu",
+            "data"
+          ]
+        },
+        {
+          "name": "unstuf_pull_bits_rp2040",
+          "startLine": 503,
+          "endLine": 552,
+          "params": [
+            "bu"
+          ]
+        },
+        {
+          "name": "unstuf_pull_bits",
+          "startLine": 555,
+          "endLine": 600,
+          "params": [
+            "bu"
+          ]
+        },
+        {
+          "name": "unstuf_get_raw",
+          "startLine": 603,
+          "endLine": 606,
+          "params": [
+            "bu"
+          ]
+        },
+        {
+          "name": "bitstuff_rp2040",
+          "startLine": 614,
+          "endLine": 651,
+          "params": [
+            "pb",
+            "num_bits"
+          ]
+        },
+        {
+          "name": "bitstuff",
+          "startLine": 654,
+          "endLine": 682,
+          "params": [
+            "pb",
+            "num_bits"
+          ]
+        },
+        {
+          "name": "bs_pushraw",
+          "startLine": 690,
+          "endLine": 702,
+          "params": [
+            "bs",
+            "data",
+            "count"
+          ]
+        },
+        {
+          "name": "bs_push",
+          "startLine": 705,
+          "endLine": 712,
+          "params": [
+            "bs",
+            "data",
+            "count"
+          ]
+        },
+        {
+          "name": "bs_finalize",
+          "startLine": 715,
+          "endLine": 724,
+          "params": [
+            "bs"
+          ]
+        },
+        {
+          "name": "tx_qpos",
+          "startLine": 737,
+          "endLine": 740,
+          "params": [
+            "cd",
+            "pos"
+          ]
+        },
+        {
+          "name": "tx_schedule_transmit",
+          "startLine": 743,
+          "endLine": 767,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "tx_inject_ack",
+          "startLine": 770,
+          "endLine": 774,
+          "params": [
+            "cd",
+            "match_key"
+          ]
+        },
+        {
+          "name": "tx_check_local_message",
+          "startLine": 777,
+          "endLine": 796,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_callback_error",
+          "startLine": 813,
+          "endLine": 817,
+          "params": [
+            "cd",
+            "error_code"
+          ]
+        },
+        {
+          "name": "report_callback_rx_msg",
+          "startLine": 820,
+          "endLine": 824,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_callback_tx_msg",
+          "startLine": 827,
+          "endLine": 832,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_handle_eof",
+          "startLine": 835,
+          "endLine": 848,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_is_not_in_tx",
+          "startLine": 851,
+          "endLine": 854,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_message_start",
+          "startLine": 857,
+          "endLine": 860,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_crc_start",
+          "startLine": 863,
+          "endLine": 882,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_crc_success",
+          "startLine": 885,
+          "endLine": 892,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_ack_success",
+          "startLine": 895,
+          "endLine": 904,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_eof_success",
+          "startLine": 907,
+          "endLine": 916,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_note_discarding",
+          "startLine": 919,
+          "endLine": 927,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_line_ackdone",
+          "startLine": 930,
+          "endLine": 938,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_line_matched",
+          "startLine": 941,
+          "endLine": 952,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_line_maytx",
+          "startLine": 955,
+          "endLine": 964,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "report_line_txpending",
+          "startLine": 967,
+          "endLine": 982,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_clear_bits",
+          "startLine": 996,
+          "endLine": 999,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_go_next",
+          "startLine": 1002,
+          "endLine": 1006,
+          "params": [
+            "cd",
+            "state",
+            "num_bits"
+          ]
+        },
+        {
+          "name": "data_state_go_discard",
+          "startLine": 1009,
+          "endLine": 1022,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_go_error",
+          "startLine": 1025,
+          "endLine": 1029,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_line_error",
+          "startLine": 1032,
+          "endLine": 1039,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_line_passive",
+          "startLine": 1042,
+          "endLine": 1067,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_go_crc",
+          "startLine": 1070,
+          "endLine": 1087,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "data_state_go_data",
+          "startLine": 1090,
+          "endLine": 1110,
+          "params": [
+            "cd",
+            "id",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_start",
+          "startLine": 1113,
+          "endLine": 1118,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_header",
+          "startLine": 1121,
+          "endLine": 1132,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_ext_header",
+          "startLine": 1135,
+          "endLine": 1143,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_data0",
+          "startLine": 1146,
+          "endLine": 1156,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_data1",
+          "startLine": 1159,
+          "endLine": 1165,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_crc",
+          "startLine": 1168,
+          "endLine": 1178,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_ack",
+          "startLine": 1181,
+          "endLine": 1193,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_eof0",
+          "startLine": 1196,
+          "endLine": 1204,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_eof1",
+          "startLine": 1207,
+          "endLine": 1220,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update_discard",
+          "startLine": 1223,
+          "endLine": 1226,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "data_state_update",
+          "startLine": 1229,
+          "endLine": 1243,
+          "params": [
+            "cd",
+            "data"
+          ]
+        },
+        {
+          "name": "process_rx",
+          "startLine": 1251,
+          "endLine": 1277,
+          "params": [
+            "cd",
+            "rx_data"
+          ]
+        },
+        {
+          "name": "can2040_pio_irq_handler",
+          "startLine": 1280,
+          "endLine": 1310,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "can2040_check_transmit",
+          "startLine": 1318,
+          "endLine": 1324,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "can2040_transmit",
+          "startLine": 1327,
+          "endLine": 1393,
+          "params": [
+            "cd",
+            "msg"
+          ]
+        },
+        {
+          "name": "can2040_setup",
+          "startLine": 1400,
+          "endLine": 1411,
+          "params": [
+            "cd",
+            "pio_num"
+          ]
+        },
+        {
+          "name": "can2040_callback_config",
+          "startLine": 1414,
+          "endLine": 1417,
+          "params": [
+            "cd",
+            "rx_cb"
+          ]
+        },
+        {
+          "name": "can2040_start",
+          "startLine": 1420,
+          "endLine": 1428,
+          "params": [
+            "cd",
+            "sys_clock",
+            "bitrate",
+            "gpio_rx",
+            "gpio_tx"
+          ]
+        },
+        {
+          "name": "can2040_stop",
+          "startLine": 1431,
+          "endLine": 1435,
+          "params": [
+            "cd"
+          ]
+        },
+        {
+          "name": "can2040_get_statistics",
+          "startLine": 1438,
+          "endLine": 1449,
+          "params": [
+            "cd",
+            "stats"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "bitstuffer_s",
+          "startLine": 685,
+          "endLine": 687,
+          "methods": [],
+          "properties": [
+            "prev_stuffed"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "bitstuffer_s",
+          "line": 685,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_pio_irq_handler",
+          "line": 1280,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_check_transmit",
+          "line": 1318,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_transmit",
+          "line": 1327,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_setup",
+          "line": 1400,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_callback_config",
+          "line": 1414,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_start",
+          "line": 1420,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_stop",
+          "line": 1431,
+          "isDefault": false
+        },
+        {
+          "name": "can2040_get_statistics",
+          "line": 1438,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "writel",
+          "callee": "barrier",
+          "lineNumber": 39
+        },
+        {
+          "caller": "readl",
+          "callee": "barrier",
+          "lineNumber": 44
+        },
+        {
+          "caller": "rp2040_clear_reset",
+          "callee": "hw_clear_bits",
+          "lineNumber": 52
+        },
+        {
+          "caller": "pio_sync_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 145
+        },
+        {
+          "caller": "pio_rx_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 165
+        },
+        {
+          "caller": "pio_match_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 185
+        },
+        {
+          "caller": "pio_tx_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 199
+        },
+        {
+          "caller": "pio_tx_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 200
+        },
+        {
+          "caller": "pio_match_clear",
+          "callee": "pio_match_check",
+          "lineNumber": 254
+        },
+        {
+          "caller": "pio_tx_send",
+          "callee": "pio_tx_reset",
+          "lineNumber": 276
+        },
+        {
+          "caller": "pio_tx_inject_ack",
+          "callee": "pio_tx_reset",
+          "lineNumber": 294
+        },
+        {
+          "caller": "pio_tx_inject_ack",
+          "callee": "pio_match_check",
+          "lineNumber": 304
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "pio_signal_set_txpending",
+          "lineNumber": 363
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "ARRAY_SIZE",
+          "lineNumber": 367
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "pio_sync_setup",
+          "lineNumber": 372
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "pio_rx_setup",
+          "lineNumber": 373
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "pio_match_setup",
+          "lineNumber": 374
+        },
+        {
+          "caller": "pio_sm_setup",
+          "callee": "pio_tx_setup",
+          "lineNumber": 375
+        },
+        {
+          "caller": "pio_setup",
+          "callee": "rp2040_clear_reset",
+          "lineNumber": 391
+        },
+        {
+          "caller": "pio_setup",
+          "callee": "pio_gpiobase",
+          "lineNumber": 403
+        },
+        {
+          "caller": "pio_setup",
+          "callee": "pio_sm_setup",
+          "lineNumber": 407
+        },
+        {
+          "caller": "pio_setup",
+          "callee": "rp2040_gpio_peripheral",
+          "lineNumber": 411
+        },
+        {
+          "caller": "pio_setup",
+          "callee": "rp2040_gpio_peripheral",
+          "lineNumber": 412
+        },
+        {
+          "caller": "crc_bytes",
+          "callee": "crc_byte",
+          "lineNumber": 460
+        },
+        {
+          "caller": "crc_bytes",
+          "callee": "crc_byte",
+          "lineNumber": 461
+        },
+        {
+          "caller": "crc_bytes",
+          "callee": "crc_byte",
+          "lineNumber": 462
+        },
+        {
+          "caller": "crc_bytes",
+          "callee": "crc_byte",
+          "lineNumber": 463
+        },
+        {
+          "caller": "unstuf_pull_bits_rp2040",
+          "callee": "likely",
+          "lineNumber": 517
+        },
+        {
+          "caller": "unstuf_pull_bits_rp2040",
+          "callee": "unlikely",
+          "lineNumber": 532
+        },
+        {
+          "caller": "unstuf_pull_bits_rp2040",
+          "callee": "likely",
+          "lineNumber": 546
+        },
+        {
+          "caller": "unstuf_pull_bits",
+          "callee": "unstuf_pull_bits_rp2040",
+          "lineNumber": 558
+        },
+        {
+          "caller": "unstuf_pull_bits",
+          "callee": "likely",
+          "lineNumber": 572
+        },
+        {
+          "caller": "unstuf_pull_bits",
+          "callee": "__builtin_clz",
+          "lineNumber": 586
+        },
+        {
+          "caller": "unstuf_pull_bits",
+          "callee": "unlikely",
+          "lineNumber": 592
+        },
+        {
+          "caller": "bitstuff",
+          "callee": "bitstuff_rp2040",
+          "lineNumber": 657
+        },
+        {
+          "caller": "bitstuff",
+          "callee": "__builtin_clz",
+          "lineNumber": 670
+        },
+        {
+          "caller": "bs_push",
+          "callee": "bitstuff",
+          "lineNumber": 709
+        },
+        {
+          "caller": "bs_push",
+          "callee": "bs_pushraw",
+          "lineNumber": 710
+        },
+        {
+          "caller": "bs_finalize",
+          "callee": "DIV_ROUND_UP",
+          "lineNumber": 718
+        },
+        {
+          "caller": "tx_qpos",
+          "callee": "ARRAY_SIZE",
+          "lineNumber": 739
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "pio_tx_did_fail",
+          "lineNumber": 745
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "readl",
+          "lineNumber": 751
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "pio_signal_clear_txpending",
+          "lineNumber": 754
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "__DMB",
+          "lineNumber": 755
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "likely",
+          "lineNumber": 756
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "readl",
+          "lineNumber": 756
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "pio_signal_set_txpending",
+          "lineNumber": 760
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "tx_qpos",
+          "lineNumber": 764
+        },
+        {
+          "caller": "tx_schedule_transmit",
+          "callee": "pio_tx_send",
+          "lineNumber": 765
+        },
+        {
+          "caller": "tx_inject_ack",
+          "callee": "pio_tx_inject_ack",
+          "lineNumber": 773
+        },
+        {
+          "caller": "tx_check_local_message",
+          "callee": "tx_qpos",
+          "lineNumber": 782
+        },
+        {
+          "caller": "report_callback_error",
+          "callee": "rx_cb",
+          "lineNumber": 816
+        },
+        {
+          "caller": "report_callback_rx_msg",
+          "callee": "rx_cb",
+          "lineNumber": 823
+        },
+        {
+          "caller": "report_callback_tx_msg",
+          "callee": "writel",
+          "lineNumber": 829
+        },
+        {
+          "caller": "report_callback_tx_msg",
+          "callee": "rx_cb",
+          "lineNumber": 831
+        },
+        {
+          "caller": "report_handle_eof",
+          "callee": "pio_sync_normal_start_signal",
+          "lineNumber": 839
+        },
+        {
+          "caller": "report_handle_eof",
+          "callee": "report_callback_tx_msg",
+          "lineNumber": 841
+        },
+        {
+          "caller": "report_handle_eof",
+          "callee": "report_callback_rx_msg",
+          "lineNumber": 843
+        },
+        {
+          "caller": "report_handle_eof",
+          "callee": "pio_match_clear",
+          "lineNumber": 847
+        },
+        {
+          "caller": "report_note_message_start",
+          "callee": "pio_irq_set",
+          "lineNumber": 859
+        },
+        {
+          "caller": "report_note_crc_start",
+          "callee": "tx_check_local_message",
+          "lineNumber": 865
+        },
+        {
+          "caller": "report_note_crc_start",
+          "callee": "pio_match_check",
+          "lineNumber": 873
+        },
+        {
+          "caller": "report_note_crc_start",
+          "callee": "pio_match_calc_key",
+          "lineNumber": 873
+        },
+        {
+          "caller": "report_note_crc_start",
+          "callee": "pio_signal_set_txpending",
+          "lineNumber": 879
+        },
+        {
+          "caller": "report_note_crc_start",
+          "callee": "pio_irq_set",
+          "lineNumber": 880
+        },
+        {
+          "caller": "report_note_crc_success",
+          "callee": "pio_irq_set",
+          "lineNumber": 890
+        },
+        {
+          "caller": "report_note_eof_success",
+          "callee": "report_handle_eof",
+          "lineNumber": 914
+        },
+        {
+          "caller": "report_note_eof_success",
+          "callee": "pio_irq_set",
+          "lineNumber": 915
+        },
+        {
+          "caller": "report_note_discarding",
+          "callee": "pio_match_clear",
+          "lineNumber": 923
+        },
+        {
+          "caller": "report_note_discarding",
+          "callee": "pio_sync_slow_start_signal",
+          "lineNumber": 925
+        },
+        {
+          "caller": "report_note_discarding",
+          "callee": "pio_irq_set",
+          "lineNumber": 926
+        },
+        {
+          "caller": "report_line_ackdone",
+          "callee": "pio_match_check",
+          "lineNumber": 934
+        },
+        {
+          "caller": "report_line_ackdone",
+          "callee": "pio_match_calc_key",
+          "lineNumber": 934
+        },
+        {
+          "caller": "report_line_ackdone",
+          "callee": "tx_schedule_transmit",
+          "lineNumber": 936
+        },
+        {
+          "caller": "report_line_ackdone",
+          "callee": "pio_irq_set",
+          "lineNumber": 937
+        },
+        {
+          "caller": "report_line_matched",
+          "callee": "report_handle_eof",
+          "lineNumber": 947
+        },
+        {
+          "caller": "report_line_matched",
+          "callee": "tx_schedule_transmit",
+          "lineNumber": 950
+        },
+        {
+          "caller": "report_line_matched",
+          "callee": "pio_irq_set",
+          "lineNumber": 951
+        },
+        {
+          "caller": "report_line_maytx",
+          "callee": "report_handle_eof",
+          "lineNumber": 960
+        },
+        {
+          "caller": "report_line_maytx",
+          "callee": "tx_schedule_transmit",
+          "lineNumber": 962
+        },
+        {
+          "caller": "report_line_maytx",
+          "callee": "pio_irq_set",
+          "lineNumber": 963
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "pio_irq_get",
+          "lineNumber": 969
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "pio_match_calc_key",
+          "lineNumber": 973
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "tx_inject_ack",
+          "lineNumber": 974
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "pio_irq_set",
+          "lineNumber": 975
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "tx_schedule_transmit",
+          "lineNumber": 980
+        },
+        {
+          "caller": "report_line_txpending",
+          "callee": "pio_irq_set",
+          "lineNumber": 981
+        },
+        {
+          "caller": "data_state_go_next",
+          "callee": "unstuf_set_count",
+          "lineNumber": 1005
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "pio_rx_check_stall",
+          "lineNumber": 1011
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "data_state_clear_bits",
+          "lineNumber": 1013
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "pio_sm_setup",
+          "lineNumber": 1014
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "report_callback_error",
+          "lineNumber": 1015
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "data_state_go_next",
+          "lineNumber": 1018
+        },
+        {
+          "caller": "data_state_go_discard",
+          "callee": "report_note_discarding",
+          "lineNumber": 1021
+        },
+        {
+          "caller": "data_state_go_error",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1028
+        },
+        {
+          "caller": "data_state_line_error",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1035
+        },
+        {
+          "caller": "data_state_line_error",
+          "callee": "data_state_go_error",
+          "lineNumber": 1037
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "data_state_go_error",
+          "lineNumber": 1046
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "unstuf_get_raw",
+          "lineNumber": 1050
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "data_state_clear_bits",
+          "lineNumber": 1054
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "pio_sm_setup",
+          "lineNumber": 1055
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1056
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "data_state_go_next",
+          "lineNumber": 1062
+        },
+        {
+          "caller": "data_state_line_passive",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1066
+        },
+        {
+          "caller": "data_state_go_crc",
+          "callee": "unstuf_get_raw",
+          "lineNumber": 1076
+        },
+        {
+          "caller": "data_state_go_crc",
+          "callee": "bitstuff",
+          "lineNumber": 1077
+        },
+        {
+          "caller": "data_state_go_crc",
+          "callee": "report_note_crc_start",
+          "lineNumber": 1081
+        },
+        {
+          "caller": "data_state_go_crc",
+          "callee": "data_state_go_error",
+          "lineNumber": 1083
+        },
+        {
+          "caller": "data_state_go_crc",
+          "callee": "data_state_go_next",
+          "lineNumber": 1086
+        },
+        {
+          "caller": "data_state_go_data",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1094
+        },
+        {
+          "caller": "data_state_go_data",
+          "callee": "data_state_go_next",
+          "lineNumber": 1106
+        },
+        {
+          "caller": "data_state_go_data",
+          "callee": "data_state_go_crc",
+          "lineNumber": 1108
+        },
+        {
+          "caller": "data_state_update_start",
+          "callee": "report_note_message_start",
+          "lineNumber": 1116
+        },
+        {
+          "caller": "data_state_update_start",
+          "callee": "data_state_go_next",
+          "lineNumber": 1117
+        },
+        {
+          "caller": "data_state_update_header",
+          "callee": "data_state_go_next",
+          "lineNumber": 1127
+        },
+        {
+          "caller": "data_state_update_header",
+          "callee": "crc_bytes",
+          "lineNumber": 1130
+        },
+        {
+          "caller": "data_state_update_header",
+          "callee": "data_state_go_data",
+          "lineNumber": 1131
+        },
+        {
+          "caller": "data_state_update_ext_header",
+          "callee": "crc_bytes",
+          "lineNumber": 1138
+        },
+        {
+          "caller": "data_state_update_ext_header",
+          "callee": "crc_bytes",
+          "lineNumber": 1139
+        },
+        {
+          "caller": "data_state_update_ext_header",
+          "callee": "data_state_go_data",
+          "lineNumber": 1142
+        },
+        {
+          "caller": "data_state_update_data0",
+          "callee": "crc_bytes",
+          "lineNumber": 1149
+        },
+        {
+          "caller": "data_state_update_data0",
+          "callee": "__builtin_bswap32",
+          "lineNumber": 1150
+        },
+        {
+          "caller": "data_state_update_data0",
+          "callee": "data_state_go_next",
+          "lineNumber": 1152
+        },
+        {
+          "caller": "data_state_update_data0",
+          "callee": "data_state_go_crc",
+          "lineNumber": 1154
+        },
+        {
+          "caller": "data_state_update_data1",
+          "callee": "crc_bytes",
+          "lineNumber": 1162
+        },
+        {
+          "caller": "data_state_update_data1",
+          "callee": "__builtin_bswap32",
+          "lineNumber": 1163
+        },
+        {
+          "caller": "data_state_update_data1",
+          "callee": "data_state_go_crc",
+          "lineNumber": 1164
+        },
+        {
+          "caller": "data_state_update_crc",
+          "callee": "data_state_go_error",
+          "lineNumber": 1171
+        },
+        {
+          "caller": "data_state_update_crc",
+          "callee": "report_note_crc_success",
+          "lineNumber": 1175
+        },
+        {
+          "caller": "data_state_update_crc",
+          "callee": "unstuf_clear_state",
+          "lineNumber": 1176
+        },
+        {
+          "caller": "data_state_update_crc",
+          "callee": "data_state_go_next",
+          "lineNumber": 1177
+        },
+        {
+          "caller": "data_state_update_ack",
+          "callee": "unstuf_restore_state",
+          "lineNumber": 1186
+        },
+        {
+          "caller": "data_state_update_ack",
+          "callee": "data_state_go_error",
+          "lineNumber": 1188
+        },
+        {
+          "caller": "data_state_update_ack",
+          "callee": "report_note_ack_success",
+          "lineNumber": 1191
+        },
+        {
+          "caller": "data_state_update_ack",
+          "callee": "data_state_go_next",
+          "lineNumber": 1192
+        },
+        {
+          "caller": "data_state_update_eof0",
+          "callee": "pio_rx_check_stall",
+          "lineNumber": 1198
+        },
+        {
+          "caller": "data_state_update_eof0",
+          "callee": "data_state_go_error",
+          "lineNumber": 1199
+        },
+        {
+          "caller": "data_state_update_eof0",
+          "callee": "unstuf_clear_state",
+          "lineNumber": 1202
+        },
+        {
+          "caller": "data_state_update_eof0",
+          "callee": "data_state_go_next",
+          "lineNumber": 1203
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "report_note_eof_success",
+          "lineNumber": 1211
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "data_state_go_next",
+          "lineNumber": 1212
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "report_is_not_in_tx",
+          "lineNumber": 1213
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "report_note_eof_success",
+          "lineNumber": 1215
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1216
+        },
+        {
+          "caller": "data_state_update_eof1",
+          "callee": "data_state_go_error",
+          "lineNumber": 1218
+        },
+        {
+          "caller": "data_state_update_discard",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1225
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_start",
+          "lineNumber": 1232
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_header",
+          "lineNumber": 1233
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_ext_header",
+          "lineNumber": 1234
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_data0",
+          "lineNumber": 1235
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_data1",
+          "lineNumber": 1236
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_crc",
+          "lineNumber": 1237
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_ack",
+          "lineNumber": 1238
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_eof0",
+          "lineNumber": 1239
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_eof1",
+          "lineNumber": 1240
+        },
+        {
+          "caller": "data_state_update",
+          "callee": "data_state_update_discard",
+          "lineNumber": 1241
+        },
+        {
+          "caller": "process_rx",
+          "callee": "unstuf_add_bits",
+          "lineNumber": 1253
+        },
+        {
+          "caller": "process_rx",
+          "callee": "unstuf_pull_bits",
+          "lineNumber": 1258
+        },
+        {
+          "caller": "process_rx",
+          "callee": "likely",
+          "lineNumber": 1259
+        },
+        {
+          "caller": "process_rx",
+          "callee": "likely",
+          "lineNumber": 1262
+        },
+        {
+          "caller": "process_rx",
+          "callee": "data_state_update",
+          "lineNumber": 1264
+        },
+        {
+          "caller": "process_rx",
+          "callee": "data_state_line_passive",
+          "lineNumber": 1269
+        },
+        {
+          "caller": "process_rx",
+          "callee": "data_state_line_error",
+          "lineNumber": 1273
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "likely",
+          "lineNumber": 1284
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "process_rx",
+          "lineNumber": 1286
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "likely",
+          "lineNumber": 1288
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "report_line_ackdone",
+          "lineNumber": 1296
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "report_line_matched",
+          "lineNumber": 1300
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "report_line_maytx",
+          "lineNumber": 1304
+        },
+        {
+          "caller": "can2040_pio_irq_handler",
+          "callee": "report_line_txpending",
+          "lineNumber": 1308
+        },
+        {
+          "caller": "can2040_check_transmit",
+          "callee": "readl",
+          "lineNumber": 1320
+        },
+        {
+          "caller": "can2040_check_transmit",
+          "callee": "ARRAY_SIZE",
+          "lineNumber": 1323
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "readl",
+          "lineNumber": 1329
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "ARRAY_SIZE",
+          "lineNumber": 1332
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "tx_qpos",
+          "lineNumber": 1339
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "memcpy",
+          "lineNumber": 1352
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "memset",
+          "lineNumber": 1356
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "crc_bytes",
+          "lineNumber": 1364
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "crc_bytes",
+          "lineNumber": 1365
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_push",
+          "lineNumber": 1366
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_push",
+          "lineNumber": 1367
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "crc_bytes",
+          "lineNumber": 1371
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_push",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "crc_byte",
+          "lineNumber": 1377
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_push",
+          "lineNumber": 1378
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_push",
+          "lineNumber": 1381
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_pushraw",
+          "lineNumber": 1382
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "bs_finalize",
+          "lineNumber": 1383
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "writel",
+          "lineNumber": 1386
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "__DMB",
+          "lineNumber": 1389
+        },
+        {
+          "caller": "can2040_transmit",
+          "callee": "pio_signal_set_txpending",
+          "lineNumber": 1390
+        },
+        {
+          "caller": "can2040_setup",
+          "callee": "memset",
+          "lineNumber": 1402
+        },
+        {
+          "caller": "can2040_start",
+          "callee": "data_state_clear_bits",
+          "lineNumber": 1425
+        },
+        {
+          "caller": "can2040_start",
+          "callee": "pio_setup",
+          "lineNumber": 1426
+        },
+        {
+          "caller": "can2040_start",
+          "callee": "data_state_go_discard",
+          "lineNumber": 1427
+        },
+        {
+          "caller": "can2040_stop",
+          "callee": "pio_irq_disable",
+          "lineNumber": 1433
+        },
+        {
+          "caller": "can2040_stop",
+          "callee": "pio_sm_setup",
+          "lineNumber": 1434
+        },
+        {
+          "caller": "can2040_get_statistics",
+          "callee": "memcpy",
+          "lineNumber": 1441
+        },
+        {
+          "caller": "can2040_get_statistics",
+          "callee": "memcmp",
+          "lineNumber": 1442
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 87,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "port/board/can/can.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 86,
+      "nonEmptyLines": 70,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/board/can/can.pio",
+      "language": "pio",
+      "fileCategory": "code",
+      "totalLines": 183,
+      "nonEmptyLines": 158,
+      "metrics": {}
+    },
+    {
+      "path": "port/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 154,
+      "nonEmptyLines": 126,
+      "metrics": {}
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 44,
+      "nonEmptyLines": 33,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 78,
+      "nonEmptyLines": 64,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 236,
+      "nonEmptyLines": 172,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 57,
+      "nonEmptyLines": 46,
+      "functions": [
+        {
+          "name": "wizchip_gpio_interrupt_initialize",
+          "startLine": 34,
+          "endLine": 51,
+          "params": [
+            "socket"
+          ]
+        },
+        {
+          "name": "wizchip_gpio_interrupt_callback",
+          "startLine": 53,
+          "endLine": 57,
+          "params": [
+            "gpio",
+            "events"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wizchip_gpio_interrupt_initialize",
+          "line": 34,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wizchip_gpio_interrupt_initialize",
+          "callee": "ctlsocket",
+          "lineNumber": 39
+        },
+        {
+          "caller": "wizchip_gpio_interrupt_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 47
+        },
+        {
+          "caller": "wizchip_gpio_interrupt_initialize",
+          "callee": "gpio_set_irq_enabled_with_callback",
+          "lineNumber": 50
+        },
+        {
+          "caller": "wizchip_gpio_interrupt_callback",
+          "callee": "callback_ptr",
+          "lineNumber": 55
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 753,
+      "nonEmptyLines": 626,
+      "functions": [
+        {
+          "name": "mk_cmd_buf",
+          "startLine": 82,
+          "endLine": 114,
+          "params": [
+            "pdst",
+            "opcode",
+            "addr"
+          ]
+        },
+        {
+          "name": "pio_spi_gpio_setup",
+          "startLine": 117,
+          "endLine": 178,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "wiznet_spi_pio_open",
+          "startLine": 180,
+          "endLine": 358,
+          "params": [
+            "spi_config"
+          ]
+        },
+        {
+          "name": "wiznet_spi_pio_close",
+          "startLine": 360,
+          "endLine": 381,
+          "params": [
+            "handle"
+          ]
+        },
+        {
+          "name": "cs_set",
+          "startLine": 383,
+          "endLine": 385,
+          "params": [
+            "state",
+            "value"
+          ]
+        },
+        {
+          "name": "ns_delay",
+          "startLine": 387,
+          "endLine": 391,
+          "params": [
+            "ns"
+          ]
+        },
+        {
+          "name": "wiznet_spi_pio_frame_start",
+          "startLine": 393,
+          "endLine": 418,
+          "params": []
+        },
+        {
+          "name": "wiznet_spi_pio_frame_end",
+          "startLine": 420,
+          "endLine": 428,
+          "params": []
+        },
+        {
+          "name": "wiznet_spi_pio_set_active",
+          "startLine": 718,
+          "endLine": 720,
+          "params": [
+            "handle"
+          ]
+        },
+        {
+          "name": "wiznet_spi_pio_set_inactive",
+          "startLine": 722,
+          "endLine": 724,
+          "params": []
+        },
+        {
+          "name": "wizchip_spi_pio_reset",
+          "startLine": 726,
+          "endLine": 735,
+          "params": [
+            "handle"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wiznet_spi_pio_open",
+          "line": 180,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 122
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 123
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 124
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 125
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 126
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 127
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 130
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 131
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 132
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 133
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 134
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 135
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 138
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 139
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 140
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 141
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 142
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 143
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 144
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 145
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 146
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 147
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 148
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 149
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 153
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 154
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 155
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 158
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 159
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 160
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 163
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 164
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 165
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 168
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 169
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_put",
+          "lineNumber": 170
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_init",
+          "lineNumber": 173
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_dir",
+          "lineNumber": 174
+        },
+        {
+          "caller": "pio_spi_gpio_setup",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 175
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "count_of",
+          "lineNumber": 183
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "assert",
+          "lineNumber": 189
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "get_wiznet_spi_pio_impl",
+          "lineNumber": 194
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_spi_gpio_setup",
+          "lineNumber": 196
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_can_add_program",
+          "lineNumber": 201
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_can_add_program",
+          "lineNumber": 203
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_claim_unused_sm",
+          "lineNumber": 214
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "wiznet_spi_pio_close",
+          "lineNumber": 216
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_add_program",
+          "lineNumber": 220
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "clock_get_hz",
+          "lineNumber": 222
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "printf",
+          "lineNumber": 229
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "PIO_PROGRAM_GET_DEFAULT_CONFIG_FUNC",
+          "lineNumber": 235
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_clkdiv_int_frac",
+          "lineNumber": 237
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_write_masked",
+          "lineNumber": 238
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_write_masked",
+          "lineNumber": 242
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "printf",
+          "lineNumber": 249
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_pins",
+          "lineNumber": 250
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_pins",
+          "lineNumber": 251
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_set_pins",
+          "lineNumber": 252
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset",
+          "lineNumber": 253
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset_pins",
+          "lineNumber": 254
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_shift",
+          "lineNumber": 256
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_shift",
+          "lineNumber": 257
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_set_bits",
+          "lineNumber": 259
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_config",
+          "lineNumber": 261
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 262
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 264
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 267
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 268
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 269
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 270
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "printf",
+          "lineNumber": 272
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_pins",
+          "lineNumber": 273
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_pins",
+          "lineNumber": 274
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_set_pins",
+          "lineNumber": 275
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset",
+          "lineNumber": 276
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset_pins",
+          "lineNumber": 277
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_shift",
+          "lineNumber": 279
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_shift",
+          "lineNumber": 280
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_set_bits",
+          "lineNumber": 282
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_config",
+          "lineNumber": 284
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 285
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 287
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 288
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 291
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 292
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 293
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 294
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "printf",
+          "lineNumber": 296
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_pins",
+          "lineNumber": 297
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_pins",
+          "lineNumber": 298
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_set_pins",
+          "lineNumber": 299
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset",
+          "lineNumber": 300
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset_pins",
+          "lineNumber": 301
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_shift",
+          "lineNumber": 303
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_shift",
+          "lineNumber": 304
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_set_bits",
+          "lineNumber": 306
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_config",
+          "lineNumber": 308
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 309
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 311
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 312
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 313
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 314
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 317
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 318
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 319
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 320
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 321
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 322
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 323
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 324
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_pins",
+          "lineNumber": 328
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_pins",
+          "lineNumber": 329
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_set_pins",
+          "lineNumber": 330
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset",
+          "lineNumber": 331
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_sideset_pins",
+          "lineNumber": 332
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_in_shift",
+          "lineNumber": 334
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "sm_config_set_out_shift",
+          "lineNumber": 335
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "hw_set_bits",
+          "lineNumber": 336
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_config",
+          "lineNumber": 337
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 338
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 339
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_function",
+          "lineNumber": 340
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_pulls",
+          "lineNumber": 343
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "gpio_set_input_hysteresis_enabled",
+          "lineNumber": 344
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_sm_exec",
+          "lineNumber": 347
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "pio_encode_set",
+          "lineNumber": 347
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "dma_claim_unused_channel",
+          "lineNumber": 349
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "dma_claim_unused_channel",
+          "lineNumber": 350
+        },
+        {
+          "caller": "wiznet_spi_pio_open",
+          "callee": "wiznet_spi_pio_close",
+          "lineNumber": 352
+        },
+        {
+          "caller": "wiznet_spi_pio_close",
+          "callee": "pio_remove_program",
+          "lineNumber": 366
+        },
+        {
+          "caller": "wiznet_spi_pio_close",
+          "callee": "pio_sm_unclaim",
+          "lineNumber": 369
+        },
+        {
+          "caller": "wiznet_spi_pio_close",
+          "callee": "dma_channel_unclaim",
+          "lineNumber": 372
+        },
+        {
+          "caller": "wiznet_spi_pio_close",
+          "callee": "dma_channel_unclaim",
+          "lineNumber": 376
+        },
+        {
+          "caller": "cs_set",
+          "callee": "gpio_put",
+          "lineNumber": 384
+        },
+        {
+          "caller": "ns_delay",
+          "callee": "clock_get_hz",
+          "lineNumber": 389
+        },
+        {
+          "caller": "ns_delay",
+          "callee": "busy_wait_at_least_cycles",
+          "lineNumber": 390
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "assert",
+          "lineNumber": 394
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 397
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 398
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 400
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 401
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 403
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 404
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 405
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 406
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 409
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_pull_down",
+          "lineNumber": 410
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 412
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_set_function",
+          "lineNumber": 413
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "gpio_pull_down",
+          "lineNumber": 414
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_start",
+          "callee": "cs_set",
+          "lineNumber": 417
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_end",
+          "callee": "assert",
+          "lineNumber": 421
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_end",
+          "callee": "cs_set",
+          "lineNumber": 423
+        },
+        {
+          "caller": "wiznet_spi_pio_frame_end",
+          "callee": "ns_delay",
+          "lineNumber": 426
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "mk_cmd_buf",
+          "lineNumber": 434
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 437
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_wrap",
+          "lineNumber": 438
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_clear_fifos",
+          "lineNumber": 440
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 444
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 449
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 455
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_restart",
+          "lineNumber": 463
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_clkdiv_restart",
+          "lineNumber": 464
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_put",
+          "lineNumber": 466
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 467
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_encode_out",
+          "lineNumber": 467
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_put",
+          "lineNumber": 469
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 470
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_encode_out",
+          "lineNumber": 470
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 472
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_encode_jmp",
+          "lineNumber": 472
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_abort",
+          "lineNumber": 474
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_abort",
+          "lineNumber": 475
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 477
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 478
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_bswap",
+          "lineNumber": 479
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 480
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_get_dreq",
+          "lineNumber": 480
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_configure",
+          "lineNumber": 481
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 483
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 484
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_bswap",
+          "lineNumber": 485
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 486
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_get_dreq",
+          "lineNumber": 486
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 487
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 488
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_configure",
+          "lineNumber": 489
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 492
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 494
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 496
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 497
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 499
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 501
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 502
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_encode_mov",
+          "lineNumber": 502
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "mk_cmd_buf",
+          "lineNumber": 509
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 513
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_wrap",
+          "lineNumber": 514
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_clear_fifos",
+          "lineNumber": 515
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 519
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 524
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 530
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_restart",
+          "lineNumber": 537
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_clkdiv_restart",
+          "lineNumber": 538
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_put",
+          "lineNumber": 539
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 540
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_encode_out",
+          "lineNumber": 540
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_put",
+          "lineNumber": 541
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 542
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_encode_out",
+          "lineNumber": 542
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 543
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_encode_jmp",
+          "lineNumber": 543
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_abort",
+          "lineNumber": 544
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 547
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 548
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "channel_config_set_bswap",
+          "lineNumber": 549
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 550
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_get_dreq",
+          "lineNumber": 550
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 552
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_configure",
+          "lineNumber": 554
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 555
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_configure",
+          "lineNumber": 556
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 557
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "tight_loop_contents",
+          "lineNumber": 563
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 567
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 570
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 572
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 574
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_exec",
+          "lineNumber": 577
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_encode_mov",
+          "lineNumber": 577
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 578
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "assert",
+          "lineNumber": 585
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "assert",
+          "lineNumber": 591
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 593
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_wrap",
+          "lineNumber": 594
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_clear_fifos",
+          "lineNumber": 595
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_pindirs_with_mask",
+          "lineNumber": 596
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_restart",
+          "lineNumber": 597
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_clkdiv_restart",
+          "lineNumber": 598
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_put",
+          "lineNumber": 599
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 600
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_out",
+          "lineNumber": 600
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_put",
+          "lineNumber": 601
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 602
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_out",
+          "lineNumber": 602
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 603
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_jmp",
+          "lineNumber": 603
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_abort",
+          "lineNumber": 604
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_abort",
+          "lineNumber": 605
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 607
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 608
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_get_dreq",
+          "lineNumber": 608
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 609
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_configure",
+          "lineNumber": 610
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 612
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 613
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_get_dreq",
+          "lineNumber": 613
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 614
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 615
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 616
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_configure",
+          "lineNumber": 617
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 619
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 620
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 622
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 623
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 625
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "assert",
+          "lineNumber": 627
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 629
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_wrap",
+          "lineNumber": 630
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_clear_fifos",
+          "lineNumber": 631
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_restart",
+          "lineNumber": 632
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_clkdiv_restart",
+          "lineNumber": 633
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_put",
+          "lineNumber": 634
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 635
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_out",
+          "lineNumber": 635
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_put",
+          "lineNumber": 636
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 637
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_out",
+          "lineNumber": 637
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 638
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_set",
+          "lineNumber": 638
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 639
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 640
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_jmp",
+          "lineNumber": 640
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_abort",
+          "lineNumber": 641
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 643
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 644
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_get_dreq",
+          "lineNumber": 644
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 646
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "dma_channel_configure",
+          "lineNumber": 647
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 651
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "tight_loop_contents",
+          "lineNumber": 653
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "__compiler_memory_barrier",
+          "lineNumber": 655
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_enabled",
+          "lineNumber": 656
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_set_consecutive_pindirs",
+          "lineNumber": 657
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "panic_unsupported",
+          "lineNumber": 659
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_sm_exec",
+          "lineNumber": 661
+        },
+        {
+          "caller": "pio_spi_transfer",
+          "callee": "pio_encode_mov",
+          "lineNumber": 661
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "assert",
+          "lineNumber": 668
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "assert",
+          "lineNumber": 669
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "pio_spi_transfer",
+          "lineNumber": 671
+        },
+        {
+          "caller": "wiznet_spi_pio_read_byte",
+          "callee": "panic",
+          "lineNumber": 672
+        },
+        {
+          "caller": "wiznet_spi_pio_write_byte",
+          "callee": "panic_unsupported",
+          "lineNumber": 680
+        },
+        {
+          "caller": "wiznet_spi_pio_read_buffer",
+          "callee": "assert",
+          "lineNumber": 686
+        },
+        {
+          "caller": "wiznet_spi_pio_read_buffer",
+          "callee": "assert",
+          "lineNumber": 687
+        },
+        {
+          "caller": "wiznet_spi_pio_read_buffer",
+          "callee": "pio_spi_transfer",
+          "lineNumber": 688
+        },
+        {
+          "caller": "wiznet_spi_pio_read_buffer",
+          "callee": "panic",
+          "lineNumber": 689
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "assert",
+          "lineNumber": 698
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "memcpy",
+          "lineNumber": 700
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "pio_spi_transfer",
+          "lineNumber": 704
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "panic",
+          "lineNumber": 705
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "assert",
+          "lineNumber": 709
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "pio_spi_transfer",
+          "lineNumber": 710
+        },
+        {
+          "caller": "wiznet_spi_pio_write_buffer",
+          "callee": "panic",
+          "lineNumber": 711
+        },
+        {
+          "caller": "wizchip_spi_pio_reset",
+          "callee": "gpio_set_dir",
+          "lineNumber": 729
+        },
+        {
+          "caller": "wizchip_spi_pio_reset",
+          "callee": "gpio_put",
+          "lineNumber": 730
+        },
+        {
+          "caller": "wizchip_spi_pio_reset",
+          "callee": "sleep_ms",
+          "lineNumber": 731
+        },
+        {
+          "caller": "wizchip_spi_pio_reset",
+          "callee": "gpio_put",
+          "lineNumber": 732
+        },
+        {
+          "caller": "wizchip_spi_pio_reset",
+          "callee": "sleep_ms",
+          "lineNumber": 733
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 11,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "language": "pio",
+      "fileCategory": "code",
+      "totalLines": 95,
+      "nonEmptyLines": 85,
+      "metrics": {}
+    },
+    {
+      "path": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 396,
+      "nonEmptyLines": 331,
+      "functions": [
+        {
+          "name": "wizchip_select",
+          "startLine": 81,
+          "endLine": 83,
+          "params": []
+        },
+        {
+          "name": "wizchip_deselect",
+          "startLine": 85,
+          "endLine": 88,
+          "params": []
+        },
+        {
+          "name": "wizchip_reset",
+          "startLine": 90,
+          "endLine": 107,
+          "params": []
+        },
+        {
+          "name": "wizchip_critical_section_lock",
+          "startLine": 188,
+          "endLine": 190,
+          "params": []
+        },
+        {
+          "name": "wizchip_critical_section_unlock",
+          "startLine": 192,
+          "endLine": 194,
+          "params": []
+        },
+        {
+          "name": "wizchip_spi_initialize",
+          "startLine": 196,
+          "endLine": 237,
+          "params": []
+        },
+        {
+          "name": "wizchip_cris_initialize",
+          "startLine": 239,
+          "endLine": 242,
+          "params": []
+        },
+        {
+          "name": "wizchip_initialize",
+          "startLine": 244,
+          "endLine": 301,
+          "params": []
+        },
+        {
+          "name": "wizchip_check",
+          "startLine": 303,
+          "endLine": 337,
+          "params": []
+        },
+        {
+          "name": "network_initialize",
+          "startLine": 340,
+          "endLine": 348,
+          "params": [
+            "net_info"
+          ]
+        },
+        {
+          "name": "print_network_information",
+          "startLine": 350,
+          "endLine": 388,
+          "params": [
+            "net_info"
+          ]
+        },
+        {
+          "name": "print_ipv6_addr",
+          "startLine": 390,
+          "endLine": 396,
+          "params": [
+            "name",
+            "ip6addr"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "wizchip_reset",
+          "line": 90,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_spi_initialize",
+          "line": 196,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_cris_initialize",
+          "line": 239,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_initialize",
+          "line": 244,
+          "isDefault": false
+        },
+        {
+          "name": "wizchip_check",
+          "line": 303,
+          "isDefault": false
+        },
+        {
+          "name": "network_initialize",
+          "line": 340,
+          "isDefault": false
+        },
+        {
+          "name": "print_network_information",
+          "line": 350,
+          "isDefault": false
+        },
+        {
+          "name": "print_ipv6_addr",
+          "line": 390,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wizchip_select",
+          "callee": "gpio_put",
+          "lineNumber": 82
+        },
+        {
+          "caller": "wizchip_deselect",
+          "callee": "gpio_put",
+          "lineNumber": 86
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_init",
+          "lineNumber": 91
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_pull_up",
+          "lineNumber": 94
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_set_dir",
+          "lineNumber": 95
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "sleep_ms",
+          "lineNumber": 96
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_set_dir",
+          "lineNumber": 98
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_put",
+          "lineNumber": 100
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "sleep_ms",
+          "lineNumber": 101
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "gpio_put",
+          "lineNumber": 103
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "sleep_ms",
+          "lineNumber": 104
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "bi_decl",
+          "lineNumber": 106
+        },
+        {
+          "caller": "wizchip_reset",
+          "callee": "bi_1pin_with_name",
+          "lineNumber": 106
+        },
+        {
+          "caller": "wizchip_read",
+          "callee": "spi_read_blocking",
+          "lineNumber": 114
+        },
+        {
+          "caller": "wizchip_write",
+          "callee": "spi_write_blocking",
+          "lineNumber": 120
+        },
+        {
+          "caller": "wizchip_read_buf",
+          "callee": "spi_read_blocking",
+          "lineNumber": 128
+        },
+        {
+          "caller": "wizchip_write_buf",
+          "callee": "spi_write_blocking",
+          "lineNumber": 132
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 143
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 144
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "dma_channel_configure",
+          "lineNumber": 145
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "spi_get_hw",
+          "lineNumber": 146
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 151
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 152
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "dma_channel_configure",
+          "lineNumber": 153
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "spi_get_hw",
+          "lineNumber": 155
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "dma_start_channel_mask",
+          "lineNumber": 159
+        },
+        {
+          "caller": "wizchip_read_burst",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 160
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 166
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 167
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "dma_channel_configure",
+          "lineNumber": 168
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "spi_get_hw",
+          "lineNumber": 169
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 174
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 175
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "dma_channel_configure",
+          "lineNumber": 176
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "spi_get_hw",
+          "lineNumber": 178
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "dma_start_channel_mask",
+          "lineNumber": 182
+        },
+        {
+          "caller": "wizchip_write_burst",
+          "callee": "dma_channel_wait_for_finish_blocking",
+          "lineNumber": 183
+        },
+        {
+          "caller": "wizchip_critical_section_lock",
+          "callee": "critical_section_enter_blocking",
+          "lineNumber": 189
+        },
+        {
+          "caller": "wizchip_critical_section_unlock",
+          "callee": "critical_section_exit",
+          "lineNumber": 193
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "wiznet_spi_pio_open",
+          "lineNumber": 198
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "set_active",
+          "lineNumber": 199
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "spi_init",
+          "lineNumber": 202
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_set_function",
+          "lineNumber": 204
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_set_function",
+          "lineNumber": 205
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_set_function",
+          "lineNumber": 206
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "bi_decl",
+          "lineNumber": 209
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "bi_3pins_with_func",
+          "lineNumber": 209
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_init",
+          "lineNumber": 212
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_set_dir",
+          "lineNumber": 213
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "gpio_put",
+          "lineNumber": 214
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "bi_decl",
+          "lineNumber": 217
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "bi_1pin_with_name",
+          "lineNumber": 217
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "dma_claim_unused_channel",
+          "lineNumber": 220
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "dma_claim_unused_channel",
+          "lineNumber": 221
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 223
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 224
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 225
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "dma_channel_get_default_config",
+          "lineNumber": 230
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_transfer_data_size",
+          "lineNumber": 231
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_dreq",
+          "lineNumber": 232
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_read_increment",
+          "lineNumber": 233
+        },
+        {
+          "caller": "wizchip_spi_initialize",
+          "callee": "channel_config_set_write_increment",
+          "lineNumber": 234
+        },
+        {
+          "caller": "wizchip_cris_initialize",
+          "callee": "critical_section_init",
+          "lineNumber": 240
+        },
+        {
+          "caller": "wizchip_cris_initialize",
+          "callee": "reg_wizchip_cris_cbfunc",
+          "lineNumber": 241
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "frame_end",
+          "lineNumber": 247
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_qspi_cbfunc",
+          "lineNumber": 249
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_spi_cbfunc",
+          "lineNumber": 251
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_spiburst_cbfunc",
+          "lineNumber": 252
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_cs_cbfunc",
+          "lineNumber": 254
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "wizchip_deselect",
+          "lineNumber": 258
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_cs_cbfunc",
+          "lineNumber": 260
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_spi_cbfunc",
+          "lineNumber": 263
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_spi_cbfunc",
+          "lineNumber": 265
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "reg_wizchip_spiburst_cbfunc",
+          "lineNumber": 269
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 284
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "printf",
+          "lineNumber": 286
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "printf",
+          "lineNumber": 288
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 295
+        },
+        {
+          "caller": "wizchip_initialize",
+          "callee": "printf",
+          "lineNumber": 296
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getVER",
+          "lineNumber": 306
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "printf",
+          "lineNumber": 307
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getVER",
+          "lineNumber": 307
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getVERSIONR",
+          "lineNumber": 314
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "printf",
+          "lineNumber": 315
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getVERSIONR",
+          "lineNumber": 315
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getCIDR",
+          "lineNumber": 322
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "printf",
+          "lineNumber": 323
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getCIDR",
+          "lineNumber": 323
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getCIDR",
+          "lineNumber": 330
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "printf",
+          "lineNumber": 331
+        },
+        {
+          "caller": "wizchip_check",
+          "callee": "getCIDR",
+          "lineNumber": 331
+        },
+        {
+          "caller": "network_initialize",
+          "callee": "ctlnetwork",
+          "lineNumber": 342
+        },
+        {
+          "caller": "network_initialize",
+          "callee": "ctlwizchip",
+          "lineNumber": 345
+        },
+        {
+          "caller": "network_initialize",
+          "callee": "ctlnetwork",
+          "lineNumber": 346
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "ctlnetwork",
+          "lineNumber": 355
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "ctlwizchip",
+          "lineNumber": 356
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 359
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 360
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 362
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 363
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 366
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 367
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 368
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 369
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 370
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 371
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 373
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 374
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 376
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 377
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 378
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 379
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 380
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "print_ipv6_addr",
+          "lineNumber": 381
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "print_ipv6_addr",
+          "lineNumber": 382
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "print_ipv6_addr",
+          "lineNumber": 383
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "print_ipv6_addr",
+          "lineNumber": 384
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "print_ipv6_addr",
+          "lineNumber": 385
+        },
+        {
+          "caller": "print_network_information",
+          "callee": "printf",
+          "lineNumber": 386
+        },
+        {
+          "caller": "print_ipv6_addr",
+          "callee": "printf",
+          "lineNumber": 391
+        },
+        {
+          "caller": "print_ipv6_addr",
+          "callee": "printf",
+          "lineNumber": 392
+        },
+        {
+          "caller": "print_ipv6_addr",
+          "callee": "printf",
+          "lineNumber": 393
+        },
+        {
+          "caller": "print_ipv6_addr",
+          "callee": "printf",
+          "lineNumber": 394
+        },
+        {
+          "caller": "print_ipv6_addr",
+          "callee": "printf",
+          "lineNumber": 395
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/mbedtls/inc/ssl_config.h",
+      "language": "c",
+      "fileCategory": "config",
+      "totalLines": 105,
+      "nonEmptyLines": 84,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/open62541/CMakeLists.txt",
+      "language": "cmake",
+      "fileCategory": "config",
+      "totalLines": 100,
+      "nonEmptyLines": 88,
+      "metrics": {}
+    },
+    {
+      "path": "port/open62541/lwip/sockets.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 17,
+      "nonEmptyLines": 14,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "port/open62541/open62541_wiznet_eventloop.c",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 705,
+      "nonEmptyLines": 574,
+      "functions": [
+        {
+          "name": "pico_datetime_now",
+          "startLine": 52,
+          "endLine": 54,
+          "params": []
+        },
+        {
+          "name": "UA_DateTime_now",
+          "startLine": 56,
+          "endLine": 58,
+          "params": []
+        },
+        {
+          "name": "UA_DateTime_nowMonotonic",
+          "startLine": 60,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "UA_DateTime_localTimeUtcOffset",
+          "startLine": 64,
+          "endLine": 66,
+          "params": []
+        },
+        {
+          "name": "set_eventloop_state",
+          "startLine": 68,
+          "endLine": 70,
+          "params": [
+            "el",
+            "state"
+          ]
+        },
+        {
+          "name": "wiz_noop_lock",
+          "startLine": 72,
+          "endLine": 74,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_noop_unlock",
+          "startLine": 76,
+          "endLine": 78,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_eventsource_start",
+          "startLine": 80,
+          "endLine": 83,
+          "params": [
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_eventsource_stop",
+          "startLine": 85,
+          "endLine": 87,
+          "params": [
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_el_register_eventsource",
+          "startLine": 92,
+          "endLine": 105,
+          "params": [
+            "el",
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_el_deregister_eventsource",
+          "startLine": 107,
+          "endLine": 127,
+          "params": [
+            "el",
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_el_start",
+          "startLine": 129,
+          "endLine": 145,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_stop",
+          "startLine": 147,
+          "endLine": 155,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_free",
+          "startLine": 157,
+          "endLine": 174,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_run_delayed_callbacks",
+          "startLine": 176,
+          "endLine": 187,
+          "params": [
+            "wel"
+          ]
+        },
+        {
+          "name": "wiz_run_timers",
+          "startLine": 189,
+          "endLine": 217,
+          "params": [
+            "wel"
+          ]
+        },
+        {
+          "name": "wiz_el_run",
+          "startLine": 219,
+          "endLine": 239,
+          "params": [
+            "el",
+            "timeout"
+          ]
+        },
+        {
+          "name": "wiz_el_cancel",
+          "startLine": 241,
+          "endLine": 243,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_now",
+          "startLine": 245,
+          "endLine": 248,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_utc_offset",
+          "startLine": 250,
+          "endLine": 253,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_next_timer",
+          "startLine": 255,
+          "endLine": 268,
+          "params": [
+            "el"
+          ]
+        },
+        {
+          "name": "wiz_el_add_timer",
+          "startLine": 270,
+          "endLine": 304,
+          "params": [
+            "el",
+            "cb",
+            "application",
+            "data",
+            "intervalMs",
+            "baseTime",
+            "timerPolicy",
+            "timerId"
+          ]
+        },
+        {
+          "name": "wiz_el_modify_timer",
+          "startLine": 306,
+          "endLine": 327,
+          "params": [
+            "el",
+            "timerId",
+            "intervalMs",
+            "baseTime",
+            "timerPolicy"
+          ]
+        },
+        {
+          "name": "wiz_el_remove_timer",
+          "startLine": 329,
+          "endLine": 338,
+          "params": [
+            "el",
+            "timerId"
+          ]
+        },
+        {
+          "name": "wiz_el_add_delayed",
+          "startLine": 340,
+          "endLine": 353,
+          "params": [
+            "el",
+            "dc"
+          ]
+        },
+        {
+          "name": "wiz_el_remove_delayed",
+          "startLine": 355,
+          "endLine": 367,
+          "params": [
+            "el",
+            "dc"
+          ]
+        },
+        {
+          "name": "wiz_send_all",
+          "startLine": 402,
+          "endLine": 415,
+          "params": [
+            "buf",
+            "len"
+          ]
+        },
+        {
+          "name": "wiz_signal_listen",
+          "startLine": 417,
+          "endLine": 435,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_signal_active_open",
+          "startLine": 437,
+          "endLine": 459,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_queue_active_close",
+          "startLine": 461,
+          "endLine": 463,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_process_pending_close",
+          "startLine": 465,
+          "endLine": 490,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_open_listen_socket",
+          "startLine": 492,
+          "endLine": 513,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_cm_poll",
+          "startLine": 515,
+          "endLine": 562,
+          "params": [
+            "tcp"
+          ]
+        },
+        {
+          "name": "wiz_cm_start",
+          "startLine": 564,
+          "endLine": 567,
+          "params": [
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_cm_stop",
+          "startLine": 569,
+          "endLine": 576,
+          "params": [
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_cm_free",
+          "startLine": 578,
+          "endLine": 589,
+          "params": [
+            "es"
+          ]
+        },
+        {
+          "name": "wiz_cm_open_connection",
+          "startLine": 591,
+          "endLine": 617,
+          "params": [
+            "cm",
+            "params",
+            "application",
+            "context",
+            "callback"
+          ]
+        },
+        {
+          "name": "wiz_cm_send",
+          "startLine": 619,
+          "endLine": 640,
+          "params": [
+            "cm",
+            "connectionId",
+            "params",
+            "buf"
+          ]
+        },
+        {
+          "name": "wiz_cm_close",
+          "startLine": 642,
+          "endLine": 658,
+          "params": [
+            "cm",
+            "connectionId"
+          ]
+        },
+        {
+          "name": "wiz_cm_alloc_buffer",
+          "startLine": 660,
+          "endLine": 666,
+          "params": [
+            "cm",
+            "connectionId",
+            "buf",
+            "bufSize"
+          ]
+        },
+        {
+          "name": "wiz_cm_free_buffer",
+          "startLine": 668,
+          "endLine": 674,
+          "params": [
+            "cm",
+            "connectionId",
+            "buf"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "UA_DateTime_now",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "UA_DateTime_nowMonotonic",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "UA_DateTime_localTimeUtcOffset",
+          "line": 64,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "pico_datetime_now",
+          "callee": "(UA_DateTime)",
+          "lineNumber": 53
+        },
+        {
+          "caller": "pico_datetime_now",
+          "callee": "time_us_64",
+          "lineNumber": 53
+        },
+        {
+          "caller": "UA_DateTime_now",
+          "callee": "pico_datetime_now",
+          "lineNumber": 57
+        },
+        {
+          "caller": "UA_DateTime_nowMonotonic",
+          "callee": "pico_datetime_now",
+          "lineNumber": 61
+        },
+        {
+          "caller": "wiz_el_register_eventsource",
+          "callee": "start",
+          "lineNumber": 102
+        },
+        {
+          "caller": "wiz_el_deregister_eventsource",
+          "callee": "stop",
+          "lineNumber": 113
+        },
+        {
+          "caller": "wiz_el_start",
+          "callee": "set_eventloop_state",
+          "lineNumber": 136
+        },
+        {
+          "caller": "wiz_el_start",
+          "callee": "start",
+          "lineNumber": 139
+        },
+        {
+          "caller": "wiz_el_stop",
+          "callee": "stop",
+          "lineNumber": 152
+        },
+        {
+          "caller": "wiz_el_stop",
+          "callee": "set_eventloop_state",
+          "lineNumber": 154
+        },
+        {
+          "caller": "wiz_el_free",
+          "callee": "wiz_el_stop",
+          "lineNumber": 162
+        },
+        {
+          "caller": "wiz_el_free",
+          "callee": "free",
+          "lineNumber": 167
+        },
+        {
+          "caller": "wiz_el_free",
+          "callee": "UA_KeyValueMap_clear",
+          "lineNumber": 171
+        },
+        {
+          "caller": "wiz_el_free",
+          "callee": "UA_free",
+          "lineNumber": 172
+        },
+        {
+          "caller": "wiz_run_delayed_callbacks",
+          "callee": "callback",
+          "lineNumber": 184
+        },
+        {
+          "caller": "wiz_run_timers",
+          "callee": "pico_datetime_now",
+          "lineNumber": 190
+        },
+        {
+          "caller": "wiz_run_timers",
+          "callee": "(UA_DateTime)",
+          "lineNumber": 205
+        },
+        {
+          "caller": "wiz_run_timers",
+          "callee": "(UA_DateTime)",
+          "lineNumber": 211
+        },
+        {
+          "caller": "wiz_run_timers",
+          "callee": "cb",
+          "lineNumber": 215
+        },
+        {
+          "caller": "wiz_el_run",
+          "callee": "wiz_run_delayed_callbacks",
+          "lineNumber": 226
+        },
+        {
+          "caller": "wiz_el_run",
+          "callee": "wiz_run_timers",
+          "lineNumber": 227
+        },
+        {
+          "caller": "wiz_el_run",
+          "callee": "wiz_cm_poll",
+          "lineNumber": 235
+        },
+        {
+          "caller": "wiz_el_now",
+          "callee": "pico_datetime_now",
+          "lineNumber": 247
+        },
+        {
+          "caller": "wiz_el_next_timer",
+          "callee": "pico_datetime_now",
+          "lineNumber": 260
+        },
+        {
+          "caller": "wiz_el_add_timer",
+          "callee": "pico_datetime_now",
+          "lineNumber": 283
+        },
+        {
+          "caller": "wiz_el_add_timer",
+          "callee": "(UA_DateTime)",
+          "lineNumber": 285
+        },
+        {
+          "caller": "wiz_el_modify_timer",
+          "callee": "pico_datetime_now",
+          "lineNumber": 318
+        },
+        {
+          "caller": "wiz_el_modify_timer",
+          "callee": "(UA_DateTime)",
+          "lineNumber": 322
+        },
+        {
+          "caller": "wiz_el_remove_timer",
+          "callee": "memset",
+          "lineNumber": 334
+        },
+        {
+          "caller": "wiz_send_all",
+          "callee": "send",
+          "lineNumber": 406
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "UA_STRING_STATIC",
+          "lineNumber": 421
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 423
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "UA_Variant_setScalar",
+          "lineNumber": 424
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 426
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "UA_Variant_setScalar",
+          "lineNumber": 427
+        },
+        {
+          "caller": "wiz_signal_listen",
+          "callee": "callback",
+          "lineNumber": 431
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "getSn_DIPR",
+          "lineNumber": 441
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "getSn_DPORT",
+          "lineNumber": 442
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "snprintf",
+          "lineNumber": 445
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "UA_STRING",
+          "lineNumber": 448
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 450
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "UA_Variant_setScalar",
+          "lineNumber": 451
+        },
+        {
+          "caller": "wiz_signal_active_open",
+          "callee": "callback",
+          "lineNumber": 455
+        },
+        {
+          "caller": "wiz_process_pending_close",
+          "callee": "callback",
+          "lineNumber": 469
+        },
+        {
+          "caller": "wiz_process_pending_close",
+          "callee": "close",
+          "lineNumber": 475
+        },
+        {
+          "caller": "wiz_process_pending_close",
+          "callee": "callback",
+          "lineNumber": 482
+        },
+        {
+          "caller": "wiz_process_pending_close",
+          "callee": "close",
+          "lineNumber": 488
+        },
+        {
+          "caller": "wiz_open_listen_socket",
+          "callee": "getSn_SR",
+          "lineNumber": 493
+        },
+        {
+          "caller": "wiz_open_listen_socket",
+          "callee": "socket",
+          "lineNumber": 497
+        },
+        {
+          "caller": "wiz_open_listen_socket",
+          "callee": "listen",
+          "lineNumber": 502
+        },
+        {
+          "caller": "wiz_open_listen_socket",
+          "callee": "wiz_signal_listen",
+          "lineNumber": 503
+        },
+        {
+          "caller": "wiz_open_listen_socket",
+          "callee": "wiz_signal_listen",
+          "lineNumber": 507
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_process_pending_close",
+          "lineNumber": 519
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "getSn_SR",
+          "lineNumber": 523
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_signal_active_open",
+          "lineNumber": 526
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "getSn_RX_RSR",
+          "lineNumber": 528
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "recv",
+          "lineNumber": 533
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "callback",
+          "lineNumber": 538
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_queue_active_close",
+          "lineNumber": 543
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "disconnect",
+          "lineNumber": 550
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_queue_active_close",
+          "lineNumber": 551
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_queue_active_close",
+          "lineNumber": 557
+        },
+        {
+          "caller": "wiz_cm_poll",
+          "callee": "wiz_open_listen_socket",
+          "lineNumber": 561
+        },
+        {
+          "caller": "wiz_cm_stop",
+          "callee": "wiz_process_pending_close",
+          "lineNumber": 574
+        },
+        {
+          "caller": "wiz_cm_free",
+          "callee": "wiz_cm_stop",
+          "lineNumber": 583
+        },
+        {
+          "caller": "wiz_cm_free",
+          "callee": "UA_String_clear",
+          "lineNumber": 585
+        },
+        {
+          "caller": "wiz_cm_free",
+          "callee": "UA_KeyValueMap_clear",
+          "lineNumber": 586
+        },
+        {
+          "caller": "wiz_cm_free",
+          "callee": "UA_free",
+          "lineNumber": 587
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "UA_KeyValueMap_getScalar",
+          "lineNumber": 596
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 597
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "UA_KeyValueMap_getScalar",
+          "lineNumber": 598
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "UA_QUALIFIEDNAME",
+          "lineNumber": 599
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "close",
+          "lineNumber": 614
+        },
+        {
+          "caller": "wiz_cm_open_connection",
+          "callee": "wiz_open_listen_socket",
+          "lineNumber": 615
+        },
+        {
+          "caller": "wiz_cm_send",
+          "callee": "wiz_send_all",
+          "lineNumber": 631
+        },
+        {
+          "caller": "wiz_cm_send",
+          "callee": "wiz_queue_active_close",
+          "lineNumber": 633
+        },
+        {
+          "caller": "wiz_cm_send",
+          "callee": "UA_ByteString_clear",
+          "lineNumber": 638
+        },
+        {
+          "caller": "wiz_cm_close",
+          "callee": "disconnect",
+          "lineNumber": 647
+        },
+        {
+          "caller": "wiz_cm_close",
+          "callee": "wiz_queue_active_close",
+          "lineNumber": 648
+        },
+        {
+          "caller": "wiz_cm_alloc_buffer",
+          "callee": "UA_ByteString_allocBuffer",
+          "lineNumber": 665
+        },
+        {
+          "caller": "wiz_cm_free_buffer",
+          "callee": "UA_ByteString_clear",
+          "lineNumber": 673
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 41,
+        "classCount": 0
+      }
+    }
+  ]
+}

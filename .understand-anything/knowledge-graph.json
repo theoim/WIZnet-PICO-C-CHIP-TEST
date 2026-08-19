@@ -1,0 +1,4375 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "WIZNET-PICO-C",
+    "languages": [
+      "C",
+      "CMake",
+      "Markdown",
+      "PIO assembly",
+      "Python"
+    ],
+    "frameworks": [
+      "Raspberry Pi Pico SDK",
+      "CMake",
+      "mbedTLS",
+      "open62541"
+    ],
+    "description": "WIZnet Ethernet chip (W5100S/W5500/W6100/W6300) test and application lab on Raspberry Pi Pico/Pico2. Targeting W6300_EVB_PICO2 with QSPI_QUAD_MODE. Includes hardware porting code, network examples, OPC UA server, and Telegram/OpenAI AI agent.",
+    "analyzedAt": "2026-06-10T05:57:31.034Z",
+    "gitCommitHash": "1b27179f6ef7700f133ff8273a843f561e095e11"
+  },
+  "nodes": [
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "file",
+      "name": "wiz_claw.h",
+      "filePath": "port/wiz-claw/include/wiz_claw.h",
+      "summary": "Core shared header for the wiz-claw AI agent library, defining common error codes (wiz_claw_err_t), overridable logging macros (WIZ_CLAW_LOG_I/W/E), and the heap string formatting utility wiz_claw_dup_printf. Has no external project-internal dependencies, making it the foundational base included by all other wiz-claw headers.",
+      "tags": [
+        "type-definition",
+        "utility",
+        "entry-point",
+        "error-handling",
+        "logging"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses standard C only (stddef.h, stdint.h, stdbool.h, stdio.h, stdlib.h, string.h, stdarg.h) with no ESP-IDF or Pico SDK dependencies, making it portable across build environments. Logging macros are designed to be overridden via #ifndef guards."
+    },
+    {
+      "id": "function:port/wiz-claw/include/wiz_claw.h:wiz_claw_dup_printf",
+      "type": "function",
+      "name": "wiz_claw_dup_printf",
+      "filePath": "port/wiz-claw/include/wiz_claw.h",
+      "lineRange": [
+        45,
+        63
+      ],
+      "summary": "Heap-allocates a formatted string using vsnprintf with a two-pass approach (first pass to compute required size, second pass to fill the buffer), returning a caller-owned char pointer or NULL on failure.",
+      "tags": [
+        "utility",
+        "string-formatting",
+        "heap-allocation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "file",
+      "name": "wiz_claw_http.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_http.h",
+      "summary": "HTTP/1.1 client interface header for the wiz-claw library, declaring low-level TCP helpers (connect, close, send, recv) and high-level HTTP callback functions compatible with LLM and Telegram transport function pointer signatures. Defines socket number assignments and configurable buffer size constants for header and body data.",
+      "tags": [
+        "api-handler",
+        "http-client",
+        "tcp",
+        "callback",
+        "networking"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses function-pointer-based transport injection pattern: wiz_claw_http_post_cb and wiz_claw_http_call_cb can be assigned directly to wiz_claw_llm_config_t.http_post and wiz_claw_tg_config_t.http_call respectively, enabling clean separation of HTTP transport from protocol logic."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_net.h",
+      "type": "file",
+      "name": "wiz_claw_net.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_net.h",
+      "summary": "Network initialization, DNS resolution, and DHCP helper header for the wiz-claw library, wrapping ioLibrary_Driver's DNS and DHCP modules with wiz-claw error types. Declares configuration struct and API functions for DNS lookup, DHCP lease acquisition, and the required 1-second periodic tick handler.",
+      "tags": [
+        "networking",
+        "dns",
+        "dhcp",
+        "utility",
+        "initialization"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Depends on ioLibrary_Driver's wizchip_conf.h for the wiz_NetInfo type; must be called after wizchip_initialize() and network_initialize(). The wiz_claw_net_1s_tick() function must be wired into a 1-second timer ISR or polling loop."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "file",
+      "name": "wiz_claw_telegram.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_telegram.h",
+      "summary": "Telegram Bot API client interface header defining types and function declarations for polling updates, parsing incoming messages, and sending text replies. HTTP transport is injected via the wiz_claw_http_call_fn function pointer, keeping TLS and socket concerns outside this module.",
+      "tags": [
+        "api-handler",
+        "telegram",
+        "messaging",
+        "callback",
+        "type-definition"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "The wiz_claw_tg_message_t struct uses a heap-allocated text field requiring explicit wiz_claw_tg_message_free() cleanup. The polling offset (inout_next_offset) follows the Telegram long-polling pattern of tracking update_id+1 to avoid reprocessing."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "type": "file",
+      "name": "wiz_claw_tls.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_tls.h",
+      "summary": "mbedTLS client interface header for the wiz-claw library, providing a TLS session context struct (wiz_claw_tls_t) that wraps mbedTLS entropy, CTR-DRBG, SSL, and X.509 certificate objects alongside a WIZnet socket number. Declares the full TLS lifecycle API: init, connect, write, read, close, and free.",
+      "tags": [
+        "tls",
+        "security",
+        "mbedtls",
+        "networking",
+        "type-definition"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses RP2350 hardware TRNG (pico/rand.h get_rand_32()) as the entropy source for CTR-DRBG. The wiz_claw_tls_t struct (~1-2 KB) is explicitly documented as too large for stack allocation and should be declared as a global or static variable. CA bundle loading is conditional on WIZ_CLAW_CA_BUNDLE_PEM being defined."
+    },
+    {
+      "id": "file:port/wiz-claw/include/cJSON.h",
+      "type": "file",
+      "name": "cJSON.h",
+      "filePath": "port/wiz-claw/include/cJSON.h",
+      "summary": "Vendored cJSON 1.7.18 library header defining the core JSON node structure, type constants, memory hook typedefs, and the full public API (~60 function declarations) for parsing, serializing, and manipulating JSON trees on embedded targets.",
+      "tags": [
+        "utility",
+        "serialization",
+        "type-definition",
+        "third-party"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses a CJSON_PUBLIC(type) macro to handle __declspec(dllexport/import) on Windows and GCC visibility attributes on POSIX, enabling the same header to be used for both shared-library and static builds."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "type": "file",
+      "name": "wiz_claw_agent.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_agent.h",
+      "summary": "Agent loop interface header that defines the tool-handler callback typedef, agent configuration struct (LLM config, system prompt, tool JSON, handler, max iterations), and the single-turn entry point wiz_claw_agent_run() which drives the LLM → tool-call → re-invoke loop.",
+      "tags": [
+        "api-handler",
+        "service",
+        "type-definition",
+        "ai-agent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "file",
+      "name": "wiz_claw_llm.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_llm.h",
+      "summary": "LLM client interface header for an OpenAI-compatible chat API, declaring the HTTP POST callback typedef, tool-call and response structs, client configuration struct, the wiz_claw_llm_chat() function, and conversation-history session helpers (create, append user/assistant/tool messages).",
+      "tags": [
+        "api-handler",
+        "service",
+        "type-definition",
+        "llm-client"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/opcua_usb_stdio/CMakeLists.txt",
+      "summary": "CMake build configuration for the opcua_usb_stdio example, defining the target executable from six C source files, linking against WIZnet Ethernet/IO libraries and the open62541 OPC UA port, and enabling USB CDC stdio while disabling UART.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake",
+        "opcua",
+        "embedded"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Uses pico_enable_stdio_usb to route all printf output over USB CDC, a common pattern for Pico-based examples that avoids needing a UART adapter."
+    },
+    {
+      "id": "document:examples/opcua_usb_stdio/README_eng.md",
+      "type": "document",
+      "name": "README_eng.md",
+      "filePath": "examples/opcua_usb_stdio/README_eng.md",
+      "summary": "English user guide for the OPC UA USB stdio example, covering firmware upload, Tera Term serial setup, UaExpert server discovery and connection, real-time node browsing via Data Access View, and the full set of USB serial commands.",
+      "tags": [
+        "documentation",
+        "opcua",
+        "user-guide",
+        "wiznet",
+        "embedded"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:examples/opcua_usb_stdio/README_kor.md",
+      "type": "document",
+      "name": "README_kor.md",
+      "filePath": "examples/opcua_usb_stdio/README_kor.md",
+      "summary": "Korean-language user guide for the OPC UA USB stdio example, providing the same step-by-step instructions as the English README for firmware upload, Tera Term configuration, UaExpert connection, and USB serial data commands.",
+      "tags": [
+        "documentation",
+        "opcua",
+        "user-guide",
+        "korean",
+        "embedded"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Bilingual documentation pattern (README_eng.md + README_kor.md) is used consistently across WIZnet example directories to serve both English and Korean audiences."
+    },
+    {
+      "id": "config:.gitmodules",
+      "type": "config",
+      "name": ".gitmodules",
+      "filePath": ".gitmodules",
+      "summary": "Declares five Git submodule dependencies: WIZnet ioLibrary_Driver, ARM mbedTLS, Raspberry Pi pico-sdk and pico-extras, and the open62541 OPC UA stack.",
+      "tags": [
+        "configuration",
+        "submodules",
+        "dependencies",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "CMakeLists.txt",
+      "summary": "Top-level CMake build configuration that selects the target WIZnet board (currently W6300_EVB_PICO2 with QSPI_QUAD_MODE), sets compile definitions for the chosen chip, initializes the Pico SDK, and includes all library and example subdirectories.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake",
+        "entry-point"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses board-name dispatch via if/elseif chains to set chip-specific preprocessor macros and QSPI mode before calling pico_sdk_init()."
+    },
+    {
+      "id": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "file",
+      "name": "10M_Complience_Test.c",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "summary": "Interactive 10 Mbit/s Ethernet compliance test application for the W6300 chip that configures PHY settings (MDI/MDIX, speed, duplex) via UART prompts and transmits raw Ethernet test frames using socket-level WIZnet APIs.",
+      "tags": [
+        "entry-point",
+        "utility",
+        "hardware-test",
+        "networking"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Directly accesses WIZnet MDIO registers (wiz_mdio_write/read) and low-level socket commands (wiz_send_data, setSn_CR) to send frames without IP stack."
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [
+        48,
+        169
+      ],
+      "summary": "Entry point that initializes the WIZnet chip, presents an interactive UART menu for selecting test modes and PHY parameters, then loops transmitting Ethernet test frames.",
+      "tags": [
+        "entry-point",
+        "hardware-test",
+        "networking"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:send_test_frame",
+      "type": "function",
+      "name": "send_test_frame",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [
+        171,
+        233
+      ],
+      "summary": "Opens a raw socket and transmits a compliance test frame of the requested packet type by directly writing to the TX buffer and issuing a send command register.",
+      "tags": [
+        "networking",
+        "hardware-test",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "function",
+      "name": "complience_test_initialize",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [
+        272,
+        309
+      ],
+      "summary": "Registers QSPI/CS callbacks, configures socket memory buffers, and calls W6300_PHY_CONFIG to set up the PHY before the compliance test loop begins.",
+      "tags": [
+        "hardware-test",
+        "initialization",
+        "networking"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "function",
+      "name": "W6300_PHY_CONFIG",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [
+        255,
+        269
+      ],
+      "summary": "Sets the W6300 PHY configuration (mode, speed, duplex) using wizphy_setphyconf and prints the resulting status.",
+      "tags": [
+        "hardware-test",
+        "utility",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/10M_Complience_Test/CMakeLists.txt",
+      "summary": "CMake build configuration for the 10M compliance test example, linking against WIZnet ioLibrary port libraries and the pico_stdlib.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/10M_Complience_Test/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/10M_Complience_Test/README.md",
+      "summary": "Step-by-step guide (9 sections) covering software prerequisites, hardware setup, board-specific configuration for W55RP20/W6300/generic SPI, CMake build, and flashing the 10M compliance test firmware.",
+      "tags": [
+        "documentation",
+        "hardware-setup",
+        "build-system"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:examples/buffer_read/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/buffer_read/CMakeLists.txt",
+      "summary": "CMake build configuration for the buffer_read example, defining the executable target and linking WIZnet port and pico_stdlib libraries.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/buffer_read/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/buffer_read/README.md",
+      "summary": "Step-by-step guide (9 sections) for the buffer_read example covering software setup, hardware wiring for multiple board variants, CMake configuration, build, and firmware upload.",
+      "tags": [
+        "documentation",
+        "hardware-setup",
+        "build-system"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "file",
+      "name": "WIZnet_Chip_Buffer_Test.c",
+      "filePath": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "summary": "Diagnostic test program that writes a known pattern into the WIZnet chip TX buffer using direct block-write register macros and then reads it back to verify data integrity.",
+      "tags": [
+        "hardware-test",
+        "utility",
+        "networking"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "lineRange": [
+        101,
+        263
+      ],
+      "summary": "Initializes the WIZnet chip, writes a data pattern to the socket TX buffer via WIZCHIP_TXBUF_BLOCK macros, reads it back, and prints a pass/fail comparison over UART.",
+      "tags": [
+        "entry-point",
+        "hardware-test",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:examples/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/CMakeLists.txt",
+      "summary": "Top-level examples directory CMake file that adds all example subdirectories as CMake sub-projects.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:examples/loopback/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/loopback/CMakeLists.txt",
+      "summary": "CMake build configuration for the loopback example, defining the executable and linking WIZnet ioLibrary port and pico_stdlib.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/loopback/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/loopback/README.md",
+      "summary": "Comprehensive 9-section guide for the loopback example covering software prerequisites, hardware wiring for W55RP20/W6300/generic SPI boards, CMake configuration, build, and upload steps.",
+      "tags": [
+        "documentation",
+        "hardware-setup",
+        "networking"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/loopback/wizchip_loopback.c",
+      "type": "file",
+      "name": "wizchip_loopback.c",
+      "filePath": "examples/loopback/wizchip_loopback.c",
+      "summary": "Loopback network example that initializes the WIZnet chip and network stack, then runs TCP server, TCP client, and UDP loopback handlers in a cooperative polling loop.",
+      "tags": [
+        "entry-point",
+        "networking",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/loopback/wizchip_loopback.c",
+      "lineRange": [
+        180,
+        285
+      ],
+      "summary": "Initializes the WIZnet SPI/CRIS/network stack and then cooperatively calls loopback_tcps, loopback_tcpc, and loopback_udps handlers in a round-robin loop.",
+      "tags": [
+        "entry-point",
+        "networking",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/images/.gitkeep",
+      "type": "file",
+      "name": ".gitkeep",
+      "filePath": "examples/opcua_usb_stdio/images/.gitkeep",
+      "summary": "Empty placeholder file that keeps the images directory tracked in Git for the opcua_usb_stdio example.",
+      "tags": [
+        "data",
+        "placeholder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "type": "file",
+      "name": "data_table.h",
+      "filePath": "examples/opcua_usb_stdio/inc/data_table.h",
+      "summary": "Header defining the DataTable struct (three float channels, raw frame buffer, counters) and declaring the data_table_* API for initializing, clearing, updating, and snapshotting sensor data.",
+      "tags": [
+        "type-definition",
+        "api-handler",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "type": "file",
+      "name": "opcua_node_map.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "summary": "Defines OPC UA namespace-1 node ID constants and string identifiers for Device and USB_Stdio sensor nodes exposed through the UAExpert-visible address space.",
+      "tags": [
+        "type-definition",
+        "schema-definition",
+        "api-schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "type": "file",
+      "name": "opcua_server.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_server.h",
+      "summary": "Header declaring the OPC UA server lifecycle API (init/poll/get_status/print_status), the OpcUaServerStatus struct, server state enum, and hardcoded endpoint/URI constants.",
+      "tags": [
+        "type-definition",
+        "api-handler",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "type": "file",
+      "name": "opcua_tcp_probe.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "summary": "Header declaring the TCP probe module API and OpcUaTcpProbeStatus struct with per-state counters tracking OPC UA HEL/OpenSecureChannel handshake statistics.",
+      "tags": [
+        "type-definition",
+        "api-handler",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "type": "file",
+      "name": "usb_stdio_link.h",
+      "filePath": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "summary": "Minimal header declaring the four public functions of the USB stdio link module: init, poll, print_help, and print_state.",
+      "tags": [
+        "type-definition",
+        "api-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "type": "file",
+      "name": "wiznet_network.h",
+      "filePath": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "summary": "Header defining the WiznetNetworkStatus struct, network state enum, OPC UA TCP port constant, and declaring the network init/poll/get_status/print_status/is_ready API.",
+      "tags": [
+        "type-definition",
+        "api-handler",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "file",
+      "name": "data_table.c",
+      "filePath": "examples/opcua_usb_stdio/src/data_table.c",
+      "summary": "Implements the shared sensor data table used by both the USB stdio input parser and the OPC UA server, providing thread-safe snapshot copies of three float channels and a raw frame string.",
+      "tags": [
+        "data-model",
+        "service",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "function",
+      "name": "data_table_set_channels",
+      "filePath": "examples/opcua_usb_stdio/src/data_table.c",
+      "lineRange": [
+        22,
+        34
+      ],
+      "summary": "Updates the global data table with new float channel values and a raw frame string, stamping the entry with the current millisecond timestamp.",
+      "tags": [
+        "data-model",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/main.c",
+      "type": "file",
+      "name": "main.c",
+      "filePath": "examples/opcua_usb_stdio/src/main.c",
+      "summary": "Entry point for the opcua_usb_stdio example: waits for USB CDC connection, then initializes the data table, USB stdio link, WIZnet network, and OPC UA server before entering the cooperative polling loop.",
+      "tags": [
+        "entry-point",
+        "service",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/opcua_usb_stdio/src/main.c",
+      "lineRange": [
+        11,
+        34
+      ],
+      "summary": "Waits for USB stdio connection, then sequentially calls data_table_init, usb_stdio_link_init, wiznet_network_init, and opcua_server_init before entering a polling loop.",
+      "tags": [
+        "entry-point",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "file",
+      "name": "opcua_server.c",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "summary": "Implements the open62541-based OPC UA server lifecycle and address space for the EVB-PICO2: configures server identity and endpoint URL, builds a namespace-1 node tree with live sensor data variables, and polls the server iterate loop alongside the TCP probe.",
+      "tags": [
+        "service",
+        "api-handler",
+        "networking"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses open62541 UA_Server data-source callbacks (UA_Server_addDataSourceVariableNode) so OPC UA reads are satisfied by calling data_table_snapshot at read time rather than pushing values."
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "function",
+      "name": "opcua_server_init",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [
+        387,
+        464
+      ],
+      "summary": "Allocates and configures the UA_Server with a minimal custom buffer, sets server identity and URL, starts up the server, populates the address space, and launches the TCP probe.",
+      "tags": [
+        "service",
+        "initialization",
+        "networking"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "function",
+      "name": "opcua_server_poll",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [
+        466,
+        473
+      ],
+      "summary": "Drives one iteration of the OPC UA server event loop and polls the TCP probe for new connections.",
+      "tags": [
+        "service",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "function",
+      "name": "opcua_server_print_status",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [
+        480,
+        502
+      ],
+      "summary": "Prints the current OPC UA server state, endpoint URL, status text, and delegates TCP probe status printing for diagnostic output.",
+      "tags": [
+        "service",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "file",
+      "name": "opcua_tcp_probe.c",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "summary": "Implements a lightweight WIZnet-socket TCP listener that decodes the OPC UA binary HEL/ACK handshake on port 4840, tracking connection statistics and endpoint URLs for diagnostic visibility into OPC UA client connections before the main server processes them.",
+      "tags": [
+        "networking",
+        "service",
+        "utility"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Parses the OPC UA Binary Transport protocol (MessageType, ChunkType, MessageSize) directly from the TCP byte stream using little-endian read/write helpers, operating independently of the open62541 stack."
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:poll_socket",
+      "type": "function",
+      "name": "poll_socket",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [
+        196,
+        282
+      ],
+      "summary": "State machine polling a WIZnet socket through CLOSED/OPENED/LISTENING/ESTABLISHED states, receiving data and dispatching to process_rx for OPC UA handshake parsing.",
+      "tags": [
+        "networking",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:process_rx",
+      "type": "function",
+      "name": "process_rx",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [
+        144,
+        188
+      ],
+      "summary": "Parses an OPC UA binary transport frame from the receive buffer, recognizing HEL and OpenSecureChannel message types and dispatching ACK or error responses accordingly.",
+      "tags": [
+        "networking",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "function",
+      "name": "opcua_tcp_probe_init",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [
+        284,
+        299
+      ],
+      "summary": "Zeroes the probe state, closes any existing socket, and prints initialization status.",
+      "tags": [
+        "initialization",
+        "networking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "function",
+      "name": "opcua_tcp_probe_poll",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [
+        301,
+        313
+      ],
+      "summary": "Checks network readiness and, if the link is down, closes the probe socket; otherwise drives poll_socket for one iteration.",
+      "tags": [
+        "networking",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "file",
+      "name": "usb_stdio_link.c",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "summary": "Reads newline-delimited ASCII frames from USB CDC stdin, parses DATA/CLEAR/STATUS/HELP commands, and forwards parsed float channel values to the shared data table.",
+      "tags": [
+        "service",
+        "utility",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:process_line",
+      "type": "function",
+      "name": "process_line",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "lineRange": [
+        101,
+        161
+      ],
+      "summary": "Dispatches a trimmed command line to help, status, network, opcua, clear, or DATA handlers, parsing float tokens and updating the data table for sensor frames.",
+      "tags": [
+        "service",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "function",
+      "name": "usb_stdio_link_poll",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "lineRange": [
+        168,
+        200
+      ],
+      "summary": "Non-blocking USB CDC character reader that accumulates bytes into a line buffer and calls process_line when a newline is received or the buffer overflows.",
+      "tags": [
+        "service",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:.understand-anything/.understandignore",
+      "type": "config",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "Ignore-pattern file for the understand-anything analysis tool, listing paths and glob patterns to exclude from codebase scanning.",
+      "tags": [
+        "configuration",
+        "tooling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "type": "file",
+      "name": "wiznet_network.c",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "summary": "Manages WIZnet chip initialization and network lifecycle for the OPC UA USB stdio example, providing non-blocking chip bring-up, link status polling, and network status reporting.",
+      "tags": [
+        "service",
+        "network",
+        "initialization",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "function",
+      "name": "wiznet_network_init",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [
+        140,
+        169
+      ],
+      "summary": "Initializes the WIZnet network stack: sets up SPI, resets and initializes the chip, configures network parameters, and logs the resulting link and PHY status.",
+      "tags": [
+        "initialization",
+        "network",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "function",
+      "name": "wiznet_network_poll",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [
+        171,
+        181
+      ],
+      "summary": "Periodically polls the WIZnet PHY link status every 1 second using Pico timing, updating the internal link state.",
+      "tags": [
+        "polling",
+        "network",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "function",
+      "name": "wiznet_network_print_status",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [
+        188,
+        204
+      ],
+      "summary": "Prints the current WIZnet network status including IP address, state name, and MAC address to stdout.",
+      "tags": [
+        "utility",
+        "logging",
+        "network"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:examples/PING_TEST/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/PING_TEST/CMakeLists.txt",
+      "summary": "CMake build configuration for the PING_TEST example, linking the example executable against the WIZnet ioLibrary and Pico SDK targets.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "file",
+      "name": "PING_TEST.c",
+      "filePath": "examples/PING_TEST/PING_TEST.c",
+      "summary": "Entry-point for the PING_TEST example: initializes the WIZnet chip via SPI, configures network settings, then drives the W6300 hardware ping engine in a polling loop to send ICMP pings and report results.",
+      "tags": [
+        "entry-point",
+        "example",
+        "network",
+        "ping"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/PING_TEST/PING_TEST.c",
+      "lineRange": [
+        102,
+        195
+      ],
+      "summary": "Initialises SPI and WIZnet chip, configures the W6300 ping engine registers (SLRTR, SLIMR, SLCR, etc.), then loops polling SLIR to receive ping replies and report RTT.",
+      "tags": [
+        "entry-point",
+        "network",
+        "ping",
+        "example"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/PING_TEST/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/PING_TEST/README.md",
+      "summary": "Step-by-step guide (9 sections) covering software/hardware preparation, CMake setup for W55RP20/W6300 and generic SPI boards, build, and flashing for the PING_TEST example.",
+      "tags": [
+        "documentation",
+        "example",
+        "setup-guide"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:examples/wiz_claw_agent/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/wiz_claw_agent/CMakeLists.txt",
+      "summary": "CMake build configuration for the wiz_claw_agent example, linking the AI agent application against WIZnet networking and the wiz_claw library targets.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/main.c",
+      "type": "file",
+      "name": "main.c",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "summary": "Entry-point for the wiz_claw AI agent: initialises the Pico hardware and WIZnet Ethernet, registers a GPIO tool handler, polls a Telegram bot for incoming messages, and invokes the OpenAI-backed wiz_claw agent to dispatch tool calls controlling GPIO pins.",
+      "tags": [
+        "entry-point",
+        "ai-agent",
+        "network",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:gpio_tool_handler",
+      "type": "function",
+      "name": "gpio_tool_handler",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [
+        79,
+        125
+      ],
+      "summary": "Tool callback registered with the wiz_claw agent that parses JSON arguments to read or write Pico GPIO pins, returning the result as a JSON string.",
+      "tags": [
+        "event-handler",
+        "gpio",
+        "ai-agent"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:on_telegram_message",
+      "type": "function",
+      "name": "on_telegram_message",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [
+        166,
+        200
+      ],
+      "summary": "Telegram message callback that creates a wiz_claw agent session, runs the AI agent against the incoming message to produce a reply, then sends the response back via Telegram.",
+      "tags": [
+        "event-handler",
+        "ai-agent",
+        "network"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [
+        204,
+        293
+      ],
+      "summary": "Application entry point: brings up Pico stdio/GPIO/SPI, initialises WIZnet networking and the wiz_claw network layer, registers a 1-second timer tick, and enters the main Telegram polling loop.",
+      "tags": [
+        "entry-point",
+        "initialization",
+        "ai-agent"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/README_kr.md",
+      "type": "document",
+      "name": "README_kr.md",
+      "filePath": "examples/wiz_claw_agent/README_kr.md",
+      "summary": "Korean-language README for the wiz_claw_agent example describing operation flow, network/API configuration, socket usage, GPIO tool interface, Telegram test instructions, and related files (9 sections).",
+      "tags": [
+        "documentation",
+        "ai-agent",
+        "setup-guide"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:libraries/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "libraries/CMakeLists.txt",
+      "summary": "Top-level CMake configuration for all third-party and WIZnet libraries (ioLibrary_Driver, mbedTLS, lwIP, open62541, wiz_claw, cJSON), adding their subdirectories and defining interface targets.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:pico_sdk_import.cmake",
+      "type": "config",
+      "name": "pico_sdk_import.cmake",
+      "filePath": "pico_sdk_import.cmake",
+      "summary": "Pico SDK CMake import helper that locates the Raspberry Pi Pico SDK from the PICO_SDK_PATH environment variable or a cached path and imports its top-level CMakeLists.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board_list.h",
+      "type": "file",
+      "name": "board_list.h",
+      "filePath": "port/board_list.h",
+      "summary": "Minimal header listing all supported WIZnet Pico board variants via preprocessor defines, used to select board-specific configuration at compile time.",
+      "tags": [
+        "type-definition",
+        "configuration",
+        "board-support"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board/can/can.c",
+      "type": "file",
+      "name": "can.c",
+      "filePath": "port/board/can/can.c",
+      "summary": "Complete software CAN 2.0B controller implementation (can2040) for the RP2040/RP2350, using PIO state machines for bit-level timing, hardware-accelerated bit stuffing/unstuffing, CRC computation, and interrupt-driven frame reception and transmission.",
+      "tags": [
+        "service",
+        "hardware-driver",
+        "pio",
+        "can-bus"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Implements the full CAN 2.0B protocol stack in software on top of RP2040 PIO peripherals; uses GCC builtins (__builtin_clz, __builtin_bswap32) and ARM DMB memory barriers for correctness on Cortex-M0+."
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "function",
+      "name": "can2040_pio_irq_handler",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        1280,
+        1310
+      ],
+      "summary": "PIO IRQ handler that dispatches incoming CAN bus events (RX data, ACK done, line matched, may-TX, TX pending) to the appropriate report handlers.",
+      "tags": [
+        "event-handler",
+        "hardware-driver",
+        "pio"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_transmit",
+      "type": "function",
+      "name": "can2040_transmit",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        1327,
+        1393
+      ],
+      "summary": "Encodes a CAN frame (standard or extended ID, data payload) with bit stuffing and CRC into the TX queue and triggers PIO transmission.",
+      "tags": [
+        "hardware-driver",
+        "can-bus",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_start",
+      "type": "function",
+      "name": "can2040_start",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        1420,
+        1428
+      ],
+      "summary": "Starts the can2040 controller by resetting data state, initializing PIO hardware, and entering the initial discard state.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "can-bus"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_setup",
+      "type": "function",
+      "name": "can2040_setup",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        1400,
+        1411
+      ],
+      "summary": "Initialises a can2040 state structure with a given PIO number, zeroing all fields and recording the PIO base address.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "can-bus"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/board/can/can.c:pio_setup",
+      "type": "function",
+      "name": "pio_setup",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        382,
+        413
+      ],
+      "summary": "Configures all four PIO state machines (sync, RX, match, TX) for CAN bus timing, sets clock dividers, and assigns GPIO pins to PIO functions.",
+      "tags": [
+        "hardware-driver",
+        "pio",
+        "initialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/board/can/can.c:process_rx",
+      "type": "function",
+      "name": "process_rx",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [
+        1251,
+        1277
+      ],
+      "summary": "Processes a raw PIO RX word by feeding bits through the unstuffer and data state machine, handling passive and error conditions.",
+      "tags": [
+        "hardware-driver",
+        "can-bus",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/board/can/can.h",
+      "type": "file",
+      "name": "can.h",
+      "filePath": "port/board/can/can.h",
+      "summary": "Public header for the can2040 software CAN controller, declaring the can2040 state struct, can2040_msg frame type, statistics struct, and the public API (setup, start, stop, transmit, check_transmit, callback_config, get_statistics, pio_irq_handler).",
+      "tags": [
+        "type-definition",
+        "hardware-driver",
+        "can-bus"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board/can/can.pio",
+      "type": "file",
+      "name": "can.pio",
+      "filePath": "port/board/can/can.pio",
+      "summary": "RP2040 PIO assembly programs (sync, RX, match, TX state machines) implementing the low-level CAN bus bit sampling, matching, and transmission timing used by can2040.",
+      "tags": [
+        "hardware-driver",
+        "pio",
+        "can-bus"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "PIO assembly for the RP2040 programmable I/O subsystem; each program handles a specific phase of the CAN protocol (sync detection, bit reception, frame matching, bit transmission)."
+    },
+    {
+      "id": "config:port/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "port/CMakeLists.txt",
+      "summary": "CMake configuration for the port layer, defining the wizchip_spi, wizchip_qspi_pio, wizchip_gpio_irq, and CAN library targets with their sources, include paths, and Pico SDK dependencies.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "type": "file",
+      "name": "wizchip_gpio_irq.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "summary": "Header declaring the GPIO interrupt initialization function and the user-configurable callback pointer for WIZnet chip interrupt handling.",
+      "tags": [
+        "type-definition",
+        "hardware-driver",
+        "interrupt"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "type": "file",
+      "name": "wizchip_qspi_pio.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "summary": "Header for the QSPI PIO driver, declaring the SPI configuration structure, handle type, and the open/close/frame/register functions for WIZnet QSPI communication via RP2040 PIO.",
+      "tags": [
+        "type-definition",
+        "hardware-driver",
+        "spi"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "type": "file",
+      "name": "wizchip_spi.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "summary": "Main port header declaring WIZnet SPI initialization, chip reset, network initialization, and information-printing functions, plus network info and status structures used across all examples.",
+      "tags": [
+        "type-definition",
+        "hardware-driver",
+        "network"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "file",
+      "name": "wizchip_gpio_irq.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "summary": "Implements GPIO interrupt support for the WIZnet chip, configuring socket interrupt masks and attaching a user-supplied callback to the interrupt GPIO.",
+      "tags": [
+        "hardware-driver",
+        "interrupt",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "function",
+      "name": "wizchip_gpio_interrupt_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "lineRange": [
+        34,
+        51
+      ],
+      "summary": "Enables per-socket interrupt masks on the WIZnet chip and registers the GPIO falling-edge callback with the Pico SDK IRQ system.",
+      "tags": [
+        "initialization",
+        "interrupt",
+        "hardware-driver"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "file",
+      "name": "wizchip_qspi_pio.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "summary": "Implements the WIZnet QSPI PIO driver for RP2040/RP2350: opens/closes PIO state machines and DMA channels for W6300 QSPI quad-mode communication, provides frame-level CS management, and exposes read/write byte and buffer transfer functions.",
+      "tags": [
+        "hardware-driver",
+        "spi",
+        "pio",
+        "service"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses RP2040 PIO + DMA for high-throughput QSPI transfers; supports SPI, dual-SPI, and quad-SPI modes selected at open time via the spi_config structure."
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "function",
+      "name": "wiznet_spi_pio_open",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [
+        180,
+        358
+      ],
+      "summary": "Allocates and configures PIO state machines and DMA channels for the requested SPI mode (SPI/dual/quad), setting GPIO functions, clock dividers, and shift register directions.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "spi"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_close",
+      "type": "function",
+      "name": "wiznet_spi_pio_close",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [
+        360,
+        381
+      ],
+      "summary": "Releases PIO programs, state machines, and DMA channels previously claimed by wiznet_spi_pio_open.",
+      "tags": [
+        "hardware-driver",
+        "spi",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:pio_spi_gpio_setup",
+      "type": "function",
+      "name": "pio_spi_gpio_setup",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [
+        117,
+        178
+      ],
+      "summary": "Initialises all GPIO pins (CS, SCK, MOSI, MISO, and quad data lines) and sets their direction and initial values for PIO-based SPI communication.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "gpio"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_frame_start",
+      "type": "function",
+      "name": "wiznet_spi_pio_frame_start",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [
+        393,
+        418
+      ],
+      "summary": "Begins a QSPI transaction frame by switching GPIO pins to PIO function and asserting chip-select.",
+      "tags": [
+        "hardware-driver",
+        "spi",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "type": "file",
+      "name": "wizchip_qspi_pio.pio",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "summary": "RP2040 PIO assembly programs implementing SPI, dual-SPI, and quad-SPI (QSPI) data transfers for WIZnet W6300 QSPI_QUAD_MODE communication.",
+      "tags": [
+        "hardware-driver",
+        "pio",
+        "spi"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Three separate PIO programs for SPI, dual-SPI, and quad-SPI; each handles command/address phase plus payload using sideset for clock generation."
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "file",
+      "name": "wizchip_spi.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "summary": "Core WIZnet SPI port layer: initialises the hardware SPI peripheral or PIO QSPI interface, registers WIZnet ioLibrary callbacks, performs chip reset, handles DMA burst transfers, and provides network initialisation and status printing utilities shared across all examples.",
+      "tags": [
+        "hardware-driver",
+        "spi",
+        "service",
+        "network"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "function",
+      "name": "wizchip_spi_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [
+        196,
+        237
+      ],
+      "summary": "Initialises SPI or PIO QSPI for the WIZnet chip: configures GPIO/SPI pins, claims DMA channels for burst transfers, and sets up DMA channel configurations.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "spi"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "function",
+      "name": "wizchip_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [
+        244,
+        301
+      ],
+      "summary": "Registers all WIZnet ioLibrary SPI/CS/burst callbacks, selects between SPI and QSPI modes, and sets socket buffer sizes for the detected chip.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "function",
+      "name": "wizchip_check",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [
+        303,
+        337
+      ],
+      "summary": "Reads and prints the WIZnet chip version/ID registers to verify the correct chip is connected, printing a warning if the ID does not match the expected value.",
+      "tags": [
+        "utility",
+        "hardware-driver",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "function",
+      "name": "wizchip_reset",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [
+        90,
+        107
+      ],
+      "summary": "Hardware-resets the WIZnet chip by toggling the reset GPIO line with appropriate hold and release delays.",
+      "tags": [
+        "initialization",
+        "hardware-driver",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "function",
+      "name": "print_network_information",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [
+        350,
+        388
+      ],
+      "summary": "Reads network configuration from the WIZnet chip and prints MAC address, IP, subnet mask, gateway, DNS, DHCP mode, and all IPv6 addresses.",
+      "tags": [
+        "utility",
+        "network",
+        "logging"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:port/mbedtls/inc/ssl_config.h",
+      "type": "config",
+      "name": "ssl_config.h",
+      "filePath": "port/mbedtls/inc/ssl_config.h",
+      "summary": "mbedTLS configuration header for the WIZnet Pico port, enabling/disabling specific TLS cipher suites, algorithms, and memory management settings appropriate for embedded use.",
+      "tags": [
+        "configuration",
+        "security",
+        "tls"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:port/open62541/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "port/open62541/CMakeLists.txt",
+      "summary": "CMake configuration for the open62541 OPC UA port layer, adding the open62541 library with WIZnet-specific event loop and lwIP socket shim sources.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "cmake"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/open62541/lwip/sockets.h",
+      "type": "file",
+      "name": "sockets.h",
+      "filePath": "port/open62541/lwip/sockets.h",
+      "summary": "Minimal lwIP sockets shim header redirecting BSD socket API calls used by open62541 to the WIZnet ioLibrary socket implementations.",
+      "tags": [
+        "type-definition",
+        "network",
+        "compatibility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "type": "file",
+      "name": "open62541_wiznet_eventloop.c",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "summary": "WIZnet-specific open62541 event loop implementation: provides OPC UA timer management, delayed callbacks, TCP connection manager (open/send/close/poll), and time functions backed by the RP2040 hardware timer.",
+      "tags": [
+        "service",
+        "event-handler",
+        "network",
+        "opcua"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Bridges the open62541 UA_EventLoop interface to WIZnet ioLibrary socket calls; UA_DateTime timestamps are derived from the RP2040 64-bit microsecond counter scaled to 100-ns OPC UA ticks."
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "function",
+      "name": "wiz_el_run",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        219,
+        239
+      ],
+      "summary": "Runs one iteration of the OPC UA event loop: executes pending delayed callbacks, fires due timers, and polls all active TCP connection managers.",
+      "tags": [
+        "event-handler",
+        "opcua",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_add_timer",
+      "type": "function",
+      "name": "wiz_el_add_timer",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        270,
+        304
+      ],
+      "summary": "Adds a periodic or one-shot timer to the event loop timer array, calculating the initial deadline from the current Pico time.",
+      "tags": [
+        "event-handler",
+        "opcua",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_modify_timer",
+      "type": "function",
+      "name": "wiz_el_modify_timer",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        306,
+        327
+      ],
+      "summary": "Updates the interval or base time of an existing event loop timer identified by its timer ID.",
+      "tags": [
+        "event-handler",
+        "opcua",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_poll",
+      "type": "function",
+      "name": "wiz_cm_poll",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        515,
+        562
+      ],
+      "summary": "Polls all WIZnet TCP sockets managed by the connection manager, handling connect signals, received data callbacks, disconnection, and re-opening listen sockets.",
+      "tags": [
+        "service",
+        "network",
+        "event-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_open_connection",
+      "type": "function",
+      "name": "wiz_cm_open_connection",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        591,
+        617
+      ],
+      "summary": "Opens a WIZnet TCP connection for the OPC UA connection manager, configuring a socket slot and initiating a listen or connect operation.",
+      "tags": [
+        "service",
+        "network",
+        "opcua"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_send",
+      "type": "function",
+      "name": "wiz_cm_send",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        619,
+        640
+      ],
+      "summary": "Sends a data buffer over a managed WIZnet TCP connection, queuing a close if the send fails.",
+      "tags": [
+        "service",
+        "network",
+        "opcua"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_run_timers",
+      "type": "function",
+      "name": "wiz_run_timers",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        189,
+        217
+      ],
+      "summary": "Iterates the event loop timer array, fires callbacks for all timers whose deadline has passed, and reschedules repeating timers.",
+      "tags": [
+        "event-handler",
+        "opcua",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_deregister_eventsource",
+      "type": "function",
+      "name": "wiz_el_deregister_eventsource",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        107,
+        127
+      ],
+      "summary": "Removes an event source from the loop's registered list, calling its stop callback if the event loop is already running.",
+      "tags": [
+        "event-handler",
+        "opcua",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_free",
+      "type": "function",
+      "name": "wiz_el_free",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        157,
+        174
+      ],
+      "summary": "Stops and frees all resources held by the event loop, including stopping all event sources and freeing the timer and delay arrays.",
+      "tags": [
+        "utility",
+        "opcua",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_signal_active_open",
+      "type": "function",
+      "name": "wiz_signal_active_open",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        437,
+        459
+      ],
+      "summary": "Notifies the OPC UA connection manager callback with a connection-opened event, passing the remote IP and port from WIZnet socket registers.",
+      "tags": [
+        "event-handler",
+        "network",
+        "opcua"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_process_pending_close",
+      "type": "function",
+      "name": "wiz_process_pending_close",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        465,
+        490
+      ],
+      "summary": "Processes any queued TCP close operations on a connection slot, notifying the callback and closing the underlying WIZnet socket.",
+      "tags": [
+        "service",
+        "network",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_open_listen_socket",
+      "type": "function",
+      "name": "wiz_open_listen_socket",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [
+        492,
+        513
+      ],
+      "summary": "Opens and starts listening on a WIZnet TCP socket, signalling the OPC UA callback on success or failure.",
+      "tags": [
+        "service",
+        "network",
+        "initialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/port_common.h",
+      "type": "file",
+      "name": "port_common.h",
+      "filePath": "port/port_common.h",
+      "summary": "Shared portability header providing common macros, type definitions, and compile-time guards used across the WIZnet porting layer.",
+      "tags": [
+        "utility",
+        "type-definition",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/timer/timer.c",
+      "type": "file",
+      "name": "timer.c",
+      "filePath": "port/timer/timer.c",
+      "summary": "Implements a 1ms repeating hardware timer using the Pico SDK, exposing an initialize function, a callback dispatcher, and a blocking millisecond delay helper.",
+      "tags": [
+        "utility",
+        "service",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/timer/timer.c:wizchip_1ms_timer_initialize",
+      "type": "function",
+      "name": "wizchip_1ms_timer_initialize",
+      "filePath": "port/timer/timer.c",
+      "lineRange": [
+        33,
+        36
+      ],
+      "summary": "Sets up a repeating 1-millisecond hardware timer via the Pico SDK add_repeating_timer_us call.",
+      "tags": [
+        "utility",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/timer/timer.c:wizchip_delay_ms",
+      "type": "function",
+      "name": "wizchip_delay_ms",
+      "filePath": "port/timer/timer.c",
+      "lineRange": [
+        45,
+        47
+      ],
+      "summary": "Blocking millisecond delay wrapper around the Pico SDK sleep_ms function.",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/timer/timer.h",
+      "type": "file",
+      "name": "timer.h",
+      "filePath": "port/timer/timer.h",
+      "summary": "Public header for the WIZnet 1ms timer port, declaring the initialize, callback, and delay functions along with the callback function-pointer type.",
+      "tags": [
+        "utility",
+        "type-definition",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "type": "file",
+      "name": "wiz_claw_ca_bundle.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "summary": "Header declaring the embedded PEM CA certificate bundle byte-array and its length, used by the TLS layer to verify HTTPS server certificates.",
+      "tags": [
+        "security",
+        "configuration",
+        "type-definition"
+      ],
+      "complexity": "simple",
+      "languageNotes": "The CA bundle is generated by gen_ca_bundle.py and embedded as a C string literal for use with mbedtls_x509_crt_parse."
+    },
+    {
+      "id": "file:port/wiz-claw/src/cJSON.c",
+      "type": "file",
+      "name": "cJSON.c",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "summary": "Full cJSON library implementation providing JSON parsing, printing, and tree-manipulation APIs used by the LLM and Telegram subsystems to encode and decode API payloads.",
+      "tags": [
+        "utility",
+        "serialization",
+        "data-model"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Vendored cJSON v1.x; supports custom allocator hooks via cJSON_InitHooks and locale-aware decimal-point handling for portable number formatting."
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_Parse",
+      "type": "function",
+      "name": "cJSON_Parse",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        1195,
+        1198
+      ],
+      "summary": "Entry point for parsing a null-terminated JSON string into a cJSON tree; wraps cJSON_ParseWithOpts with default settings.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_Print",
+      "type": "function",
+      "name": "cJSON_Print",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        1275,
+        1278
+      ],
+      "summary": "Serializes a cJSON tree to a human-readable formatted JSON string allocated on the heap.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_PrintUnformatted",
+      "type": "function",
+      "name": "cJSON_PrintUnformatted",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        1280,
+        1283
+      ],
+      "summary": "Serializes a cJSON tree to a compact JSON string with no whitespace, suitable for use in HTTP request bodies.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_Delete",
+      "type": "function",
+      "name": "cJSON_Delete",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        253,
+        276
+      ],
+      "summary": "Recursively frees a cJSON node and all its children, releasing all associated memory.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_GetObjectItem",
+      "type": "function",
+      "name": "cJSON_GetObjectItem",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        1941,
+        1944
+      ],
+      "summary": "Case-insensitive lookup of a named field within a JSON object node.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_AddItemToArray",
+      "type": "function",
+      "name": "cJSON_AddItemToArray",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        2019,
+        2022
+      ],
+      "summary": "Appends a cJSON item to an existing JSON array node.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_AddStringToObject",
+      "type": "function",
+      "name": "cJSON_AddStringToObject",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        2168,
+        2178
+      ],
+      "summary": "Creates a new JSON string item and adds it as a named field to a JSON object.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/cJSON.c:cJSON_Compare",
+      "type": "function",
+      "name": "cJSON_Compare",
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "lineRange": [
+        3030,
+        3153
+      ],
+      "summary": "Recursively compares two cJSON trees for equality, with optional case-sensitive key matching.",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "type": "file",
+      "name": "wiz_claw_agent.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_agent.c",
+      "summary": "Implements the wiz_claw_agent_run function: the top-level AI agent loop that sends user messages to the LLM, handles tool-call results, and manages conversation session state.",
+      "tags": [
+        "api-handler",
+        "service",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_agent.c:wiz_claw_agent_run",
+      "type": "function",
+      "name": "wiz_claw_agent_run",
+      "filePath": "port/wiz-claw/src/wiz_claw_agent.c",
+      "lineRange": [
+        14,
+        104
+      ],
+      "summary": "Main agent execution loop: appends user message, calls the LLM, dispatches tool handlers for each tool call in the response, and iterates until the model returns a plain text reply.",
+      "tags": [
+        "api-handler",
+        "service",
+        "event-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "type": "file",
+      "name": "wiz_claw_http.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "summary": "HTTP/HTTPS client implementation over WIZnet sockets: URL parsing, TCP connection management, chunked transfer decoding, and high-level POST request functions used by the LLM and Telegram clients.",
+      "tags": [
+        "service",
+        "middleware",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_parse_url",
+      "type": "function",
+      "name": "wiz_claw_http_parse_url",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "lineRange": [
+        27,
+        82
+      ],
+      "summary": "Parses an http:// or https:// URL string into host, port, and path components, detecting TLS requirement.",
+      "tags": [
+        "utility",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_tcp_connect",
+      "type": "function",
+      "name": "wiz_claw_tcp_connect",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "lineRange": [
+        86,
+        136
+      ],
+      "summary": "Opens and establishes a WIZnet socket TCP connection to a given IP and port, with connection timeout handling.",
+      "tags": [
+        "service",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_http.c:do_http_request",
+      "type": "function",
+      "name": "do_http_request",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "lineRange": [
+        409,
+        553
+      ],
+      "summary": "Core HTTP request engine: resolves DNS, sets up TLS or plain TCP transport, sends request headers and body, then reads and decodes the response with chunked transfer or content-length framing.",
+      "tags": [
+        "service",
+        "api-handler",
+        "middleware"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_post_cb",
+      "type": "function",
+      "name": "wiz_claw_http_post_cb",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "lineRange": [
+        557,
+        580
+      ],
+      "summary": "High-level HTTP POST function with bearer authentication header support, delegating to do_http_request.",
+      "tags": [
+        "api-handler",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_call_cb",
+      "type": "function",
+      "name": "wiz_claw_http_call_cb",
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "lineRange": [
+        582,
+        600
+      ],
+      "summary": "Unauthenticated HTTP POST call wrapper used by the Telegram API client.",
+      "tags": [
+        "api-handler",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "type": "file",
+      "name": "wiz_claw_llm.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_llm.c",
+      "summary": "LLM client implementation: builds OpenAI-compatible chat completion request JSON, posts it via the HTTP layer, parses the response for text content and tool calls, and manages conversation session history.",
+      "tags": [
+        "api-handler",
+        "service",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_llm_chat",
+      "type": "function",
+      "name": "wiz_claw_llm_chat",
+      "filePath": "port/wiz-claw/src/wiz_claw_llm.c",
+      "lineRange": [
+        167,
+        227
+      ],
+      "summary": "Sends a chat completion request to the configured LLM endpoint, returns parsed response or error message.",
+      "tags": [
+        "api-handler",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_llm.c:parse_response_json",
+      "type": "function",
+      "name": "parse_response_json",
+      "filePath": "port/wiz-claw/src/wiz_claw_llm.c",
+      "lineRange": [
+        76,
+        163
+      ],
+      "summary": "Parses the LLM HTTP response body JSON, extracting the text content or structured tool-call array into a LlmResponse struct.",
+      "tags": [
+        "serialization",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_session_append_assistant_tool_calls",
+      "type": "function",
+      "name": "wiz_claw_session_append_assistant_tool_calls",
+      "filePath": "port/wiz-claw/src/wiz_claw_llm.c",
+      "lineRange": [
+        272,
+        302
+      ],
+      "summary": "Appends an assistant tool-call turn (with tool IDs, function names, and argument JSON) to the session message array for the next LLM request.",
+      "tags": [
+        "service",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "type": "file",
+      "name": "wiz_claw_net.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_net.c",
+      "summary": "WIZnet network layer: initializes the chip network info and DNS client, runs the DHCP lease cycle, and provides a 1-second tick handler and a diagnostic print function.",
+      "tags": [
+        "service",
+        "middleware",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_init",
+      "type": "function",
+      "name": "wiz_claw_net_init",
+      "filePath": "port/wiz-claw/src/wiz_claw_net.c",
+      "lineRange": [
+        24,
+        37
+      ],
+      "summary": "Applies network configuration to the WIZnet chip and initializes the DNS client socket.",
+      "tags": [
+        "service",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dhcp_run",
+      "type": "function",
+      "name": "wiz_claw_net_dhcp_run",
+      "filePath": "port/wiz-claw/src/wiz_claw_net.c",
+      "lineRange": [
+        68,
+        112
+      ],
+      "summary": "Runs the DHCP client loop until a lease is assigned, extracting IP, gateway, subnet mask, and DNS from the DHCP server response.",
+      "tags": [
+        "service",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dns_resolve",
+      "type": "function",
+      "name": "wiz_claw_net_dns_resolve",
+      "filePath": "port/wiz-claw/src/wiz_claw_net.c",
+      "lineRange": [
+        41,
+        59
+      ],
+      "summary": "Resolves a hostname to an IPv4 address using the WIZnet DNS_run API.",
+      "tags": [
+        "service",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "type": "file",
+      "name": "wiz_claw_telegram.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "summary": "Telegram Bot API client: polls getUpdates, parses incoming messages with cJSON, and sends text replies via sendMessage, all over the wiz_claw HTTP transport.",
+      "tags": [
+        "api-handler",
+        "service",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_poll",
+      "type": "function",
+      "name": "wiz_claw_tg_poll",
+      "filePath": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "lineRange": [
+        139,
+        186
+      ],
+      "summary": "Long-polls the Telegram Bot API getUpdates endpoint and dispatches each received message to the provided callback.",
+      "tags": [
+        "api-handler",
+        "service",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_parse_updates",
+      "type": "function",
+      "name": "wiz_claw_tg_parse_updates",
+      "filePath": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "lineRange": [
+        43,
+        135
+      ],
+      "summary": "Parses the JSON body of a Telegram getUpdates response, extracts message fields, and invokes the caller-supplied callback for each update.",
+      "tags": [
+        "serialization",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_send_text",
+      "type": "function",
+      "name": "wiz_claw_tg_send_text",
+      "filePath": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "lineRange": [
+        190,
+        227
+      ],
+      "summary": "Sends a text message to a Telegram chat via the Bot API sendMessage endpoint.",
+      "tags": [
+        "api-handler",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "type": "file",
+      "name": "wiz_claw_tls.c",
+      "filePath": "port/wiz-claw/src/wiz_claw_tls.c",
+      "summary": "mbedTLS wrapper for WIZnet sockets: initializes the TLS context with the embedded CA bundle, connects with TLS handshake over a WIZnet TCP socket, and provides read/write/close/free lifecycle functions.",
+      "tags": [
+        "security",
+        "middleware",
+        "service"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses mbedTLS with a custom BIO (bio_send/bio_recv/bio_recv_timeout) wired to WIZnet socket send/recv. Entropy source is Pico SDK get_rand_32."
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_init",
+      "type": "function",
+      "name": "wiz_claw_tls_init",
+      "filePath": "port/wiz-claw/src/wiz_claw_tls.c",
+      "lineRange": [
+        123,
+        215
+      ],
+      "summary": "Initializes the mbedTLS entropy, DRBG, SSL context, and CA certificate chain, wiring up the WIZnet socket BIO callbacks.",
+      "tags": [
+        "security",
+        "middleware"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_connect",
+      "type": "function",
+      "name": "wiz_claw_tls_connect",
+      "filePath": "port/wiz-claw/src/wiz_claw_tls.c",
+      "lineRange": [
+        219,
+        262
+      ],
+      "summary": "Sets the TLS SNI hostname, establishes the underlying TCP connection, and performs the mbedTLS handshake.",
+      "tags": [
+        "security",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/wiz-claw/tools/gen_ca_bundle.py",
+      "type": "file",
+      "name": "gen_ca_bundle.py",
+      "filePath": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "summary": "Developer tool that fetches TLS certificate chains from configured HTTPS endpoints using openssl s_client, extracts root CA PEMs, and emits a C header file containing the certificates as a static byte array for use with mbedTLS.",
+      "tags": [
+        "utility",
+        "security",
+        "build-system"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/tools/gen_ca_bundle.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "lineRange": [
+        82,
+        121
+      ],
+      "summary": "Script entry point: collects root CAs for all configured endpoints, deduplicates them, and prints the C header file contents to stdout.",
+      "tags": [
+        "entry-point",
+        "build-system"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/wiz-claw/tools/gen_ca_bundle.py:fetch_chain_pems",
+      "type": "function",
+      "name": "fetch_chain_pems",
+      "filePath": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "lineRange": [
+        31,
+        59
+      ],
+      "summary": "Uses subprocess openssl s_client to fetch the full certificate chain from a remote host and returns the individual PEM blocks.",
+      "tags": [
+        "utility",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Project overview for the WIZnet PICO C Chip Test Lab: describes project goals, board configuration for W6300_EVB_PICO2, example list (TCP/UDP/SSL/MQTT/OPC-UA/AI agent), directory structure, build environment, and porting layer notes.",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "overview"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:wiznet_pico_c_sdk_version.cmake",
+      "type": "config",
+      "name": "wiznet_pico_c_sdk_version.cmake",
+      "filePath": "wiznet_pico_c_sdk_version.cmake",
+      "summary": "CMake script that pins the required WIZnet PICO C SDK version, used during the CMake configuration phase to enforce dependency version constraints.",
+      "tags": [
+        "configuration",
+        "build-system"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw.h",
+      "target": "function:port/wiz-claw/include/wiz_claw.h:wiz_claw_dup_printf",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "document:examples/opcua_usb_stdio/README_eng.md",
+      "target": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/opcua_usb_stdio/README_kor.md",
+      "target": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/opcua_usb_stdio/README_kor.md",
+      "target": "document:examples/opcua_usb_stdio/README_eng.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:CMakeLists.txt",
+      "target": "config:examples/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/buffer_read/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/loopback/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "target": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/buffer_read/CMakeLists.txt",
+      "target": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/loopback/CMakeLists.txt",
+      "target": "file:examples/loopback/wizchip_loopback.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:examples/10M_Complience_Test/README.md",
+      "target": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/buffer_read/README.md",
+      "target": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/loopback/README.md",
+      "target": "file:examples/loopback/wizchip_loopback.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:send_test_frame",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "target": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "target": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/loopback/wizchip_loopback.c",
+      "target": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/loopback/wizchip_loopback.c",
+      "target": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "target": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "target": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:poll_socket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:process_rx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:process_line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "target": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:gpio_tool_handler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:on_telegram_message",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/README.md",
+      "target": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/README_kr.md",
+      "target": "file:examples/wiz_claw_agent/main.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_transmit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:pio_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:process_rx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_transmit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_start",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_setup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.pio",
+      "target": "file:port/board/can/can.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/board/can/can.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:libraries/CMakeLists.txt",
+      "target": "config:port/CMakeLists.txt",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:pico_sdk_import.cmake",
+      "target": "config:libraries/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_close",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:pio_spi_gpio_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_frame_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_add_timer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_modify_timer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_open_connection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_send",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_run_timers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_deregister_eventsource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_free",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_signal_active_open",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_process_pending_close",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_open_listen_socket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "file:port/open62541/lwip/sockets.h",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/open62541/CMakeLists.txt",
+      "target": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/mbedtls/inc/ssl_config.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/board/can/can.h",
+      "target": "file:port/board/can/can.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:libraries/CMakeLists.txt",
+      "target": "config:port/open62541/CMakeLists.txt",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/timer/timer.c",
+      "target": "file:port/timer/timer.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/timer/timer.c",
+      "target": "function:port/timer/timer.c:wizchip_1ms_timer_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/timer/timer.c",
+      "target": "function:port/timer/timer.c:wizchip_delay_ms",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/timer/timer.c",
+      "target": "function:port/timer/timer.c:wizchip_1ms_timer_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/timer/timer.c",
+      "target": "function:port/timer/timer.c:wizchip_delay_ms",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "file:port/wiz-claw/include/cJSON.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Parse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Print",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_PrintUnformatted",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_GetObjectItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_AddItemToArray",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_AddStringToObject",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Compare",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Parse",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Print",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_PrintUnformatted",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Delete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_GetObjectItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_AddItemToArray",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_AddStringToObject",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/cJSON.c",
+      "target": "function:port/wiz-claw/src/cJSON.c:cJSON_Compare",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_agent.c:wiz_claw_agent_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_agent.c:wiz_claw_agent_run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_agent.c:wiz_claw_agent_run",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_llm_chat",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_parse_url",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_tcp_connect",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:do_http_request",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_post_cb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_call_cb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_parse_url",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_tcp_connect",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_post_cb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_call_cb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_http.c:do_http_request",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dns_resolve",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "file:port/wiz-claw/include/cJSON.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_llm_chat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:parse_response_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_session_append_assistant_tool_calls",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_llm_chat",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_session_append_assistant_tool_calls",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_llm.c:wiz_claw_llm_chat",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_post_cb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_net.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dhcp_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dns_resolve",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dhcp_run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_net.c:wiz_claw_net_dns_resolve",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "file:port/wiz-claw/include/cJSON.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_parse_updates",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_send_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_parse_updates",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_send_text",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_poll",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_call_cb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_telegram.c:wiz_claw_tg_send_text",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_http_call_cb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_connect",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_connect",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:port/wiz-claw/src/wiz_claw_tls.c:wiz_claw_tls_connect",
+      "target": "function:port/wiz-claw/src/wiz_claw_http.c:wiz_claw_tcp_connect",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "target": "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/wiz-claw/tools/gen_ca_bundle.py",
+      "target": "function:port/wiz-claw/tools/gen_ca_bundle.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/tools/gen_ca_bundle.py",
+      "target": "function:port/wiz-claw/tools/gen_ca_bundle.py:fetch_chain_pems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:port/wiz-claw/tools/gen_ca_bundle.py",
+      "target": "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:port/port_common.h",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "file:port/board/can/can.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "target": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "target": "file:port/wiz-claw/include/cJSON.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_net.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "config:examples/PING_TEST/CMakeLists.txt",
+      "target": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/wiz_claw_agent/CMakeLists.txt",
+      "target": "file:examples/wiz_claw_agent/main.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/PING_TEST/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/wiz_claw_agent/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:hardware-abstraction",
+      "name": "Hardware Abstraction Layer",
+      "description": "Low-level WIZnet chip interface drivers providing SPI, QSPI/PIO quad-mode, GPIO interrupt, CAN bus (can2040), and millisecond timer support targeted at the RP2040/RP2350 platform.",
+      "nodeIds": [
+        "file:port/board_list.h",
+        "file:port/port_common.h",
+        "file:port/board/can/can.c",
+        "file:port/board/can/can.h",
+        "file:port/board/can/can.pio",
+        "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+        "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+        "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+        "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+        "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+        "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+        "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+        "file:port/timer/timer.c",
+        "file:port/timer/timer.h"
+      ]
+    },
+    {
+      "id": "layer:protocol-adaptation",
+      "name": "Protocol Adaptation Layer",
+      "description": "Glue code bridging third-party protocol stacks (open62541 OPC UA event loop, lwIP BSD-socket shim) and security configuration (mbedTLS cipher suite tuning) to the WIZnet ioLibrary socket API.",
+      "nodeIds": [
+        "file:port/open62541/lwip/sockets.h",
+        "file:port/open62541/open62541_wiznet_eventloop.c",
+        "config:port/open62541/CMakeLists.txt",
+        "config:port/mbedtls/inc/ssl_config.h"
+      ]
+    },
+    {
+      "id": "layer:ai-agent-library",
+      "name": "AI Agent Library",
+      "description": "Portable wiz-claw embedded AI agent library providing LLM chat, Telegram Bot polling, HTTPS/TLS transport, DNS/DHCP network init, JSON serialisation (cJSON), and a CA certificate bundle — all adapted for WIZnet sockets.",
+      "nodeIds": [
+        "file:port/wiz-claw/include/wiz_claw.h",
+        "file:port/wiz-claw/include/wiz_claw_http.h",
+        "file:port/wiz-claw/include/wiz_claw_net.h",
+        "file:port/wiz-claw/include/wiz_claw_telegram.h",
+        "file:port/wiz-claw/include/wiz_claw_tls.h",
+        "file:port/wiz-claw/include/cJSON.h",
+        "file:port/wiz-claw/include/wiz_claw_agent.h",
+        "file:port/wiz-claw/include/wiz_claw_llm.h",
+        "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+        "file:port/wiz-claw/src/cJSON.c",
+        "file:port/wiz-claw/src/wiz_claw_agent.c",
+        "file:port/wiz-claw/src/wiz_claw_http.c",
+        "file:port/wiz-claw/src/wiz_claw_llm.c",
+        "file:port/wiz-claw/src/wiz_claw_net.c",
+        "file:port/wiz-claw/src/wiz_claw_telegram.c",
+        "file:port/wiz-claw/src/wiz_claw_tls.c",
+        "file:port/wiz-claw/tools/gen_ca_bundle.py"
+      ]
+    },
+    {
+      "id": "layer:network-examples",
+      "name": "Network Test Examples",
+      "description": "Standalone embedded application examples demonstrating basic WIZnet chip networking: ICMP ping, TCP/UDP loopback, TX buffer read-back verification, and 10 Mbit/s Ethernet compliance testing.",
+      "nodeIds": [
+        "file:examples/PING_TEST/PING_TEST.c",
+        "file:examples/loopback/wizchip_loopback.c",
+        "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+        "file:examples/10M_Complience_Test/10M_Complience_Test.c"
+      ]
+    },
+    {
+      "id": "layer:opcua-application",
+      "name": "OPC UA Application",
+      "description": "Multi-module OPC UA server application for the EVB-PICO2 board that bridges USB CDC sensor data through an open62541 address space exposed over Ethernet, including TCP probe, data table, and network lifecycle management.",
+      "nodeIds": [
+        "file:examples/opcua_usb_stdio/inc/data_table.h",
+        "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+        "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+        "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+        "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+        "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+        "file:examples/opcua_usb_stdio/src/data_table.c",
+        "file:examples/opcua_usb_stdio/src/main.c",
+        "file:examples/opcua_usb_stdio/src/opcua_server.c",
+        "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+        "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+        "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+        "file:examples/opcua_usb_stdio/images/.gitkeep"
+      ]
+    },
+    {
+      "id": "layer:ai-agent-example",
+      "name": "AI Agent Example",
+      "description": "Entry-point application demonstrating the wiz-claw AI agent on W6300_EVB_PICO2, polling Telegram for user messages and dispatching OpenAI-powered tool calls to control GPIO pins.",
+      "nodeIds": [
+        "file:examples/wiz_claw_agent/main.c"
+      ]
+    },
+    {
+      "id": "layer:build-config",
+      "name": "Build Configuration",
+      "description": "CMake build system hierarchy, Git submodule declarations, Pico SDK import helpers, SDK version pinning, and tooling ignore patterns that control how all targets are compiled and linked.",
+      "nodeIds": [
+        "config:CMakeLists.txt",
+        "config:.gitmodules",
+        "config:pico_sdk_import.cmake",
+        "config:wiznet_pico_c_sdk_version.cmake",
+        "config:examples/CMakeLists.txt",
+        "config:examples/PING_TEST/CMakeLists.txt",
+        "config:examples/10M_Complience_Test/CMakeLists.txt",
+        "config:examples/buffer_read/CMakeLists.txt",
+        "config:examples/loopback/CMakeLists.txt",
+        "config:examples/opcua_usb_stdio/CMakeLists.txt",
+        "config:examples/wiz_claw_agent/CMakeLists.txt",
+        "config:libraries/CMakeLists.txt",
+        "config:port/CMakeLists.txt",
+        "config:.understand-anything/.understandignore"
+      ]
+    },
+    {
+      "id": "layer:documentation",
+      "name": "Documentation",
+      "description": "Project-level and per-example README files (English and Korean) providing hardware setup, build instructions, and usage guides for every example application and the overall repository.",
+      "nodeIds": [
+        "document:README.md",
+        "document:examples/opcua_usb_stdio/README_eng.md",
+        "document:examples/opcua_usb_stdio/README_kor.md",
+        "document:examples/10M_Complience_Test/README.md",
+        "document:examples/buffer_read/README.md",
+        "document:examples/loopback/README.md",
+        "file:examples/PING_TEST/README.md",
+        "file:examples/wiz_claw_agent/README_kr.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "The root README is your map for everything that follows. It defines the project's goals — verifying W5100S through W6300 chips — and names the target board (W6300_EVB_PICO2 in QSPI_QUAD_MODE), the six example programs, and the four port-layer subsystems. Reading it first lets you understand why each directory exists before you encounter a single line of C code.",
+      "nodeIds": [
+        "document:README.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Build System Entry Point",
+      "description": "The top-level CMakeLists.txt is the single source of truth for how the entire project gets compiled. It selects the target board, bootstraps the Pico SDK, pins the WIZnet SDK version via wiznet_pico_c_sdk_version.cmake, and then delegates to the port and examples sub-trees. Understanding this file shows you which compile-time switches control SPI vs. QSPI mode and how the SDK import chain is structured.",
+      "nodeIds": [
+        "config:CMakeLists.txt",
+        "config:wiznet_pico_c_sdk_version.cmake",
+        "config:pico_sdk_import.cmake"
+      ],
+      "languageLesson": "CMake uses add_subdirectory() to compose a project from separate CMakeLists.txt files. The top-level file sets cache variables (e.g., BOARD_NAME) that child CMakeLists inherit, making it the authoritative place to change build-wide settings."
+    },
+    {
+      "order": 3,
+      "title": "Submodule Dependencies",
+      "description": "The .gitmodules file declares five Git submodules — pico-sdk, ioLibrary_Driver, mbedtls, open62541, and can2040 — that provide every third-party library this project depends on. Each submodule is a pinned commit, so the build is reproducible. This is the dependency manifest equivalent of a package.json for embedded C: change a pin here and the entire third-party tree shifts.",
+      "nodeIds": [
+        "config:.gitmodules"
+      ],
+      "languageLesson": "Git submodules embed a foreign repository at a specific commit. Running 'git submodule update --init --recursive' after cloning fetches all five at their pinned SHAs. The libraries/CMakeLists.txt then adds them to the build graph."
+    },
+    {
+      "order": 4,
+      "title": "Board & Port Common Definitions",
+      "description": "Before any driver code can compile, the project needs to know which physical board it targets. board_list.h defines preprocessor symbols for every supported WIZnet Pico variant, and port_common.h provides the shared portability macros and type aliases (u8, u16, etc.) that all hardware drivers use. Together these two headers form the lowest-level vocabulary the rest of the port layer speaks.",
+      "nodeIds": [
+        "file:port/board_list.h",
+        "file:port/port_common.h"
+      ],
+      "languageLesson": "Embedded C projects use header-only board selection: a #define like BOARD_W6300_EVB_PICO2 is set in the CMake toolchain file, and every driver file guards its pin assignments with #ifdef blocks, keeping one codebase that compiles correctly for any board variant."
+    },
+    {
+      "order": 5,
+      "title": "Hardware Abstraction Layer: SPI & QSPI Drivers",
+      "description": "The heart of the Hardware Abstraction Layer is the SPI/QSPI port in port/ioLibrary_Driver. wizchip_spi.c and wizchip_spi.h implement the standard SPI callback that the WIZnet ioLibrary calls for every register read/write. wizchip_qspi_pio.c and wizchip_qspi_pio.pio take this further, using the RP2040/RP2350 PIO state machines to implement quad-SPI transfers at hardware speed. This is what makes the W6300 in QSPI_QUAD_MODE possible on the Pico platform.",
+      "nodeIds": [
+        "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+        "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+        "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+        "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+        "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio"
+      ],
+      "languageLesson": "PIO (Programmable I/O) programs are written in a custom assembly language (.pio files) and compiled by pioasm into C header arrays. The CPU loads the program into a state machine, which then runs bit-banging loops at clock speed, independent of the CPU — allowing precise timing that standard GPIO cannot achieve."
+    },
+    {
+      "order": 6,
+      "title": "Hardware Abstraction Layer: Timer & GPIO IRQ",
+      "description": "Two supporting HAL components complete the chip interface picture. timer.h and timer.c implement a 1 ms repeating hardware timer that the ioLibrary uses for DHCP timeouts, ARP retries, and other protocol bookkeeping — without it, TCP/IP stacks would stall waiting for timed events. wizchip_gpio_irq.c provides the interrupt callback wiring that allows the chip's INT pin to wake the MCU instead of polling the chip status register in a busy loop.",
+      "nodeIds": [
+        "file:port/timer/timer.h",
+        "file:port/timer/timer.c",
+        "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+        "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Network Test Examples",
+      "description": "With the HAL in place, the four network examples in the examples/ directory systematically verify the chip. WIZnet_Chip_Buffer_Test.c stress-tests the TX buffer with write-readback patterns to confirm memory integrity. PING_TEST.c sends ICMP echo requests to verify basic IP connectivity. wizchip_loopback.c exercises both TCP and UDP in a server/client loop. 10M_Complience_Test.c drives the PHY through the IEEE 802.3 10 Mbit/s compliance test waveforms. Together they form a graduated confidence ladder from register-level sanity to full protocol validation.",
+      "nodeIds": [
+        "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+        "file:examples/PING_TEST/PING_TEST.c",
+        "file:examples/loopback/wizchip_loopback.c",
+        "file:examples/10M_Complience_Test/10M_Complience_Test.c"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Protocol Adaptation: OPC UA Port",
+      "description": "The OPC UA stack (open62541) expects a POSIX-style BSD socket API, but WIZnet chips use their own ioLibrary socket calls. The Protocol Adaptation Layer bridges this gap. port/open62541/lwip/sockets.h provides the BSD socket shim that maps POSIX calls to WIZnet equivalents, and open62541_wiznet_eventloop.c replaces open62541's default libuv event loop with one that drives the WIZnet socket state machine. Without this glue, open62541 would be impossible to run on bare-metal Pico hardware.",
+      "nodeIds": [
+        "file:port/open62541/lwip/sockets.h",
+        "file:port/open62541/open62541_wiznet_eventloop.c",
+        "config:port/open62541/CMakeLists.txt"
+      ],
+      "languageLesson": "open62541 is designed to be portable via its 'event loop' abstraction. By replacing the default event loop implementation, you can run the OPC UA stack on any transport — WIZnet sockets, lwIP, or bare POSIX — without modifying the open62541 library itself."
+    },
+    {
+      "order": 9,
+      "title": "OPC UA Application: Data Flow",
+      "description": "The opcua_usb_stdio example is a multi-module application that bridges sensor data arriving over USB CDC into an OPC UA server accessible over Ethernet. data_table.h and data_table.c define the central shared data structure — a DataTable — that all modules read and write. usb_stdio_link.c parses ASCII frames from the USB serial port and populates the DataTable. opcua_server.c then reads from the same DataTable and exposes its values as OPC UA nodes defined by opcua_node_map.h.",
+      "nodeIds": [
+        "file:examples/opcua_usb_stdio/inc/data_table.h",
+        "file:examples/opcua_usb_stdio/src/data_table.c",
+        "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+        "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+        "file:examples/opcua_usb_stdio/inc/opcua_node_map.h"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "OPC UA Application: Server & Network Lifecycle",
+      "description": "Building on the DataTable from Step 9, opcua_server.c implements the full open62541 server lifecycle: node registration, variable callback binding, and the iterate loop that drives the OPC UA protocol engine. opcua_tcp_probe.c handles the low-level OPC UA HEL/ACK TCP handshake needed before open62541 takes over the connection. wiznet_network.c manages the WIZnet chip's network lifecycle — DHCP lease acquisition, link-up detection, and reconnection — while the top-level main.c orchestrates the polling loop that ticks all subsystems together.",
+      "nodeIds": [
+        "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+        "file:examples/opcua_usb_stdio/src/opcua_server.c",
+        "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+        "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+        "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+        "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+        "file:examples/opcua_usb_stdio/src/main.c"
+      ],
+      "languageLesson": "OPC UA uses a binary TCP transport. The client opens a TCP connection and sends a HEL (Hello) message; the server responds with ACK before the OPC UA session negotiation begins. opcua_tcp_probe.c handles this initial handshake so that open62541 receives an already-established connection."
+    },
+    {
+      "order": 11,
+      "title": "AI Agent Library: Core Interfaces",
+      "description": "The wiz-claw library (port/wiz-claw) is a portable embedded AI agent framework. wiz_claw.h is the core shared header that every other module includes for common types and configuration. wiz_claw_net.h and wiz_claw_net.c handle WIZnet-specific network initialization, DHCP, and DNS resolution. wiz_claw_tls.h and wiz_claw_tls.c wrap mbedTLS around WIZnet sockets to produce a TLS channel, backed by the embedded CA certificate bundle in wiz_claw_ca_bundle.h that validates Telegram and OpenAI server certificates without a filesystem.",
+      "nodeIds": [
+        "file:port/wiz-claw/include/wiz_claw.h",
+        "file:port/wiz-claw/include/wiz_claw_net.h",
+        "file:port/wiz-claw/src/wiz_claw_net.c",
+        "file:port/wiz-claw/include/wiz_claw_tls.h",
+        "file:port/wiz-claw/src/wiz_claw_tls.c",
+        "file:port/wiz-claw/include/wiz_claw_ca_bundle.h"
+      ],
+      "languageLesson": "Embedded TLS without a filesystem requires the CA certificate bundle to be compiled into flash as a C array. gen_ca_bundle.py (port/wiz-claw/tools) runs at development time to fetch Mozilla's CA bundle and emit a wiz_claw_ca_bundle.h header, which wiz_claw_tls.c passes directly to mbedTLS as a trusted root store."
+    },
+    {
+      "order": 12,
+      "title": "AI Agent Library: HTTP, LLM & Telegram",
+      "description": "With TLS established, wiz_claw_http.c provides an HTTP/1.1 client that runs over WIZnet sockets and can switch to TLS via the wiz_claw_tls layer. wiz_claw_llm.c builds on the HTTP client to implement an OpenAI-compatible chat completion API — it serializes the request to JSON using cJSON, POSTs it over HTTPS, and parses the streamed response. wiz_claw_telegram.c similarly uses the HTTP client to poll the Telegram Bot API for new messages and to send replies. cJSON.h and cJSON.c provide the vendored JSON library all three modules share.",
+      "nodeIds": [
+        "file:port/wiz-claw/include/wiz_claw_http.h",
+        "file:port/wiz-claw/src/wiz_claw_http.c",
+        "file:port/wiz-claw/include/wiz_claw_llm.h",
+        "file:port/wiz-claw/src/wiz_claw_llm.c",
+        "file:port/wiz-claw/include/wiz_claw_telegram.h",
+        "file:port/wiz-claw/src/wiz_claw_telegram.c",
+        "file:port/wiz-claw/include/cJSON.h",
+        "file:port/wiz-claw/src/cJSON.c"
+      ]
+    },
+    {
+      "order": 13,
+      "title": "AI Agent Example: Top-Level Application",
+      "description": "The wiz_claw_agent example is the complete showcase of every layer in this codebase. wiz_claw_agent.h and wiz_claw_agent.c implement the agent loop that orchestrates the full cycle: receive a Telegram message, forward it to the OpenAI LLM, parse any tool-call responses, execute the requested GPIO action on the Pico's pins, and reply back to Telegram. The application's main.c wires together network initialization, agent configuration, and the polling loop. This single example exercises the HAL (GPIO), the wiz-claw network/TLS/HTTP stack, and the LLM tool-call dispatch pattern all at once.",
+      "nodeIds": [
+        "file:port/wiz-claw/include/wiz_claw_agent.h",
+        "file:port/wiz-claw/src/wiz_claw_agent.c",
+        "file:examples/wiz_claw_agent/main.c",
+        "config:examples/wiz_claw_agent/CMakeLists.txt"
+      ],
+      "languageLesson": "OpenAI tool calls (function calling) let the LLM respond with a structured JSON object that names a function and its arguments instead of free text. The embedded agent parses this JSON with cJSON, maps the function name to a GPIO action, executes it, and sends the result back to the model as a tool-result message — enabling the LLM to control physical hardware through conversation."
+    }
+  ]
+}

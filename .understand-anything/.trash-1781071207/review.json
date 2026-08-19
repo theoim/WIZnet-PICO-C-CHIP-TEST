@@ -1,0 +1,32 @@
+{
+  "issues": [],
+  "warnings": [
+    "Node 'config:.gitmodules' has no edges (orphan)",
+    "Node 'file:examples/opcua_usb_stdio/images/.gitkeep' has no edges (orphan)",
+    "Node 'config:.understand-anything/.understandignore' has no edges (orphan)",
+    "Node 'file:port/board_list.h' has no edges (orphan)",
+    "Node 'config:wiznet_pico_c_sdk_version.cmake' has no edges (orphan)"
+  ],
+  "stats": {
+    "totalNodes": 157,
+    "totalEdges": 240,
+    "totalLayers": 8,
+    "tourSteps": 13,
+    "nodeTypes": {
+      "file": 51,
+      "function": 82,
+      "config": 16,
+      "document": 8
+    },
+    "edgeTypes": {
+      "contains": 82,
+      "imports": 33,
+      "documents": 9,
+      "related": 13,
+      "configures": 18,
+      "exports": 55,
+      "depends_on": 11,
+      "calls": 19
+    }
+  }
+}

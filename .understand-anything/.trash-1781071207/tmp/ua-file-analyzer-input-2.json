@@ -1,0 +1,13 @@
+{
+  "projectRoot": "D:\\theo_git_project\\WIZnet-PICO-C-CHIP-TEST",
+  "batchFiles": [
+    {"path": "port/wiz-claw/include/cJSON.h", "language": "c", "sizeLines": 0, "fileCategory": "code"},
+    {"path": "port/wiz-claw/include/wiz_claw_agent.h", "language": "c", "sizeLines": 0, "fileCategory": "code"},
+    {"path": "port/wiz-claw/include/wiz_claw_llm.h", "language": "c", "sizeLines": 0, "fileCategory": "code"}
+  ],
+  "batchImportData": {
+    "port/wiz-claw/include/cJSON.h": [],
+    "port/wiz-claw/include/wiz_claw_agent.h": ["port/wiz-claw/include/wiz_claw_llm.h","port/wiz-claw/include/wiz_claw.h"],
+    "port/wiz-claw/include/wiz_claw_llm.h": ["port/wiz-claw/include/wiz_claw.h","port/wiz-claw/include/wiz_claw_http.h"]
+  }
+}

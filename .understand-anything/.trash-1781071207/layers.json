@@ -1,0 +1,133 @@
+[
+  {
+    "id": "layer:hardware-abstraction",
+    "name": "Hardware Abstraction Layer",
+    "description": "Low-level WIZnet chip interface drivers providing SPI, QSPI/PIO quad-mode, GPIO interrupt, CAN bus (can2040), and millisecond timer support targeted at the RP2040/RP2350 platform.",
+    "nodeIds": [
+      "file:port/board_list.h",
+      "file:port/port_common.h",
+      "file:port/board/can/can.c",
+      "file:port/board/can/can.h",
+      "file:port/board/can/can.pio",
+      "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "file:port/timer/timer.c",
+      "file:port/timer/timer.h"
+    ]
+  },
+  {
+    "id": "layer:protocol-adaptation",
+    "name": "Protocol Adaptation Layer",
+    "description": "Glue code bridging third-party protocol stacks (open62541 OPC UA event loop, lwIP BSD-socket shim) and security configuration (mbedTLS cipher suite tuning) to the WIZnet ioLibrary socket API.",
+    "nodeIds": [
+      "file:port/open62541/lwip/sockets.h",
+      "file:port/open62541/open62541_wiznet_eventloop.c",
+      "config:port/open62541/CMakeLists.txt",
+      "config:port/mbedtls/inc/ssl_config.h"
+    ]
+  },
+  {
+    "id": "layer:ai-agent-library",
+    "name": "AI Agent Library",
+    "description": "Portable wiz-claw embedded AI agent library providing LLM chat, Telegram Bot polling, HTTPS/TLS transport, DNS/DHCP network init, JSON serialisation (cJSON), and a CA certificate bundle — all adapted for WIZnet sockets.",
+    "nodeIds": [
+      "file:port/wiz-claw/include/wiz_claw.h",
+      "file:port/wiz-claw/include/wiz_claw_http.h",
+      "file:port/wiz-claw/include/wiz_claw_net.h",
+      "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "file:port/wiz-claw/include/cJSON.h",
+      "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "file:port/wiz-claw/src/cJSON.c",
+      "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "file:port/wiz-claw/src/wiz_claw_http.c",
+      "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "file:port/wiz-claw/src/wiz_claw_net.c",
+      "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "file:port/wiz-claw/tools/gen_ca_bundle.py"
+    ]
+  },
+  {
+    "id": "layer:network-examples",
+    "name": "Network Test Examples",
+    "description": "Standalone embedded application examples demonstrating basic WIZnet chip networking: ICMP ping, TCP/UDP loopback, TX buffer read-back verification, and 10 Mbit/s Ethernet compliance testing.",
+    "nodeIds": [
+      "file:examples/PING_TEST/PING_TEST.c",
+      "file:examples/loopback/wizchip_loopback.c",
+      "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "file:examples/10M_Complience_Test/10M_Complience_Test.c"
+    ]
+  },
+  {
+    "id": "layer:opcua-application",
+    "name": "OPC UA Application",
+    "description": "Multi-module OPC UA server application for the EVB-PICO2 board that bridges USB CDC sensor data through an open62541 address space exposed over Ethernet, including TCP probe, data table, and network lifecycle management.",
+    "nodeIds": [
+      "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "file:examples/opcua_usb_stdio/src/data_table.c",
+      "file:examples/opcua_usb_stdio/src/main.c",
+      "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "file:examples/opcua_usb_stdio/images/.gitkeep"
+    ]
+  },
+  {
+    "id": "layer:ai-agent-example",
+    "name": "AI Agent Example",
+    "description": "Entry-point application demonstrating the wiz-claw AI agent on W6300_EVB_PICO2, polling Telegram for user messages and dispatching OpenAI-powered tool calls to control GPIO pins.",
+    "nodeIds": [
+      "file:examples/wiz_claw_agent/main.c"
+    ]
+  },
+  {
+    "id": "layer:build-config",
+    "name": "Build Configuration",
+    "description": "CMake build system hierarchy, Git submodule declarations, Pico SDK import helpers, SDK version pinning, and tooling ignore patterns that control how all targets are compiled and linked.",
+    "nodeIds": [
+      "config:CMakeLists.txt",
+      "config:.gitmodules",
+      "config:pico_sdk_import.cmake",
+      "config:wiznet_pico_c_sdk_version.cmake",
+      "config:examples/CMakeLists.txt",
+      "config:examples/PING_TEST/CMakeLists.txt",
+      "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "config:examples/buffer_read/CMakeLists.txt",
+      "config:examples/loopback/CMakeLists.txt",
+      "config:examples/opcua_usb_stdio/CMakeLists.txt",
+      "config:examples/wiz_claw_agent/CMakeLists.txt",
+      "config:libraries/CMakeLists.txt",
+      "config:port/CMakeLists.txt",
+      "config:.understand-anything/.understandignore"
+    ]
+  },
+  {
+    "id": "layer:documentation",
+    "name": "Documentation",
+    "description": "Project-level and per-example README files (English and Korean) providing hardware setup, build instructions, and usage guides for every example application and the overall repository.",
+    "nodeIds": [
+      "document:README.md",
+      "document:examples/opcua_usb_stdio/README_eng.md",
+      "document:examples/opcua_usb_stdio/README_kor.md",
+      "document:examples/10M_Complience_Test/README.md",
+      "document:examples/buffer_read/README.md",
+      "document:examples/loopback/README.md",
+      "file:examples/PING_TEST/README.md",
+      "file:examples/wiz_claw_agent/README_kr.md"
+    ]
+  }
+]

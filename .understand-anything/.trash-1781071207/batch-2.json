@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "id": "file:port/wiz-claw/include/cJSON.h",
+      "type": "file",
+      "name": "cJSON.h",
+      "filePath": "port/wiz-claw/include/cJSON.h",
+      "summary": "Vendored cJSON 1.7.18 library header defining the core JSON node structure, type constants, memory hook typedefs, and the full public API (~60 function declarations) for parsing, serializing, and manipulating JSON trees on embedded targets.",
+      "tags": ["utility", "serialization", "type-definition", "third-party"],
+      "complexity": "complex",
+      "languageNotes": "Uses a CJSON_PUBLIC(type) macro to handle __declspec(dllexport/import) on Windows and GCC visibility attributes on POSIX, enabling the same header to be used for both shared-library and static builds."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "type": "file",
+      "name": "wiz_claw_agent.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_agent.h",
+      "summary": "Agent loop interface header that defines the tool-handler callback typedef, agent configuration struct (LLM config, system prompt, tool JSON, handler, max iterations), and the single-turn entry point wiz_claw_agent_run() which drives the LLM → tool-call → re-invoke loop.",
+      "tags": ["api-handler", "service", "type-definition", "ai-agent"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "file",
+      "name": "wiz_claw_llm.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_llm.h",
+      "summary": "LLM client interface header for an OpenAI-compatible chat API, declaring the HTTP POST callback typedef, tool-call and response structs, client configuration struct, the wiz_claw_llm_chat() function, and conversation-history session helpers (create, append user/assistant/tool messages).",
+      "tags": ["api-handler", "service", "type-definition", "llm-client"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

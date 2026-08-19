@@ -1,0 +1,154 @@
+[
+  {
+    "order": 1,
+    "title": "Project Overview",
+    "description": "The root README is your map for everything that follows. It defines the project's goals — verifying W5100S through W6300 chips — and names the target board (W6300_EVB_PICO2 in QSPI_QUAD_MODE), the six example programs, and the four port-layer subsystems. Reading it first lets you understand why each directory exists before you encounter a single line of C code.",
+    "nodeIds": [
+      "document:README.md"
+    ]
+  },
+  {
+    "order": 2,
+    "title": "Build System Entry Point",
+    "description": "The top-level CMakeLists.txt is the single source of truth for how the entire project gets compiled. It selects the target board, bootstraps the Pico SDK, pins the WIZnet SDK version via wiznet_pico_c_sdk_version.cmake, and then delegates to the port and examples sub-trees. Understanding this file shows you which compile-time switches control SPI vs. QSPI mode and how the SDK import chain is structured.",
+    "nodeIds": [
+      "config:CMakeLists.txt",
+      "config:wiznet_pico_c_sdk_version.cmake",
+      "config:pico_sdk_import.cmake"
+    ],
+    "languageLesson": "CMake uses add_subdirectory() to compose a project from separate CMakeLists.txt files. The top-level file sets cache variables (e.g., BOARD_NAME) that child CMakeLists inherit, making it the authoritative place to change build-wide settings."
+  },
+  {
+    "order": 3,
+    "title": "Submodule Dependencies",
+    "description": "The .gitmodules file declares five Git submodules — pico-sdk, ioLibrary_Driver, mbedtls, open62541, and can2040 — that provide every third-party library this project depends on. Each submodule is a pinned commit, so the build is reproducible. This is the dependency manifest equivalent of a package.json for embedded C: change a pin here and the entire third-party tree shifts.",
+    "nodeIds": [
+      "config:.gitmodules"
+    ],
+    "languageLesson": "Git submodules embed a foreign repository at a specific commit. Running 'git submodule update --init --recursive' after cloning fetches all five at their pinned SHAs. The libraries/CMakeLists.txt then adds them to the build graph."
+  },
+  {
+    "order": 4,
+    "title": "Board & Port Common Definitions",
+    "description": "Before any driver code can compile, the project needs to know which physical board it targets. board_list.h defines preprocessor symbols for every supported WIZnet Pico variant, and port_common.h provides the shared portability macros and type aliases (u8, u16, etc.) that all hardware drivers use. Together these two headers form the lowest-level vocabulary the rest of the port layer speaks.",
+    "nodeIds": [
+      "file:port/board_list.h",
+      "file:port/port_common.h"
+    ],
+    "languageLesson": "Embedded C projects use header-only board selection: a #define like BOARD_W6300_EVB_PICO2 is set in the CMake toolchain file, and every driver file guards its pin assignments with #ifdef blocks, keeping one codebase that compiles correctly for any board variant."
+  },
+  {
+    "order": 5,
+    "title": "Hardware Abstraction Layer: SPI & QSPI Drivers",
+    "description": "The heart of the Hardware Abstraction Layer is the SPI/QSPI port in port/ioLibrary_Driver. wizchip_spi.c and wizchip_spi.h implement the standard SPI callback that the WIZnet ioLibrary calls for every register read/write. wizchip_qspi_pio.c and wizchip_qspi_pio.pio take this further, using the RP2040/RP2350 PIO state machines to implement quad-SPI transfers at hardware speed. This is what makes the W6300 in QSPI_QUAD_MODE possible on the Pico platform.",
+    "nodeIds": [
+      "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio"
+    ],
+    "languageLesson": "PIO (Programmable I/O) programs are written in a custom assembly language (.pio files) and compiled by pioasm into C header arrays. The CPU loads the program into a state machine, which then runs bit-banging loops at clock speed, independent of the CPU — allowing precise timing that standard GPIO cannot achieve."
+  },
+  {
+    "order": 6,
+    "title": "Hardware Abstraction Layer: Timer & GPIO IRQ",
+    "description": "Two supporting HAL components complete the chip interface picture. timer.h and timer.c implement a 1 ms repeating hardware timer that the ioLibrary uses for DHCP timeouts, ARP retries, and other protocol bookkeeping — without it, TCP/IP stacks would stall waiting for timed events. wizchip_gpio_irq.c provides the interrupt callback wiring that allows the chip's INT pin to wake the MCU instead of polling the chip status register in a busy loop.",
+    "nodeIds": [
+      "file:port/timer/timer.h",
+      "file:port/timer/timer.c",
+      "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c"
+    ]
+  },
+  {
+    "order": 7,
+    "title": "Network Test Examples",
+    "description": "With the HAL in place, the four network examples in the examples/ directory systematically verify the chip. WIZnet_Chip_Buffer_Test.c stress-tests the TX buffer with write-readback patterns to confirm memory integrity. PING_TEST.c sends ICMP echo requests to verify basic IP connectivity. wizchip_loopback.c exercises both TCP and UDP in a server/client loop. 10M_Complience_Test.c drives the PHY through the IEEE 802.3 10 Mbit/s compliance test waveforms. Together they form a graduated confidence ladder from register-level sanity to full protocol validation.",
+    "nodeIds": [
+      "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "file:examples/PING_TEST/PING_TEST.c",
+      "file:examples/loopback/wizchip_loopback.c",
+      "file:examples/10M_Complience_Test/10M_Complience_Test.c"
+    ]
+  },
+  {
+    "order": 8,
+    "title": "Protocol Adaptation: OPC UA Port",
+    "description": "The OPC UA stack (open62541) expects a POSIX-style BSD socket API, but WIZnet chips use their own ioLibrary socket calls. The Protocol Adaptation Layer bridges this gap. port/open62541/lwip/sockets.h provides the BSD socket shim that maps POSIX calls to WIZnet equivalents, and open62541_wiznet_eventloop.c replaces open62541's default libuv event loop with one that drives the WIZnet socket state machine. Without this glue, open62541 would be impossible to run on bare-metal Pico hardware.",
+    "nodeIds": [
+      "file:port/open62541/lwip/sockets.h",
+      "file:port/open62541/open62541_wiznet_eventloop.c",
+      "config:port/open62541/CMakeLists.txt"
+    ],
+    "languageLesson": "open62541 is designed to be portable via its 'event loop' abstraction. By replacing the default event loop implementation, you can run the OPC UA stack on any transport — WIZnet sockets, lwIP, or bare POSIX — without modifying the open62541 library itself."
+  },
+  {
+    "order": 9,
+    "title": "OPC UA Application: Data Flow",
+    "description": "The opcua_usb_stdio example is a multi-module application that bridges sensor data arriving over USB CDC into an OPC UA server accessible over Ethernet. data_table.h and data_table.c define the central shared data structure — a DataTable — that all modules read and write. usb_stdio_link.c parses ASCII frames from the USB serial port and populates the DataTable. opcua_server.c then reads from the same DataTable and exposes its values as OPC UA nodes defined by opcua_node_map.h.",
+    "nodeIds": [
+      "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "file:examples/opcua_usb_stdio/src/data_table.c",
+      "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "file:examples/opcua_usb_stdio/inc/opcua_node_map.h"
+    ]
+  },
+  {
+    "order": 10,
+    "title": "OPC UA Application: Server & Network Lifecycle",
+    "description": "Building on the DataTable from Step 9, opcua_server.c implements the full open62541 server lifecycle: node registration, variable callback binding, and the iterate loop that drives the OPC UA protocol engine. opcua_tcp_probe.c handles the low-level OPC UA HEL/ACK TCP handshake needed before open62541 takes over the connection. wiznet_network.c manages the WIZnet chip's network lifecycle — DHCP lease acquisition, link-up detection, and reconnection — while the top-level main.c orchestrates the polling loop that ticks all subsystems together.",
+    "nodeIds": [
+      "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "file:examples/opcua_usb_stdio/src/main.c"
+    ],
+    "languageLesson": "OPC UA uses a binary TCP transport. The client opens a TCP connection and sends a HEL (Hello) message; the server responds with ACK before the OPC UA session negotiation begins. opcua_tcp_probe.c handles this initial handshake so that open62541 receives an already-established connection."
+  },
+  {
+    "order": 11,
+    "title": "AI Agent Library: Core Interfaces",
+    "description": "The wiz-claw library (port/wiz-claw) is a portable embedded AI agent framework. wiz_claw.h is the core shared header that every other module includes for common types and configuration. wiz_claw_net.h and wiz_claw_net.c handle WIZnet-specific network initialization, DHCP, and DNS resolution. wiz_claw_tls.h and wiz_claw_tls.c wrap mbedTLS around WIZnet sockets to produce a TLS channel, backed by the embedded CA certificate bundle in wiz_claw_ca_bundle.h that validates Telegram and OpenAI server certificates without a filesystem.",
+    "nodeIds": [
+      "file:port/wiz-claw/include/wiz_claw.h",
+      "file:port/wiz-claw/include/wiz_claw_net.h",
+      "file:port/wiz-claw/src/wiz_claw_net.c",
+      "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "file:port/wiz-claw/include/wiz_claw_ca_bundle.h"
+    ],
+    "languageLesson": "Embedded TLS without a filesystem requires the CA certificate bundle to be compiled into flash as a C array. gen_ca_bundle.py (port/wiz-claw/tools) runs at development time to fetch Mozilla's CA bundle and emit a wiz_claw_ca_bundle.h header, which wiz_claw_tls.c passes directly to mbedTLS as a trusted root store."
+  },
+  {
+    "order": 12,
+    "title": "AI Agent Library: HTTP, LLM & Telegram",
+    "description": "With TLS established, wiz_claw_http.c provides an HTTP/1.1 client that runs over WIZnet sockets and can switch to TLS via the wiz_claw_tls layer. wiz_claw_llm.c builds on the HTTP client to implement an OpenAI-compatible chat completion API — it serializes the request to JSON using cJSON, POSTs it over HTTPS, and parses the streamed response. wiz_claw_telegram.c similarly uses the HTTP client to poll the Telegram Bot API for new messages and to send replies. cJSON.h and cJSON.c provide the vendored JSON library all three modules share.",
+    "nodeIds": [
+      "file:port/wiz-claw/include/wiz_claw_http.h",
+      "file:port/wiz-claw/src/wiz_claw_http.c",
+      "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "file:port/wiz-claw/include/cJSON.h",
+      "file:port/wiz-claw/src/cJSON.c"
+    ]
+  },
+  {
+    "order": 13,
+    "title": "AI Agent Example: Top-Level Application",
+    "description": "The wiz_claw_agent example is the complete showcase of every layer in this codebase. wiz_claw_agent.h and wiz_claw_agent.c implement the agent loop that orchestrates the full cycle: receive a Telegram message, forward it to the OpenAI LLM, parse any tool-call responses, execute the requested GPIO action on the Pico's pins, and reply back to Telegram. The application's main.c wires together network initialization, agent configuration, and the polling loop. This single example exercises the HAL (GPIO), the wiz-claw network/TLS/HTTP stack, and the LLM tool-call dispatch pattern all at once.",
+    "nodeIds": [
+      "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "file:examples/wiz_claw_agent/main.c",
+      "config:examples/wiz_claw_agent/CMakeLists.txt"
+    ],
+    "languageLesson": "OpenAI tool calls (function calling) let the LLM respond with a structured JSON object that names a function and its arguments instead of free text. The embedded agent parses this JSON with cJSON, maps the function name to a GPIO action, executes it, and sends the result back to the model as a tool-result message — enabling the LLM to control physical hardware through conversation."
+  }
+]

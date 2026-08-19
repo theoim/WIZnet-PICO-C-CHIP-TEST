@@ -1,0 +1,108 @@
+{
+  "nodes": [
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "file",
+      "name": "wiz_claw.h",
+      "filePath": "port/wiz-claw/include/wiz_claw.h",
+      "summary": "Core shared header for the wiz-claw AI agent library, defining common error codes (wiz_claw_err_t), overridable logging macros (WIZ_CLAW_LOG_I/W/E), and the heap string formatting utility wiz_claw_dup_printf. Has no external project-internal dependencies, making it the foundational base included by all other wiz-claw headers.",
+      "tags": ["type-definition", "utility", "entry-point", "error-handling", "logging"],
+      "complexity": "moderate",
+      "languageNotes": "Uses standard C only (stddef.h, stdint.h, stdbool.h, stdio.h, stdlib.h, string.h, stdarg.h) with no ESP-IDF or Pico SDK dependencies, making it portable across build environments. Logging macros are designed to be overridden via #ifndef guards."
+    },
+    {
+      "id": "function:port/wiz-claw/include/wiz_claw.h:wiz_claw_dup_printf",
+      "type": "function",
+      "name": "wiz_claw_dup_printf",
+      "filePath": "port/wiz-claw/include/wiz_claw.h",
+      "lineRange": [45, 63],
+      "summary": "Heap-allocates a formatted string using vsnprintf with a two-pass approach (first pass to compute required size, second pass to fill the buffer), returning a caller-owned char pointer or NULL on failure.",
+      "tags": ["utility", "string-formatting", "heap-allocation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "type": "file",
+      "name": "wiz_claw_http.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_http.h",
+      "summary": "HTTP/1.1 client interface header for the wiz-claw library, declaring low-level TCP helpers (connect, close, send, recv) and high-level HTTP callback functions compatible with LLM and Telegram transport function pointer signatures. Defines socket number assignments and configurable buffer size constants for header and body data.",
+      "tags": ["api-handler", "http-client", "tcp", "callback", "networking"],
+      "complexity": "moderate",
+      "languageNotes": "Uses function-pointer-based transport injection pattern: wiz_claw_http_post_cb and wiz_claw_http_call_cb can be assigned directly to wiz_claw_llm_config_t.http_post and wiz_claw_tg_config_t.http_call respectively, enabling clean separation of HTTP transport from protocol logic."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_net.h",
+      "type": "file",
+      "name": "wiz_claw_net.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_net.h",
+      "summary": "Network initialization, DNS resolution, and DHCP helper header for the wiz-claw library, wrapping ioLibrary_Driver's DNS and DHCP modules with wiz-claw error types. Declares configuration struct and API functions for DNS lookup, DHCP lease acquisition, and the required 1-second periodic tick handler.",
+      "tags": ["networking", "dns", "dhcp", "utility", "initialization"],
+      "complexity": "simple",
+      "languageNotes": "Depends on ioLibrary_Driver's wizchip_conf.h for the wiz_NetInfo type; must be called after wizchip_initialize() and network_initialize(). The wiz_claw_net_1s_tick() function must be wired into a 1-second timer ISR or polling loop."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "file",
+      "name": "wiz_claw_telegram.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_telegram.h",
+      "summary": "Telegram Bot API client interface header defining types and function declarations for polling updates, parsing incoming messages, and sending text replies. HTTP transport is injected via the wiz_claw_http_call_fn function pointer, keeping TLS and socket concerns outside this module.",
+      "tags": ["api-handler", "telegram", "messaging", "callback", "type-definition"],
+      "complexity": "moderate",
+      "languageNotes": "The wiz_claw_tg_message_t struct uses a heap-allocated text field requiring explicit wiz_claw_tg_message_free() cleanup. The polling offset (inout_next_offset) follows the Telegram long-polling pattern of tracking update_id+1 to avoid reprocessing."
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "type": "file",
+      "name": "wiz_claw_tls.h",
+      "filePath": "port/wiz-claw/include/wiz_claw_tls.h",
+      "summary": "mbedTLS client interface header for the wiz-claw library, providing a TLS session context struct (wiz_claw_tls_t) that wraps mbedTLS entropy, CTR-DRBG, SSL, and X.509 certificate objects alongside a WIZnet socket number. Declares the full TLS lifecycle API: init, connect, write, read, close, and free.",
+      "tags": ["tls", "security", "mbedtls", "networking", "type-definition"],
+      "complexity": "moderate",
+      "languageNotes": "Uses RP2350 hardware TRNG (pico/rand.h get_rand_32()) as the entropy source for CTR-DRBG. The wiz_claw_tls_t struct (~1-2 KB) is explicitly documented as too large for stack allocation and should be declared as a global or static variable. CA bundle loading is conditional on WIZ_CLAW_CA_BUNDLE_PEM being defined."
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw.h",
+      "target": "function:port/wiz-claw/include/wiz_claw.h:wiz_claw_dup_printf",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "target": "file:port/wiz-claw/include/wiz_claw.h",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

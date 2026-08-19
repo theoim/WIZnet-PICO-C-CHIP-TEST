@@ -1,0 +1,911 @@
+{
+  "scriptCompleted": true,
+  "entryPointCandidates": [
+    {
+      "id": "file:examples/opcua_usb_stdio/src/main.c",
+      "score": 5,
+      "name": "main.c",
+      "type": "file",
+      "summary": "opcua_usb_stdio entry point and polling loop."
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/main.c",
+      "score": 5,
+      "name": "main.c",
+      "type": "file",
+      "summary": "AI agent entry point: polls Telegram, dispatches OpenAI tool calls to GPIO."
+    },
+    {
+      "id": "document:README.md",
+      "score": 5,
+      "name": "README.md",
+      "type": "document",
+      "summary": "Project overview: goals, board config, examples, directory structure."
+    },
+    {
+      "id": "config:.gitmodules",
+      "score": 2,
+      "name": ".gitmodules",
+      "type": "config",
+      "summary": "Five Git submodule dependencies."
+    },
+    {
+      "id": "config:CMakeLists.txt",
+      "score": 2,
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "Top-level CMake build config: board selection, Pico SDK init."
+    }
+  ],
+  "fanInRanking": [
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw.h",
+      "fanIn": 3,
+      "name": "wiz_claw.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "fanIn": 3,
+      "name": "wiz_claw_http.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/cJSON.h",
+      "fanIn": 3,
+      "name": "cJSON.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_llm.h",
+      "fanIn": 3,
+      "name": "wiz_claw_llm.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "fanIn": 3,
+      "name": "data_table.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_net.h",
+      "fanIn": 2,
+      "name": "wiz_claw_net.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_telegram.h",
+      "fanIn": 2,
+      "name": "wiz_claw_telegram.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_tls.h",
+      "fanIn": 2,
+      "name": "wiz_claw_tls.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "fanIn": 2,
+      "name": "wiz_claw_agent.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "fanIn": 2,
+      "name": "opcua_server.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "fanIn": 2,
+      "name": "usb_stdio_link.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "fanIn": 2,
+      "name": "wiznet_network.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "fanIn": 1,
+      "name": "opcua_node_map.h"
+    },
+    {
+      "id": "file:port/board/can/can.h",
+      "fanIn": 1,
+      "name": "can.h"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "fanIn": 1,
+      "name": "wizchip_gpio_irq.h"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "fanIn": 1,
+      "name": "wizchip_qspi_pio.h"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "fanIn": 1,
+      "name": "wizchip_spi.h"
+    },
+    {
+      "id": "file:port/open62541/lwip/sockets.h",
+      "fanIn": 1,
+      "name": "sockets.h"
+    },
+    {
+      "id": "file:port/timer/timer.h",
+      "fanIn": 1,
+      "name": "timer.h"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "fanIn": 1,
+      "name": "wiz_claw_ca_bundle.h"
+    }
+  ],
+  "fanOutRanking": [
+    {
+      "id": "file:examples/opcua_usb_stdio/src/main.c",
+      "fanOut": 4,
+      "name": "main.c"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_agent.h",
+      "fanOut": 3,
+      "name": "wiz_claw_agent.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "fanOut": 3,
+      "name": "opcua_server.c"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/main.c",
+      "fanOut": 3,
+      "name": "main.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_agent.c",
+      "fanOut": 3,
+      "name": "wiz_claw_agent.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_llm.c",
+      "fanOut": 3,
+      "name": "wiz_claw_llm.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_telegram.c",
+      "fanOut": 3,
+      "name": "wiz_claw_telegram.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_http.c",
+      "fanOut": 2,
+      "name": "wiz_claw_http.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_tls.c",
+      "fanOut": 2,
+      "name": "wiz_claw_tls.c"
+    },
+    {
+      "id": "file:port/wiz-claw/include/wiz_claw_http.h",
+      "fanOut": 1,
+      "name": "wiz_claw_http.h"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "fanOut": 1,
+      "name": "data_table.c"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "fanOut": 1,
+      "name": "usb_stdio_link.c"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "fanOut": 1,
+      "name": "wiznet_network.c"
+    },
+    {
+      "id": "file:port/board/can/can.c",
+      "fanOut": 1,
+      "name": "can.c"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "fanOut": 1,
+      "name": "wizchip_gpio_irq.c"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "fanOut": 1,
+      "name": "wizchip_qspi_pio.c"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "fanOut": 1,
+      "name": "wizchip_spi.c"
+    },
+    {
+      "id": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "fanOut": 1,
+      "name": "open62541_wiznet_eventloop.c"
+    },
+    {
+      "id": "file:port/timer/timer.c",
+      "fanOut": 1,
+      "name": "timer.c"
+    },
+    {
+      "id": "file:port/wiz-claw/src/wiz_claw_net.c",
+      "fanOut": 1,
+      "name": "wiz_claw_net.c"
+    }
+  ],
+  "bfsTraversal": {
+    "startNode": "file:examples/opcua_usb_stdio/src/main.c",
+    "order": [
+      "file:examples/opcua_usb_stdio/src/main.c",
+      "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "file:examples/opcua_usb_stdio/inc/data_table.h"
+    ],
+    "depthMap": {
+      "file:examples/opcua_usb_stdio/src/main.c": 0,
+      "file:examples/opcua_usb_stdio/inc/opcua_server.h": 1,
+      "file:examples/opcua_usb_stdio/inc/wiznet_network.h": 1,
+      "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h": 1,
+      "file:examples/opcua_usb_stdio/inc/data_table.h": 1
+    },
+    "byDepth": {
+      "0": [
+        "file:examples/opcua_usb_stdio/src/main.c"
+      ],
+      "1": [
+        "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+        "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+        "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+        "file:examples/opcua_usb_stdio/inc/data_table.h"
+      ]
+    }
+  },
+  "nonCodeFiles": {
+    "documentation": [
+      {
+        "id": "document:examples/opcua_usb_stdio/README_eng.md",
+        "name": "README_eng.md",
+        "summary": "English user guide for OPC UA USB stdio example."
+      },
+      {
+        "id": "document:examples/opcua_usb_stdio/README_kor.md",
+        "name": "README_kor.md",
+        "summary": "Korean user guide for OPC UA USB stdio example."
+      },
+      {
+        "id": "document:examples/10M_Complience_Test/README.md",
+        "name": "README.md",
+        "summary": "Guide for 10M compliance test."
+      },
+      {
+        "id": "document:examples/buffer_read/README.md",
+        "name": "README.md",
+        "summary": "Guide for buffer_read."
+      },
+      {
+        "id": "document:examples/loopback/README.md",
+        "name": "README.md",
+        "summary": "Guide for loopback."
+      },
+      {
+        "id": "file:examples/PING_TEST/README.md",
+        "name": "README.md",
+        "summary": "PING_TEST setup guide."
+      },
+      {
+        "id": "file:examples/wiz_claw_agent/README_kr.md",
+        "name": "README_kr.md",
+        "summary": "Korean README for wiz_claw_agent."
+      },
+      {
+        "id": "document:README.md",
+        "name": "README.md",
+        "summary": "Project overview: goals, board config, examples, directory structure."
+      }
+    ],
+    "infrastructure": [],
+    "data": [],
+    "config": [
+      {
+        "id": "config:examples/opcua_usb_stdio/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake build config for opcua_usb_stdio example."
+      },
+      {
+        "id": "config:.gitmodules",
+        "name": ".gitmodules",
+        "summary": "Five Git submodule dependencies."
+      },
+      {
+        "id": "config:CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "Top-level CMake build config: board selection, Pico SDK init."
+      },
+      {
+        "id": "config:examples/10M_Complience_Test/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake for 10M test."
+      },
+      {
+        "id": "config:examples/buffer_read/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake for buffer_read."
+      },
+      {
+        "id": "config:examples/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "Examples directory CMake."
+      },
+      {
+        "id": "config:examples/loopback/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake for loopback."
+      },
+      {
+        "id": "config:.understand-anything/.understandignore",
+        "name": ".understandignore",
+        "summary": "understand-anything ignore patterns."
+      },
+      {
+        "id": "config:examples/PING_TEST/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake for PING_TEST."
+      },
+      {
+        "id": "config:examples/wiz_claw_agent/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "CMake for wiz_claw_agent."
+      },
+      {
+        "id": "config:libraries/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "Third-party library CMake config."
+      },
+      {
+        "id": "config:pico_sdk_import.cmake",
+        "name": "pico_sdk_import.cmake",
+        "summary": "Pico SDK CMake import helper."
+      },
+      {
+        "id": "config:port/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "Port layer CMake: SPI, QSPI, GPIO IRQ, CAN targets."
+      },
+      {
+        "id": "config:port/mbedtls/inc/ssl_config.h",
+        "name": "ssl_config.h",
+        "summary": "mbedTLS config for embedded use."
+      },
+      {
+        "id": "config:port/open62541/CMakeLists.txt",
+        "name": "CMakeLists.txt",
+        "summary": "open62541 OPC UA port CMake config."
+      },
+      {
+        "id": "config:wiznet_pico_c_sdk_version.cmake",
+        "name": "wiznet_pico_c_sdk_version.cmake",
+        "summary": "WIZnet PICO C SDK version pin."
+      }
+    ]
+  },
+  "clusters": [
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw.h",
+        "file:port/wiz-claw/include/wiz_claw_http.h",
+        "file:examples/wiz_claw_agent/main.c",
+        "file:port/wiz-claw/include/wiz_claw_agent.h"
+      ],
+      "edgeCount": 3
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_llm.h",
+        "file:port/wiz-claw/include/wiz_claw_agent.h",
+        "file:port/wiz-claw/src/wiz_claw_llm.c",
+        "file:port/wiz-claw/src/wiz_claw_agent.c"
+      ],
+      "edgeCount": 3
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_http.h",
+        "file:port/wiz-claw/src/wiz_claw_http.c",
+        "file:port/wiz-claw/src/wiz_claw_llm.c",
+        "file:port/wiz-claw/src/wiz_claw_telegram.c"
+      ],
+      "edgeCount": 3
+    },
+    {
+      "nodes": [
+        "file:examples/opcua_usb_stdio/inc/data_table.h",
+        "file:examples/opcua_usb_stdio/src/main.c",
+        "file:examples/opcua_usb_stdio/src/opcua_server.c",
+        "file:examples/opcua_usb_stdio/src/data_table.c"
+      ],
+      "edgeCount": 3
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/cJSON.h",
+        "file:port/wiz-claw/src/wiz_claw_agent.c",
+        "file:port/wiz-claw/src/wiz_claw_llm.c",
+        "file:port/wiz-claw/src/wiz_claw_telegram.c"
+      ],
+      "edgeCount": 3
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_agent.h",
+        "file:port/wiz-claw/src/wiz_claw_agent.c",
+        "file:examples/wiz_claw_agent/main.c"
+      ],
+      "edgeCount": 2
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_telegram.h",
+        "file:port/wiz-claw/src/wiz_claw_telegram.c",
+        "file:port/wiz-claw/include/wiz_claw_agent.h"
+      ],
+      "edgeCount": 2
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_tls.h",
+        "file:port/wiz-claw/src/wiz_claw_tls.c",
+        "file:port/wiz-claw/src/wiz_claw_http.c"
+      ],
+      "edgeCount": 2
+    },
+    {
+      "nodes": [
+        "file:port/wiz-claw/include/wiz_claw_net.h",
+        "file:port/wiz-claw/src/wiz_claw_net.c",
+        "file:examples/wiz_claw_agent/main.c"
+      ],
+      "edgeCount": 2
+    },
+    {
+      "nodes": [
+        "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+        "file:examples/opcua_usb_stdio/src/main.c",
+        "file:examples/opcua_usb_stdio/src/opcua_server.c"
+      ],
+      "edgeCount": 2
+    }
+  ],
+  "layers": {
+    "count": 8,
+    "list": [
+      {
+        "id": "layer:hardware-abstraction",
+        "name": "Hardware Abstraction Layer",
+        "description": "Low-level WIZnet chip interface drivers: SPI, QSPI/PIO quad-mode, GPIO interrupt, CAN bus, millisecond timer."
+      },
+      {
+        "id": "layer:protocol-adaptation",
+        "name": "Protocol Adaptation Layer",
+        "description": "Glue code bridging open62541 OPC UA, lwIP BSD-socket shim, and mbedTLS config to WIZnet ioLibrary."
+      },
+      {
+        "id": "layer:ai-agent-library",
+        "name": "AI Agent Library",
+        "description": "Portable wiz-claw embedded AI agent library: LLM chat, Telegram Bot, HTTPS/TLS, DNS/DHCP, cJSON, CA bundle."
+      },
+      {
+        "id": "layer:network-examples",
+        "name": "Network Test Examples",
+        "description": "Standalone examples: ICMP ping, TCP/UDP loopback, TX buffer read-back, 10 Mbit/s compliance test."
+      },
+      {
+        "id": "layer:opcua-application",
+        "name": "OPC UA Application",
+        "description": "Multi-module OPC UA server bridging USB CDC sensor data through open62541 over Ethernet."
+      },
+      {
+        "id": "layer:ai-agent-example",
+        "name": "AI Agent Example",
+        "description": "Entry-point app: wiz-claw AI agent polling Telegram and dispatching OpenAI tool calls to GPIO."
+      },
+      {
+        "id": "layer:build-config",
+        "name": "Build Configuration",
+        "description": "CMake hierarchy, Git submodules, Pico SDK import, SDK version pin, and tooling ignore patterns."
+      },
+      {
+        "id": "layer:documentation",
+        "name": "Documentation",
+        "description": "README files providing project overview, example setup guides, and bilingual user guides."
+      }
+    ]
+  },
+  "nodeSummaryIndex": {
+    "file:port/wiz-claw/include/wiz_claw.h": {
+      "name": "wiz_claw.h",
+      "type": "file",
+      "summary": "Core shared header for wiz-claw AI agent library."
+    },
+    "file:port/wiz-claw/include/wiz_claw_http.h": {
+      "name": "wiz_claw_http.h",
+      "type": "file",
+      "summary": "HTTP/1.1 client interface header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_net.h": {
+      "name": "wiz_claw_net.h",
+      "type": "file",
+      "summary": "Network init, DNS, DHCP helper header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_telegram.h": {
+      "name": "wiz_claw_telegram.h",
+      "type": "file",
+      "summary": "Telegram Bot API client interface header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_tls.h": {
+      "name": "wiz_claw_tls.h",
+      "type": "file",
+      "summary": "mbedTLS client interface header."
+    },
+    "file:port/wiz-claw/include/cJSON.h": {
+      "name": "cJSON.h",
+      "type": "file",
+      "summary": "Vendored cJSON 1.7.18 library header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_agent.h": {
+      "name": "wiz_claw_agent.h",
+      "type": "file",
+      "summary": "Agent loop interface header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_llm.h": {
+      "name": "wiz_claw_llm.h",
+      "type": "file",
+      "summary": "LLM client interface header for OpenAI-compatible chat API."
+    },
+    "config:examples/opcua_usb_stdio/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake build config for opcua_usb_stdio example."
+    },
+    "document:examples/opcua_usb_stdio/README_eng.md": {
+      "name": "README_eng.md",
+      "type": "document",
+      "summary": "English user guide for OPC UA USB stdio example."
+    },
+    "document:examples/opcua_usb_stdio/README_kor.md": {
+      "name": "README_kor.md",
+      "type": "document",
+      "summary": "Korean user guide for OPC UA USB stdio example."
+    },
+    "config:.gitmodules": {
+      "name": ".gitmodules",
+      "type": "config",
+      "summary": "Five Git submodule dependencies."
+    },
+    "config:CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "Top-level CMake build config: board selection, Pico SDK init."
+    },
+    "file:examples/10M_Complience_Test/10M_Complience_Test.c": {
+      "name": "10M_Complience_Test.c",
+      "type": "file",
+      "summary": "10 Mbit/s Ethernet compliance test."
+    },
+    "config:examples/10M_Complience_Test/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake for 10M test."
+    },
+    "document:examples/10M_Complience_Test/README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Guide for 10M compliance test."
+    },
+    "config:examples/buffer_read/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake for buffer_read."
+    },
+    "document:examples/buffer_read/README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Guide for buffer_read."
+    },
+    "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c": {
+      "name": "WIZnet_Chip_Buffer_Test.c",
+      "type": "file",
+      "summary": "TX buffer write-readback diagnostic test."
+    },
+    "config:examples/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "Examples directory CMake."
+    },
+    "config:examples/loopback/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake for loopback."
+    },
+    "document:examples/loopback/README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Guide for loopback."
+    },
+    "file:examples/loopback/wizchip_loopback.c": {
+      "name": "wizchip_loopback.c",
+      "type": "file",
+      "summary": "TCP server/client and UDP loopback example."
+    },
+    "file:examples/opcua_usb_stdio/images/.gitkeep": {
+      "name": ".gitkeep",
+      "type": "file",
+      "summary": "Git placeholder."
+    },
+    "file:examples/opcua_usb_stdio/inc/data_table.h": {
+      "name": "data_table.h",
+      "type": "file",
+      "summary": "DataTable struct and API header."
+    },
+    "file:examples/opcua_usb_stdio/inc/opcua_node_map.h": {
+      "name": "opcua_node_map.h",
+      "type": "file",
+      "summary": "OPC UA node ID constants."
+    },
+    "file:examples/opcua_usb_stdio/inc/opcua_server.h": {
+      "name": "opcua_server.h",
+      "type": "file",
+      "summary": "OPC UA server lifecycle API header."
+    },
+    "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h": {
+      "name": "opcua_tcp_probe.h",
+      "type": "file",
+      "summary": "TCP probe API header."
+    },
+    "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h": {
+      "name": "usb_stdio_link.h",
+      "type": "file",
+      "summary": "USB stdio link module header."
+    },
+    "file:examples/opcua_usb_stdio/inc/wiznet_network.h": {
+      "name": "wiznet_network.h",
+      "type": "file",
+      "summary": "WiznetNetworkStatus and network API header."
+    },
+    "file:examples/opcua_usb_stdio/src/data_table.c": {
+      "name": "data_table.c",
+      "type": "file",
+      "summary": "Shared sensor data table implementation."
+    },
+    "file:examples/opcua_usb_stdio/src/main.c": {
+      "name": "main.c",
+      "type": "file",
+      "summary": "opcua_usb_stdio entry point and polling loop."
+    },
+    "file:examples/opcua_usb_stdio/src/opcua_server.c": {
+      "name": "opcua_server.c",
+      "type": "file",
+      "summary": "open62541 OPC UA server implementation."
+    },
+    "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c": {
+      "name": "opcua_tcp_probe.c",
+      "type": "file",
+      "summary": "TCP listener for OPC UA HEL/ACK handshake."
+    },
+    "file:examples/opcua_usb_stdio/src/usb_stdio_link.c": {
+      "name": "usb_stdio_link.c",
+      "type": "file",
+      "summary": "USB CDC ASCII frame parser."
+    },
+    "config:.understand-anything/.understandignore": {
+      "name": ".understandignore",
+      "type": "config",
+      "summary": "understand-anything ignore patterns."
+    },
+    "file:examples/opcua_usb_stdio/src/wiznet_network.c": {
+      "name": "wiznet_network.c",
+      "type": "file",
+      "summary": "WIZnet chip network lifecycle management."
+    },
+    "config:examples/PING_TEST/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake for PING_TEST."
+    },
+    "file:examples/PING_TEST/PING_TEST.c": {
+      "name": "PING_TEST.c",
+      "type": "file",
+      "summary": "ICMP ping test entry point."
+    },
+    "file:examples/PING_TEST/README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "PING_TEST setup guide."
+    },
+    "config:examples/wiz_claw_agent/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "CMake for wiz_claw_agent."
+    },
+    "file:examples/wiz_claw_agent/main.c": {
+      "name": "main.c",
+      "type": "file",
+      "summary": "AI agent entry point: polls Telegram, dispatches OpenAI tool calls to GPIO."
+    },
+    "file:examples/wiz_claw_agent/README_kr.md": {
+      "name": "README_kr.md",
+      "type": "document",
+      "summary": "Korean README for wiz_claw_agent."
+    },
+    "config:libraries/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "Third-party library CMake config."
+    },
+    "config:pico_sdk_import.cmake": {
+      "name": "pico_sdk_import.cmake",
+      "type": "config",
+      "summary": "Pico SDK CMake import helper."
+    },
+    "file:port/board_list.h": {
+      "name": "board_list.h",
+      "type": "file",
+      "summary": "WIZnet Pico board variant defines."
+    },
+    "file:port/board/can/can.c": {
+      "name": "can.c",
+      "type": "file",
+      "summary": "Software CAN 2.0B controller (can2040) using RP2040 PIO."
+    },
+    "file:port/board/can/can.h": {
+      "name": "can.h",
+      "type": "file",
+      "summary": "Public header for can2040 CAN controller."
+    },
+    "file:port/board/can/can.pio": {
+      "name": "can.pio",
+      "type": "file",
+      "summary": "PIO assembly for CAN bus bit timing."
+    },
+    "config:port/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "Port layer CMake: SPI, QSPI, GPIO IRQ, CAN targets."
+    },
+    "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h": {
+      "name": "wizchip_gpio_irq.h",
+      "type": "file",
+      "summary": "GPIO interrupt init and callback header."
+    },
+    "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h": {
+      "name": "wizchip_qspi_pio.h",
+      "type": "file",
+      "summary": "QSPI PIO driver header."
+    },
+    "file:port/ioLibrary_Driver/inc/wizchip_spi.h": {
+      "name": "wizchip_spi.h",
+      "type": "file",
+      "summary": "Main WIZnet SPI port header."
+    },
+    "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c": {
+      "name": "wizchip_gpio_irq.c",
+      "type": "file",
+      "summary": "GPIO interrupt support implementation."
+    },
+    "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c": {
+      "name": "wizchip_qspi_pio.c",
+      "type": "file",
+      "summary": "QSPI PIO driver implementation."
+    },
+    "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio": {
+      "name": "wizchip_qspi_pio.pio",
+      "type": "file",
+      "summary": "PIO assembly for SPI/dual-SPI/quad-SPI transfers."
+    },
+    "file:port/ioLibrary_Driver/src/wizchip_spi.c": {
+      "name": "wizchip_spi.c",
+      "type": "file",
+      "summary": "Core WIZnet SPI/QSPI port layer."
+    },
+    "config:port/mbedtls/inc/ssl_config.h": {
+      "name": "ssl_config.h",
+      "type": "config",
+      "summary": "mbedTLS config for embedded use."
+    },
+    "config:port/open62541/CMakeLists.txt": {
+      "name": "CMakeLists.txt",
+      "type": "config",
+      "summary": "open62541 OPC UA port CMake config."
+    },
+    "file:port/open62541/lwip/sockets.h": {
+      "name": "sockets.h",
+      "type": "file",
+      "summary": "lwIP BSD socket shim for open62541."
+    },
+    "file:port/open62541/open62541_wiznet_eventloop.c": {
+      "name": "open62541_wiznet_eventloop.c",
+      "type": "file",
+      "summary": "WIZnet-specific open62541 event loop."
+    },
+    "file:port/port_common.h": {
+      "name": "port_common.h",
+      "type": "file",
+      "summary": "Shared portability macros and type definitions."
+    },
+    "file:port/timer/timer.c": {
+      "name": "timer.c",
+      "type": "file",
+      "summary": "1ms repeating hardware timer implementation."
+    },
+    "file:port/timer/timer.h": {
+      "name": "timer.h",
+      "type": "file",
+      "summary": "1ms timer port public header."
+    },
+    "file:port/wiz-claw/include/wiz_claw_ca_bundle.h": {
+      "name": "wiz_claw_ca_bundle.h",
+      "type": "file",
+      "summary": "Embedded PEM CA certificate bundle."
+    },
+    "file:port/wiz-claw/src/cJSON.c": {
+      "name": "cJSON.c",
+      "type": "file",
+      "summary": "cJSON library implementation."
+    },
+    "file:port/wiz-claw/src/wiz_claw_agent.c": {
+      "name": "wiz_claw_agent.c",
+      "type": "file",
+      "summary": "AI agent loop implementation."
+    },
+    "file:port/wiz-claw/src/wiz_claw_http.c": {
+      "name": "wiz_claw_http.c",
+      "type": "file",
+      "summary": "HTTP/HTTPS client over WIZnet sockets."
+    },
+    "file:port/wiz-claw/src/wiz_claw_llm.c": {
+      "name": "wiz_claw_llm.c",
+      "type": "file",
+      "summary": "OpenAI-compatible LLM client implementation."
+    },
+    "file:port/wiz-claw/src/wiz_claw_net.c": {
+      "name": "wiz_claw_net.c",
+      "type": "file",
+      "summary": "WIZnet network layer: init, DNS, DHCP."
+    },
+    "file:port/wiz-claw/src/wiz_claw_telegram.c": {
+      "name": "wiz_claw_telegram.c",
+      "type": "file",
+      "summary": "Telegram Bot API client implementation."
+    },
+    "file:port/wiz-claw/src/wiz_claw_tls.c": {
+      "name": "wiz_claw_tls.c",
+      "type": "file",
+      "summary": "mbedTLS wrapper for WIZnet sockets."
+    },
+    "file:port/wiz-claw/tools/gen_ca_bundle.py": {
+      "name": "gen_ca_bundle.py",
+      "type": "file",
+      "summary": "Developer tool generating CA bundle header."
+    },
+    "document:README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Project overview: goals, board config, examples, directory structure."
+    },
+    "config:wiznet_pico_c_sdk_version.cmake": {
+      "name": "wiznet_pico_c_sdk_version.cmake",
+      "type": "config",
+      "summary": "WIZnet PICO C SDK version pin."
+    }
+  },
+  "totalNodes": 75,
+  "totalEdges": 37
+}

@@ -1,0 +1,5517 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "1b27179f6ef7700f133ff8273a843f561e095e11",
+  "generatedAt": "2026-06-10T05:58:13.402Z",
+  "files": {
+    ".gitmodules": {
+      "filePath": ".gitmodules",
+      "contentHash": "3c8f6a18036d7030346a1aa8c3eb048bbbe54be2e6ed5e294c12d6e909e26283",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "8fa52a0618193b825bf925ef6a0c7e74c32133272e3057c62a479a93881509aa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "CMakeLists.txt": {
+      "filePath": "CMakeLists.txt",
+      "contentHash": "fa81b7f833df1bcb394c180b8e4e6e7dd177a8efc89c992b1a27e1753397d1d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 152,
+      "hasStructuralAnalysis": false
+    },
+    "examples/10M_Complience_Test/10M_Complience_Test.c": {
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "contentHash": "0e4fab2dac90b061247153d338939a065bbce381b05573f6100f125eb3dd33fb",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 122
+        },
+        {
+          "name": "send_test_frame",
+          "params": [
+            "packet_type"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 63
+        },
+        {
+          "name": "set_clock_khz",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "set_force_mdi_and_link",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "W6300_PHY_CONFIG",
+          "params": [
+            "mode",
+            "speed",
+            "duplex"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "complience_test_initialize",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "wizchip_qspi_pio.h",
+          "specifiers": [
+            "wizchip_qspi_pio.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "timer.h",
+          "specifiers": [
+            "timer.h"
+          ]
+        },
+        {
+          "source": "w6300.h",
+          "specifiers": [
+            "w6300.h"
+          ]
+        },
+        {
+          "source": "pico/rand.h",
+          "specifiers": [
+            "pico/rand.h"
+          ]
+        }
+      ],
+      "exports": [
+        "main",
+        "set_force_mdi_and_link",
+        "W6300_PHY_CONFIG",
+        "complience_test_initialize"
+      ],
+      "totalLines": 309,
+      "hasStructuralAnalysis": true
+    },
+    "examples/10M_Complience_Test/CMakeLists.txt": {
+      "filePath": "examples/10M_Complience_Test/CMakeLists.txt",
+      "contentHash": "64416660de75ea083406de1e47d419b71be8983a7a8e652d112cf9ca2fd9b478",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "examples/10M_Complience_Test/README.md": {
+      "filePath": "examples/10M_Complience_Test/README.md",
+      "contentHash": "a5de4d4fa37f98ff32f10d21a06973500ac4185d8138cabeab7ada886b762873",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "examples/buffer_read/CMakeLists.txt": {
+      "filePath": "examples/buffer_read/CMakeLists.txt",
+      "contentHash": "6f9d7c62101211da568c0a0186dae30cc5e061f0ad0545263c42de2cac031782",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "examples/buffer_read/README.md": {
+      "filePath": "examples/buffer_read/README.md",
+      "contentHash": "a5de4d4fa37f98ff32f10d21a06973500ac4185d8138cabeab7ada886b762873",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "examples/buffer_read/WIZnet_Chip_Buffer_Test.c": {
+      "filePath": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "contentHash": "7daaea8f7cd416edf3cdcb956fa372a230bce697459d94e9a7c285aa4cf799f6",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 163
+        },
+        {
+          "name": "repeating_timer_callback",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "loopback.h",
+          "specifiers": [
+            "loopback.h"
+          ]
+        },
+        {
+          "source": "timer.h",
+          "specifiers": [
+            "timer.h"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 278,
+      "hasStructuralAnalysis": true
+    },
+    "examples/CMakeLists.txt": {
+      "filePath": "examples/CMakeLists.txt",
+      "contentHash": "bbbf9b1378d93cba1ec55f2527606d1772a736625a92dde911394c057aa3f989",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "examples/loopback/CMakeLists.txt": {
+      "filePath": "examples/loopback/CMakeLists.txt",
+      "contentHash": "476131d5eb52525a5a1523d2e5168993797d46764d16862e002ef87be2e27663",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "examples/loopback/README.md": {
+      "filePath": "examples/loopback/README.md",
+      "contentHash": "a5de4d4fa37f98ff32f10d21a06973500ac4185d8138cabeab7ada886b762873",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "examples/loopback/wizchip_loopback.c": {
+      "filePath": "examples/loopback/wizchip_loopback.c",
+      "contentHash": "22a09baa2de37412eb02dd603701567d3b5d95b1ec36b9d2a1cbe7c12f1ba64c",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 106
+        },
+        {
+          "name": "repeating_timer_callback",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "loopback.h",
+          "specifiers": [
+            "loopback.h"
+          ]
+        },
+        {
+          "source": "timer.h",
+          "specifiers": [
+            "timer.h"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 300,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/CMakeLists.txt": {
+      "filePath": "examples/opcua_usb_stdio/CMakeLists.txt",
+      "contentHash": "4ca99cff659aad486dadff4609da9ebbe1226f7c6691e198add3ba83a6384cf7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "examples/opcua_usb_stdio/images/.gitkeep": {
+      "filePath": "examples/opcua_usb_stdio/images/.gitkeep",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "examples/opcua_usb_stdio/inc/data_table.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/data_table.h",
+      "contentHash": "946a18d802b447215b7f60b1d7c91d050b69018aee009b8d29349a938ad083e4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/inc/opcua_node_map.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "contentHash": "b55b28e4d3c626a9d7aff32c0e972e083fd712818aa06a7c6a06978d6893c8d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/inc/opcua_server.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_server.h",
+      "contentHash": "fdc0ca43f420993a7054c935228b29c56180b2669e0e38d76192239d776526c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "contentHash": "48b223f16b3bebd2eae491c15a196982ed4a81e4f5185ee4524d38fa980550bf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/inc/usb_stdio_link.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "contentHash": "a97dea7dca5951ea56b4ae20164f534d3767c7d3db0bdbfd7f21699506720924",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/inc/wiznet_network.h": {
+      "filePath": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "contentHash": "ceff2576f2c1aac759f55eb5c46c4f25e144d81a778e7c75a51798a612a458ce",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/README_eng.md": {
+      "filePath": "examples/opcua_usb_stdio/README_eng.md",
+      "contentHash": "dc19b73fd6d9e53d54a862f6c269192d97555a6a5abdf31f7133fd8a51655e29",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/README_kor.md": {
+      "filePath": "examples/opcua_usb_stdio/README_kor.md",
+      "contentHash": "e7ba010d22c357dbc8d6769b68721acc2bbfb2932f90ffc2d3356111274dac4a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/data_table.c": {
+      "filePath": "examples/opcua_usb_stdio/src/data_table.c",
+      "contentHash": "739fcd467efe0d6ce90596c3980756fae91fc3430d568ea7797a39ea991589d4",
+      "functions": [
+        {
+          "name": "now_ms",
+          "params": [],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "data_table_init",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "data_table_clear",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "data_table_set_channels",
+          "params": [
+            "ch1",
+            "ch2",
+            "ch3",
+            "raw_frame"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "data_table_record_parse_error",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "data_table_snapshot",
+          "params": [
+            "out"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "data_table.h",
+          "specifiers": [
+            "data_table.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        }
+      ],
+      "exports": [
+        "data_table_init",
+        "data_table_clear",
+        "data_table_set_channels",
+        "data_table_record_parse_error",
+        "data_table_snapshot"
+      ],
+      "totalLines": 44,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/main.c": {
+      "filePath": "examples/opcua_usb_stdio/src/main.c",
+      "contentHash": "4a3282823d10eefbc62f09405710188733ca1e23d6d642d70642d204016ba8a0",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "pico/stdio_usb.h",
+          "specifiers": [
+            "pico/stdio_usb.h"
+          ]
+        },
+        {
+          "source": "data_table.h",
+          "specifiers": [
+            "data_table.h"
+          ]
+        },
+        {
+          "source": "opcua_server.h",
+          "specifiers": [
+            "opcua_server.h"
+          ]
+        },
+        {
+          "source": "usb_stdio_link.h",
+          "specifiers": [
+            "usb_stdio_link.h"
+          ]
+        },
+        {
+          "source": "wiznet_network.h",
+          "specifiers": [
+            "wiznet_network.h"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/opcua_server.c": {
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "contentHash": "f1569d79d1dd3c7a3a535199b8d3682837f6999eaadc82c6065886c0ee3ec52f",
+      "functions": [
+        {
+          "name": "opcua_server_init",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 78
+        },
+        {
+          "name": "opcua_server_poll",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "opcua_server_get_status",
+          "params": [
+            "status"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "opcua_server_print_status",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "opcua_server.h",
+          "specifiers": [
+            "opcua_server.h"
+          ]
+        },
+        {
+          "source": "stdbool.h",
+          "specifiers": [
+            "stdbool.h"
+          ]
+        },
+        {
+          "source": "stdint.h",
+          "specifiers": [
+            "stdint.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "data_table.h",
+          "specifiers": [
+            "data_table.h"
+          ]
+        },
+        {
+          "source": "opcua_node_map.h",
+          "specifiers": [
+            "opcua_node_map.h"
+          ]
+        },
+        {
+          "source": "opcua_tcp_probe.h",
+          "specifiers": [
+            "opcua_tcp_probe.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "wiznet_network.h",
+          "specifiers": [
+            "wiznet_network.h"
+          ]
+        }
+      ],
+      "exports": [
+        "opcua_server_init",
+        "opcua_server_poll",
+        "opcua_server_get_status",
+        "opcua_server_print_status"
+      ],
+      "totalLines": 503,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/opcua_tcp_probe.c": {
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "contentHash": "d3175c3c8d8a989aa658e044c9546b12d0a09f742d02ddbda845dcc667920aa6",
+      "functions": [
+        {
+          "name": "read_u32le",
+          "params": [
+            "p"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "write_u32le",
+          "params": [
+            "p",
+            "value"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "send_all",
+          "params": [
+            "buf",
+            "len"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "parse_hello_endpoint",
+          "params": [
+            "buf",
+            "len"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "send_ack",
+          "params": [],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "send_error_and_disconnect",
+          "params": [
+            "reason"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "process_rx",
+          "params": [
+            "buf",
+            "len"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 45
+        },
+        {
+          "name": "close_probe_socket",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "poll_socket",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 87
+        },
+        {
+          "name": "opcua_tcp_probe_init",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "opcua_tcp_probe_poll",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "opcua_tcp_probe_get_status",
+          "params": [
+            "status"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "opcua_tcp_probe_print_status",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "opcua_tcp_probe.h",
+          "specifiers": [
+            "opcua_tcp_probe.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "wiznet_network.h",
+          "specifiers": [
+            "wiznet_network.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        }
+      ],
+      "exports": [
+        "opcua_tcp_probe_init",
+        "opcua_tcp_probe_poll",
+        "opcua_tcp_probe_get_status",
+        "opcua_tcp_probe_print_status"
+      ],
+      "totalLines": 343,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/usb_stdio_link.c": {
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "contentHash": "82fc1c7f936a9eab1b60169bfd3d41f5188634fd6dec7ede989f8420bbd3cef7",
+      "functions": [
+        {
+          "name": "parse_float_token",
+          "params": [
+            "cursor",
+            "out"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "parse_data_payload",
+          "params": [
+            "payload",
+            "ch1",
+            "ch2",
+            "ch3"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "usb_stdio_print_help",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "usb_stdio_print_state",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "process_line",
+          "params": [
+            "line"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 61
+        },
+        {
+          "name": "usb_stdio_link_init",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "usb_stdio_link_poll",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "usb_stdio_link.h",
+          "specifiers": [
+            "usb_stdio_link.h"
+          ]
+        },
+        {
+          "source": "stdbool.h",
+          "specifiers": [
+            "stdbool.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "stdlib.h",
+          "specifiers": [
+            "stdlib.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "pico/error.h",
+          "specifiers": [
+            "pico/error.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "data_table.h",
+          "specifiers": [
+            "data_table.h"
+          ]
+        },
+        {
+          "source": "opcua_server.h",
+          "specifiers": [
+            "opcua_server.h"
+          ]
+        },
+        {
+          "source": "wiznet_network.h",
+          "specifiers": [
+            "wiznet_network.h"
+          ]
+        }
+      ],
+      "exports": [
+        "usb_stdio_print_help",
+        "usb_stdio_print_state",
+        "usb_stdio_link_init",
+        "usb_stdio_link_poll"
+      ],
+      "totalLines": 201,
+      "hasStructuralAnalysis": true
+    },
+    "examples/opcua_usb_stdio/src/wiznet_network.c": {
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "contentHash": "f3aee42ba9e4a4ca9f8c9e39d00eace191b7976c51323d2aa19fa18196cbdd7d",
+      "functions": [
+        {
+          "name": "copy_net_info_to_status",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "update_link_status",
+          "params": [
+            "print_on_change"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "print_phy_details",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "wiznet_chip_initialize_nonblocking",
+          "params": [],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "wiznet_network_init",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "wiznet_network_poll",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "wiznet_network_get_status",
+          "params": [
+            "status"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "wiznet_network_print_status",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "wiznet_network_is_ready",
+          "params": [],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiznet_network.h",
+          "specifiers": [
+            "wiznet_network.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_qspi_pio.h",
+          "specifiers": [
+            "wizchip_qspi_pio.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiznet_network_init",
+        "wiznet_network_poll",
+        "wiznet_network_get_status",
+        "wiznet_network_print_status",
+        "wiznet_network_is_ready"
+      ],
+      "totalLines": 209,
+      "hasStructuralAnalysis": true
+    },
+    "examples/PING_TEST/CMakeLists.txt": {
+      "filePath": "examples/PING_TEST/CMakeLists.txt",
+      "contentHash": "95eb3e9209a052a0423e8170bb961794b5e46c3a577c3dfa80e641c12dddf1ca",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "examples/PING_TEST/PING_TEST.c": {
+      "filePath": "examples/PING_TEST/PING_TEST.c",
+      "contentHash": "089714d70d5d8760976bd17bbd7399dca48121569e1202d7cb133c43f9ac4886",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 94
+        },
+        {
+          "name": "repeating_timer_callback",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "loopback.h",
+          "specifiers": [
+            "loopback.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "timer.h",
+          "specifiers": [
+            "timer.h"
+          ]
+        }
+      ],
+      "exports": [
+        "main"
+      ],
+      "totalLines": 210,
+      "hasStructuralAnalysis": true
+    },
+    "examples/PING_TEST/README.md": {
+      "filePath": "examples/PING_TEST/README.md",
+      "contentHash": "a5de4d4fa37f98ff32f10d21a06973500ac4185d8138cabeab7ada886b762873",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "examples/wiz_claw_agent/CMakeLists.txt": {
+      "filePath": "examples/wiz_claw_agent/CMakeLists.txt",
+      "contentHash": "b3cb068a4479fc1c6223a7e427d6284623691fee9e04a5daf0c1134a9626f695",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "examples/wiz_claw_agent/main.c": {
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "contentHash": "bef9fa9e2b558573f8cc8b6464d4f0e0970cb1cef160c0948df1c8cf575f3531",
+      "functions": [
+        {
+          "name": "timer_1s_cb",
+          "params": [
+            "t"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "gpio_tool_handler",
+          "params": [
+            "name",
+            "arguments_json",
+            "out_result_json",
+            "user_ctx"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 47
+        },
+        {
+          "name": "on_telegram_message",
+          "params": [
+            "msg",
+            "user_ctx"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "classes": [
+        {
+          "name": "repeating_timer",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "stdlib.h",
+          "specifiers": [
+            "stdlib.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "hardware/gpio.h",
+          "specifiers": [
+            "hardware/gpio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_net.h",
+          "specifiers": [
+            "wiz_claw_net.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_http.h",
+          "specifiers": [
+            "wiz_claw_http.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_telegram.h",
+          "specifiers": [
+            "wiz_claw_telegram.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_llm.h",
+          "specifiers": [
+            "wiz_claw_llm.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_agent.h",
+          "specifiers": [
+            "wiz_claw_agent.h"
+          ]
+        }
+      ],
+      "exports": [
+        "repeating_timer",
+        "main"
+      ],
+      "totalLines": 294,
+      "hasStructuralAnalysis": true
+    },
+    "examples/wiz_claw_agent/README_kr.md": {
+      "filePath": "examples/wiz_claw_agent/README_kr.md",
+      "contentHash": "56f978dd1d99b700005ba6f1fe1c891cc632d81304e76e7f14247f8f5dfa0106",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 138,
+      "hasStructuralAnalysis": true
+    },
+    "libraries/CMakeLists.txt": {
+      "filePath": "libraries/CMakeLists.txt",
+      "contentHash": "feb71a191b7257b047304c93bdf2243c1aa7661969330a35e0f1add709ebf8b7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 257,
+      "hasStructuralAnalysis": false
+    },
+    "pico_sdk_import.cmake": {
+      "filePath": "pico_sdk_import.cmake",
+      "contentHash": "502ec66696fa2c4130116f3cd8eeabaa10a81809a5a7dcd6b2851ecc16453bcc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 63,
+      "hasStructuralAnalysis": false
+    },
+    "port/board_list.h": {
+      "filePath": "port/board_list.h",
+      "contentHash": "de50255e9d287cfc088fa88cee24edfc62762f65349c110a6b6454ddcd9d1f0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "port/board/can/can.c": {
+      "filePath": "port/board/can/can.c",
+      "contentHash": "3a3c6e19155d8b3336f990f66cdef797d2baaf8e892a21f29192c600699596c3",
+      "functions": [
+        {
+          "name": "writel",
+          "params": [
+            "addr",
+            "val"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "readl",
+          "params": [
+            "addr"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "rp2040_clear_reset",
+          "params": [
+            "reset_bit"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "rp2040_gpio_peripheral",
+          "params": [
+            "gpio",
+            "func",
+            "pull_up"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "pio_gpiobase",
+          "params": [
+            "cd"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "pio_sync_setup",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "pio_rx_setup",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "pio_match_setup",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "pio_tx_setup",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "pio_sync_normal_start_signal",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "pio_sync_slow_start_signal",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "pio_rx_check_stall",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_match_check",
+          "params": [
+            "cd",
+            "match_key"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_match_calc_key",
+          "params": [
+            "raw_bits",
+            "rx_bit_pos"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "pio_match_clear",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "pio_tx_reset",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "pio_tx_send",
+          "params": [
+            "cd",
+            "data",
+            "count"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "pio_tx_inject_ack",
+          "params": [
+            "cd",
+            "match_key"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "pio_tx_did_fail",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "pio_irq_set",
+          "params": [
+            "cd",
+            "sm_irqs"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_irq_disable",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_irq_get",
+          "params": [
+            "cd"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_signal_set_txpending",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_signal_clear_txpending",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "pio_sm_setup",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "pio_setup",
+          "params": [
+            "cd",
+            "sys_clock",
+            "bitrate"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "crc_byte",
+          "params": [
+            "crc",
+            "data"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "crc_bytes",
+          "params": [
+            "crc",
+            "data",
+            "num"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "unstuf_add_bits",
+          "params": [
+            "bu",
+            "data",
+            "count"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "unstuf_set_count",
+          "params": [
+            "bu",
+            "num_bits"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "unstuf_clear_state",
+          "params": [
+            "bu"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "unstuf_restore_state",
+          "params": [
+            "bu",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "unstuf_pull_bits_rp2040",
+          "params": [
+            "bu"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 50
+        },
+        {
+          "name": "unstuf_pull_bits",
+          "params": [
+            "bu"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 46
+        },
+        {
+          "name": "unstuf_get_raw",
+          "params": [
+            "bu"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "bitstuff_rp2040",
+          "params": [
+            "pb",
+            "num_bits"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 38
+        },
+        {
+          "name": "bitstuff",
+          "params": [
+            "pb",
+            "num_bits"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "bs_pushraw",
+          "params": [
+            "bs",
+            "data",
+            "count"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "bs_push",
+          "params": [
+            "bs",
+            "data",
+            "count"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "bs_finalize",
+          "params": [
+            "bs"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "tx_qpos",
+          "params": [
+            "cd",
+            "pos"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "tx_schedule_transmit",
+          "params": [
+            "cd"
+          ],
+          "returnType": "uint32_t",
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "tx_inject_ack",
+          "params": [
+            "cd",
+            "match_key"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "tx_check_local_message",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "report_callback_error",
+          "params": [
+            "cd",
+            "error_code"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "report_callback_rx_msg",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "report_callback_tx_msg",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "report_handle_eof",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "report_is_not_in_tx",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "report_note_message_start",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "report_note_crc_start",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "report_note_crc_success",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "report_note_ack_success",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "report_note_eof_success",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "report_note_discarding",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "report_line_ackdone",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "report_line_matched",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "report_line_maytx",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "report_line_txpending",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "data_state_clear_bits",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "data_state_go_next",
+          "params": [
+            "cd",
+            "state",
+            "num_bits"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "data_state_go_discard",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "data_state_go_error",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "data_state_line_error",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "data_state_line_passive",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "data_state_go_crc",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "data_state_go_data",
+          "params": [
+            "cd",
+            "id",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "data_state_update_start",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "data_state_update_header",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "data_state_update_ext_header",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "data_state_update_data0",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "data_state_update_data1",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "data_state_update_crc",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "data_state_update_ack",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "data_state_update_eof0",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "data_state_update_eof1",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "data_state_update_discard",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "data_state_update",
+          "params": [
+            "cd",
+            "data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "process_rx",
+          "params": [
+            "cd",
+            "rx_data"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "can2040_pio_irq_handler",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "can2040_check_transmit",
+          "params": [
+            "cd"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "can2040_transmit",
+          "params": [
+            "cd",
+            "msg"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 67
+        },
+        {
+          "name": "can2040_setup",
+          "params": [
+            "cd",
+            "pio_num"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "can2040_callback_config",
+          "params": [
+            "cd",
+            "rx_cb"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "can2040_start",
+          "params": [
+            "cd",
+            "sys_clock",
+            "bitrate",
+            "gpio_rx",
+            "gpio_tx"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "can2040_stop",
+          "params": [
+            "cd"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "can2040_get_statistics",
+          "params": [
+            "cd",
+            "stats"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [
+        {
+          "name": "bitstuffer_s",
+          "methods": [],
+          "properties": [
+            "prev_stuffed"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "imports": [
+        {
+          "source": "stdint.h",
+          "specifiers": [
+            "stdint.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "can.h",
+          "specifiers": [
+            "can.h"
+          ]
+        },
+        {
+          "source": "cmsis_gcc.h",
+          "specifiers": [
+            "cmsis_gcc.h"
+          ]
+        },
+        {
+          "source": "hardware/regs/dreq.h",
+          "specifiers": [
+            "hardware/regs/dreq.h"
+          ]
+        },
+        {
+          "source": "hardware/structs/dma.h",
+          "specifiers": [
+            "hardware/structs/dma.h"
+          ]
+        },
+        {
+          "source": "hardware/structs/iobank0.h",
+          "specifiers": [
+            "hardware/structs/iobank0.h"
+          ]
+        },
+        {
+          "source": "hardware/structs/padsbank0.h",
+          "specifiers": [
+            "hardware/structs/padsbank0.h"
+          ]
+        },
+        {
+          "source": "hardware/structs/pio.h",
+          "specifiers": [
+            "hardware/structs/pio.h"
+          ]
+        },
+        {
+          "source": "hardware/structs/resets.h",
+          "specifiers": [
+            "hardware/structs/resets.h"
+          ]
+        }
+      ],
+      "exports": [
+        "bitstuffer_s",
+        "can2040_pio_irq_handler",
+        "can2040_check_transmit",
+        "can2040_transmit",
+        "can2040_setup",
+        "can2040_callback_config",
+        "can2040_start",
+        "can2040_stop",
+        "can2040_get_statistics"
+      ],
+      "totalLines": 1450,
+      "hasStructuralAnalysis": true
+    },
+    "port/board/can/can.h": {
+      "filePath": "port/board/can/can.h",
+      "contentHash": "9cd5bc3328b0a6be71229a9a3fa09a894643c7bbca9ba78e6bdf1493d93623dc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 87,
+      "hasStructuralAnalysis": true
+    },
+    "port/board/can/can.pio": {
+      "filePath": "port/board/can/can.pio",
+      "contentHash": "6a01a832a11716646d249490b764d82b5980b1bd1fe5f9873c908750749ac03e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": false
+    },
+    "port/CMakeLists.txt": {
+      "filePath": "port/CMakeLists.txt",
+      "contentHash": "2e3db9503e6d4fe218644e7178ab070d9408d128627b7a058c90ea887f563b31",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 155,
+      "hasStructuralAnalysis": false
+    },
+    "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h": {
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "contentHash": "162e1499d064dea72cbdbdedb30717d759512fb0789508fd7b2e814567ba3000",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h": {
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "contentHash": "7de96d20cf07901c37c41defaf726fd78da1ee1e185b0f94a6ebfb38510e5648",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 79,
+      "hasStructuralAnalysis": true
+    },
+    "port/ioLibrary_Driver/inc/wizchip_spi.h": {
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "contentHash": "1e85fb923249f1c3bed063ead803c9a5a190daa4c83e6581cd1c371c9aaa33f5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 237,
+      "hasStructuralAnalysis": true
+    },
+    "port/ioLibrary_Driver/src/wizchip_gpio_irq.c": {
+      "filePath": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "contentHash": "d3da63676b467239bd4201e4c941d86d5a59dce22c942c81564ce247e184c3cf",
+      "functions": [
+        {
+          "name": "wizchip_gpio_interrupt_initialize",
+          "params": [
+            "socket"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "wizchip_gpio_interrupt_callback",
+          "params": [
+            "gpio",
+            "events"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "hardware/gpio.h",
+          "specifiers": [
+            "hardware/gpio.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "wizchip_gpio_irq.h",
+          "specifiers": [
+            "wizchip_gpio_irq.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wizchip_gpio_interrupt_initialize"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "port/ioLibrary_Driver/src/wizchip_qspi_pio.c": {
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "contentHash": "61f9e9d08f09ea2c8ce9250a9bbb562e25cdd95df5446dabbc0e36f883a63d4f",
+      "functions": [
+        {
+          "name": "mk_cmd_buf",
+          "params": [
+            "pdst",
+            "opcode",
+            "addr"
+          ],
+          "returnType": "uint16_t",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "pio_spi_gpio_setup",
+          "params": [
+            "state"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 62
+        },
+        {
+          "name": "wiznet_spi_pio_open",
+          "params": [
+            "spi_config"
+          ],
+          "returnType": "wiznet_spi_handle_t",
+          "exported": true,
+          "lineCount": 179
+        },
+        {
+          "name": "wiznet_spi_pio_close",
+          "params": [
+            "handle"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "cs_set",
+          "params": [
+            "state",
+            "value"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "ns_delay",
+          "params": [
+            "ns"
+          ],
+          "returnType": "__noinline",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "wiznet_spi_pio_frame_start",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "wiznet_spi_pio_frame_end",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "wiznet_spi_pio_set_active",
+          "params": [
+            "handle"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiznet_spi_pio_set_inactive",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wizchip_spi_pio_reset",
+          "params": [
+            "handle"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "pico/error.h",
+          "specifiers": [
+            "pico/error.h"
+          ]
+        },
+        {
+          "source": "hardware/dma.h",
+          "specifiers": [
+            "hardware/dma.h"
+          ]
+        },
+        {
+          "source": "hardware/clocks.h",
+          "specifiers": [
+            "hardware/clocks.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_qspi_pio.h",
+          "specifiers": [
+            "wizchip_qspi_pio.h"
+          ]
+        },
+        {
+          "source": "wizchip_qspi_pio.pio.h",
+          "specifiers": [
+            "wizchip_qspi_pio.pio.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiznet_spi_pio_open"
+      ],
+      "totalLines": 753,
+      "hasStructuralAnalysis": true
+    },
+    "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio": {
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "contentHash": "a16054e9e980237ba55b6092ef2b4e39428b67b6b39edec5d3de070b3d933e4d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 96,
+      "hasStructuralAnalysis": false
+    },
+    "port/ioLibrary_Driver/src/wizchip_spi.c": {
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "contentHash": "9036bfcf60fa0f8da7a48f3227c9c897225e1432be1087dfb2061a12a49a4e2c",
+      "functions": [
+        {
+          "name": "wizchip_select",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wizchip_deselect",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "wizchip_reset",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "wizchip_critical_section_lock",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wizchip_critical_section_unlock",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wizchip_spi_initialize",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 42
+        },
+        {
+          "name": "wizchip_cris_initialize",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "wizchip_initialize",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 58
+        },
+        {
+          "name": "wizchip_check",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "network_initialize",
+          "params": [
+            "net_info"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "print_network_information",
+          "params": [
+            "net_info"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "print_ipv6_addr",
+          "params": [
+            "name",
+            "ip6addr"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "port_common.h",
+          "specifiers": [
+            "port_common.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        },
+        {
+          "source": "wizchip_spi.h",
+          "specifiers": [
+            "wizchip_spi.h"
+          ]
+        },
+        {
+          "source": "board_list.h",
+          "specifiers": [
+            "board_list.h"
+          ]
+        },
+        {
+          "source": "wizchip_qspi_pio.h",
+          "specifiers": [
+            "wizchip_qspi_pio.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "pico/binary_info.h",
+          "specifiers": [
+            "pico/binary_info.h"
+          ]
+        },
+        {
+          "source": "pico/critical_section.h",
+          "specifiers": [
+            "pico/critical_section.h"
+          ]
+        },
+        {
+          "source": "hardware/dma.h",
+          "specifiers": [
+            "hardware/dma.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wizchip_reset",
+        "wizchip_spi_initialize",
+        "wizchip_cris_initialize",
+        "wizchip_initialize",
+        "wizchip_check",
+        "network_initialize",
+        "print_network_information",
+        "print_ipv6_addr"
+      ],
+      "totalLines": 396,
+      "hasStructuralAnalysis": true
+    },
+    "port/mbedtls/inc/ssl_config.h": {
+      "filePath": "port/mbedtls/inc/ssl_config.h",
+      "contentHash": "1d751317425ac7dea5a50e12ccbf5352fc51015d8d6e65e12702de33027b4bbb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "port/open62541/CMakeLists.txt": {
+      "filePath": "port/open62541/CMakeLists.txt",
+      "contentHash": "9b69de1f21684ed7cc55d1c2e0187d2f9f6becc9c1829d7940503b5a70c39c05",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 101,
+      "hasStructuralAnalysis": false
+    },
+    "port/open62541/lwip/sockets.h": {
+      "filePath": "port/open62541/lwip/sockets.h",
+      "contentHash": "fd1390676b38c58fb808385f94da7895dfbef3e2c1e8a9b8783c11c741417b67",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "port/open62541/open62541_wiznet_eventloop.c": {
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "contentHash": "e279e2abca57bcc2cdb6980e45896801ec0e7850f1c443c3197a71f495034f15",
+      "functions": [
+        {
+          "name": "pico_datetime_now",
+          "params": [],
+          "returnType": "UA_DateTime",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "UA_DateTime_now",
+          "params": [],
+          "returnType": "UA_DateTime",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "UA_DateTime_nowMonotonic",
+          "params": [],
+          "returnType": "UA_DateTime",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "UA_DateTime_localTimeUtcOffset",
+          "params": [],
+          "returnType": "UA_Int64",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "set_eventloop_state",
+          "params": [
+            "el",
+            "state"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_noop_lock",
+          "params": [
+            "el"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_noop_unlock",
+          "params": [
+            "el"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_eventsource_start",
+          "params": [
+            "es"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "wiz_eventsource_stop",
+          "params": [
+            "es"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_el_register_eventsource",
+          "params": [
+            "el",
+            "es"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "wiz_el_deregister_eventsource",
+          "params": [
+            "el",
+            "es"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "wiz_el_start",
+          "params": [
+            "el"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "wiz_el_stop",
+          "params": [
+            "el"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "wiz_el_free",
+          "params": [
+            "el"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "wiz_run_delayed_callbacks",
+          "params": [
+            "wel"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "wiz_run_timers",
+          "params": [
+            "wel"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "wiz_el_run",
+          "params": [
+            "el",
+            "timeout"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "wiz_el_cancel",
+          "params": [
+            "el"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_el_now",
+          "params": [
+            "el"
+          ],
+          "returnType": "UA_DateTime",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "wiz_el_utc_offset",
+          "params": [
+            "el"
+          ],
+          "returnType": "UA_Int64",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "wiz_el_next_timer",
+          "params": [
+            "el"
+          ],
+          "returnType": "UA_DateTime",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "wiz_el_add_timer",
+          "params": [
+            "el",
+            "cb",
+            "application",
+            "data",
+            "intervalMs",
+            "baseTime",
+            "timerPolicy",
+            "timerId"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "wiz_el_modify_timer",
+          "params": [
+            "el",
+            "timerId",
+            "intervalMs",
+            "baseTime",
+            "timerPolicy"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "wiz_el_remove_timer",
+          "params": [
+            "el",
+            "timerId"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "wiz_el_add_delayed",
+          "params": [
+            "el",
+            "dc"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "wiz_el_remove_delayed",
+          "params": [
+            "el",
+            "dc"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "wiz_send_all",
+          "params": [
+            "buf",
+            "len"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "wiz_signal_listen",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "wiz_signal_active_open",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "wiz_queue_active_close",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "wiz_process_pending_close",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "wiz_open_listen_socket",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "wiz_cm_poll",
+          "params": [
+            "tcp"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 48
+        },
+        {
+          "name": "wiz_cm_start",
+          "params": [
+            "es"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "wiz_cm_stop",
+          "params": [
+            "es"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "wiz_cm_free",
+          "params": [
+            "es"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "wiz_cm_open_connection",
+          "params": [
+            "cm",
+            "params",
+            "application",
+            "context",
+            "callback"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "wiz_cm_send",
+          "params": [
+            "cm",
+            "connectionId",
+            "params",
+            "buf"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "wiz_cm_close",
+          "params": [
+            "cm",
+            "connectionId"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "wiz_cm_alloc_buffer",
+          "params": [
+            "cm",
+            "connectionId",
+            "buf",
+            "bufSize"
+          ],
+          "returnType": "UA_StatusCode",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "wiz_cm_free_buffer",
+          "params": [
+            "cm",
+            "connectionId",
+            "buf"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "open62541.h",
+          "specifiers": [
+            "open62541.h"
+          ]
+        },
+        {
+          "source": "stdbool.h",
+          "specifiers": [
+            "stdbool.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        }
+      ],
+      "exports": [
+        "UA_DateTime_now",
+        "UA_DateTime_nowMonotonic",
+        "UA_DateTime_localTimeUtcOffset"
+      ],
+      "totalLines": 706,
+      "hasStructuralAnalysis": true
+    },
+    "port/port_common.h": {
+      "filePath": "port/port_common.h",
+      "contentHash": "e6a6d637447c16ad04e10dce3925b3f4916d1ddf37c1f2aa6a5cf3deb745f594",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "port/timer/timer.c": {
+      "filePath": "port/timer/timer.c",
+      "contentHash": "8a7036b71020ccd21cff4f131b623621a58b316123d515f22078ef0cc9801091",
+      "functions": [
+        {
+          "name": "wizchip_1ms_timer_initialize",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "wizchip_1ms_timer_callback",
+          "params": [
+            "t"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "wizchip_delay_ms",
+          "params": [
+            "ms"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "repeating_timer",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "imports": [
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "timer.h",
+          "specifiers": [
+            "timer.h"
+          ]
+        }
+      ],
+      "exports": [
+        "repeating_timer",
+        "wizchip_1ms_timer_initialize",
+        "wizchip_1ms_timer_callback",
+        "wizchip_delay_ms"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "port/timer/timer.h": {
+      "filePath": "port/timer/timer.h",
+      "contentHash": "8cffb1833ebde65406aaf145f9b8c0b7f050d56e68581128858aa3f33ba31477",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/cJSON.h": {
+      "filePath": "port/wiz-claw/include/cJSON.h",
+      "contentHash": "d221682d47074d82340f87243e77d1aae174f10c5628edb971c8ca7071fcf0d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 307,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_agent.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_agent.h",
+      "contentHash": "36c1aca49c407fc79726068e346209764d4eee02e5ab46de24884756e5d1fe02",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_llm.h",
+          "specifiers": [
+            "wiz_claw_llm.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_ca_bundle.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_ca_bundle.h",
+      "contentHash": "0b8d1ac668e0f70480d38a8ef3bd1d9d4ac2895c2905e792c109577c9fce52c7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_http.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_http.h",
+      "contentHash": "d9712f1742364a5b26362a29410c3e31867f1f1b20e85decdf56ae82505d8e3b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_telegram.h",
+          "specifiers": [
+            "wiz_claw_telegram.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_llm.h",
+          "specifiers": [
+            "wiz_claw_llm.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 125,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_llm.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_llm.h",
+      "contentHash": "34d73fe1f980eecd3b601194b3f16bbf9ef71d1eefb750a3e6b290ad8e0978e9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        },
+        {
+          "source": "cJSON.h",
+          "specifiers": [
+            "cJSON.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_net.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_net.h",
+      "contentHash": "528beb58f380d40dee0478cdc6da16dfba0a12a81c32a5b03df574b57892d4a9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        },
+        {
+          "source": "wizchip_conf.h",
+          "specifiers": [
+            "wizchip_conf.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_telegram.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_telegram.h",
+      "contentHash": "4b3d869d7ef4e23bd52f3f5f4aa431fe98706a84fd8628e67fb9c3aecb367655",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw_tls.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw_tls.h",
+      "contentHash": "12a0b640567dd3e38905213dd6490bf0e866adb490f0d6f6bc1c72c167deff39",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw.h",
+          "specifiers": [
+            "wiz_claw.h"
+          ]
+        },
+        {
+          "source": "mbedtls/entropy.h",
+          "specifiers": [
+            "mbedtls/entropy.h"
+          ]
+        },
+        {
+          "source": "mbedtls/ctr_drbg.h",
+          "specifiers": [
+            "mbedtls/ctr_drbg.h"
+          ]
+        },
+        {
+          "source": "mbedtls/ssl.h",
+          "specifiers": [
+            "mbedtls/ssl.h"
+          ]
+        },
+        {
+          "source": "mbedtls/x509_crt.h",
+          "specifiers": [
+            "mbedtls/x509_crt.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/include/wiz_claw.h": {
+      "filePath": "port/wiz-claw/include/wiz_claw.h",
+      "contentHash": "f58864702a80676a9b92041d9d9a4817ad35746c818a3cfe46d184b0e890801e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "stddef.h",
+          "specifiers": [
+            "stddef.h"
+          ]
+        },
+        {
+          "source": "stdint.h",
+          "specifiers": [
+            "stdint.h"
+          ]
+        },
+        {
+          "source": "stdbool.h",
+          "specifiers": [
+            "stdbool.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "stdlib.h",
+          "specifiers": [
+            "stdlib.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "stdarg.h",
+          "specifiers": [
+            "stdarg.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/cJSON.c": {
+      "filePath": "port/wiz-claw/src/cJSON.c",
+      "contentHash": "6dc25275785ff4c168b702db145184d6335c875e17edf166a9f474d28952c2c1",
+      "functions": [
+        {
+          "name": "cJSON_GetErrorPtr",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_GetStringValue",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_GetNumberValue",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_Version",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "case_insensitive_strcmp",
+          "params": [
+            "string1",
+            "string2"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "cJSON_InitHooks",
+          "params": [
+            "hooks"
+          ],
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "cJSON_Delete",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "get_decimal_point",
+          "params": [],
+          "returnType": "unsigned char",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "parse_number",
+          "params": [
+            "item",
+            "input_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 75
+        },
+        {
+          "name": "cJSON_SetNumberHelper",
+          "params": [
+            "object",
+            "number"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "cJSON_SetValuestring",
+          "params": [
+            "object",
+            "valuestring"
+          ],
+          "exported": true,
+          "lineCount": 42
+        },
+        {
+          "name": "update_offset",
+          "params": [
+            "buffer"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "compare_double",
+          "params": [
+            "a",
+            "b"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "print_number",
+          "params": [
+            "item",
+            "output_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 68
+        },
+        {
+          "name": "parse_hex4",
+          "params": [
+            "input"
+          ],
+          "returnType": "unsigned",
+          "exported": false,
+          "lineCount": 34
+        },
+        {
+          "name": "utf16_literal_to_utf8",
+          "params": [
+            "input_pointer",
+            "input_end",
+            "output_pointer"
+          ],
+          "returnType": "unsigned char",
+          "exported": false,
+          "lineCount": 119
+        },
+        {
+          "name": "parse_string",
+          "params": [
+            "item",
+            "input_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 128
+        },
+        {
+          "name": "print_string_ptr",
+          "params": [
+            "input",
+            "output_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 120
+        },
+        {
+          "name": "print_string",
+          "params": [
+            "item",
+            "p"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_ParseWithOpts",
+          "params": [
+            "value",
+            "return_parse_end",
+            "require_null_terminated"
+          ],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "cJSON_ParseWithLengthOpts",
+          "params": [
+            "value",
+            "buffer_length",
+            "return_parse_end",
+            "require_null_terminated"
+          ],
+          "exported": true,
+          "lineCount": 78
+        },
+        {
+          "name": "cJSON_Parse",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_ParseWithLength",
+          "params": [
+            "value",
+            "buffer_length"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_Print",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_PrintUnformatted",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_PrintBuffered",
+          "params": [
+            "item",
+            "prebuffer",
+            "fmt"
+          ],
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "cJSON_PrintPreallocated",
+          "params": [
+            "item",
+            "buffer",
+            "length",
+            "format"
+          ],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "parse_value",
+          "params": [
+            "item",
+            "input_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 53
+        },
+        {
+          "name": "print_value",
+          "params": [
+            "item",
+            "output_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 72
+        },
+        {
+          "name": "parse_array",
+          "params": [
+            "item",
+            "input_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 96
+        },
+        {
+          "name": "print_array",
+          "params": [
+            "item",
+            "output_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 60
+        },
+        {
+          "name": "parse_object",
+          "params": [
+            "item",
+            "input_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 116
+        },
+        {
+          "name": "print_object",
+          "params": [
+            "item",
+            "output_buffer"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 112
+        },
+        {
+          "name": "cJSON_GetArraySize",
+          "params": [
+            "array"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "cJSON_GetArrayItem",
+          "params": [
+            "array",
+            "index"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_GetObjectItem",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_GetObjectItemCaseSensitive",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_HasObjectItem",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "suffix_object",
+          "params": [
+            "prev",
+            "item"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "add_item_to_array",
+          "params": [
+            "array",
+            "item"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "cJSON_AddItemToArray",
+          "params": [
+            "array",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "add_item_to_object",
+          "params": [
+            "object",
+            "string",
+            "item",
+            "hooks",
+            "constant_key"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 36
+        },
+        {
+          "name": "cJSON_AddItemToObject",
+          "params": [
+            "object",
+            "string",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_AddItemToObjectCS",
+          "params": [
+            "object",
+            "string",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_AddItemReferenceToArray",
+          "params": [
+            "array",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_AddItemReferenceToObject",
+          "params": [
+            "object",
+            "string",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_AddNullToObject",
+          "params": [
+            "object",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddTrueToObject",
+          "params": [
+            "object",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddFalseToObject",
+          "params": [
+            "object",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddBoolToObject",
+          "params": [
+            "object",
+            "name",
+            "boolean"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddNumberToObject",
+          "params": [
+            "object",
+            "name",
+            "number"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddStringToObject",
+          "params": [
+            "object",
+            "name",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddRawToObject",
+          "params": [
+            "object",
+            "name",
+            "raw"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddObjectToObject",
+          "params": [
+            "object",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_AddArrayToObject",
+          "params": [
+            "object",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_DetachItemViaPointer",
+          "params": [
+            "parent",
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "cJSON_DetachItemFromArray",
+          "params": [
+            "array",
+            "which"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_DeleteItemFromArray",
+          "params": [
+            "array",
+            "which"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_DetachItemFromObject",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "cJSON_DetachItemFromObjectCaseSensitive",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "cJSON_DeleteItemFromObject",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_DeleteItemFromObjectCaseSensitive",
+          "params": [
+            "object",
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_InsertItemInArray",
+          "params": [
+            "array",
+            "which",
+            "newitem"
+          ],
+          "exported": true,
+          "lineCount": 33
+        },
+        {
+          "name": "cJSON_ReplaceItemViaPointer",
+          "params": [
+            "parent",
+            "item",
+            "replacement"
+          ],
+          "exported": true,
+          "lineCount": 48
+        },
+        {
+          "name": "cJSON_ReplaceItemInArray",
+          "params": [
+            "array",
+            "which",
+            "newitem"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "replace_item_in_object",
+          "params": [
+            "object",
+            "string",
+            "replacement",
+            "case_sensitive"
+          ],
+          "returnType": "cJSON_bool",
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "cJSON_ReplaceItemInObject",
+          "params": [
+            "object",
+            "string",
+            "newitem"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_ReplaceItemInObjectCaseSensitive",
+          "params": [
+            "object",
+            "string",
+            "newitem"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_CreateNull",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateTrue",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateFalse",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateBool",
+          "params": [
+            "boolean"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateNumber",
+          "params": [
+            "num"
+          ],
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "cJSON_CreateString",
+          "params": [
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "cJSON_CreateStringReference",
+          "params": [
+            "string"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "cJSON_CreateObjectReference",
+          "params": [
+            "child"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateArrayReference",
+          "params": [
+            "child"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_CreateRaw",
+          "params": [
+            "raw"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "cJSON_CreateArray",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateObject",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "cJSON_CreateIntArray",
+          "params": [
+            "numbers",
+            "count"
+          ],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "cJSON_CreateFloatArray",
+          "params": [
+            "numbers",
+            "count"
+          ],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "cJSON_CreateDoubleArray",
+          "params": [
+            "numbers",
+            "count"
+          ],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "cJSON_CreateStringArray",
+          "params": [
+            "strings",
+            "count"
+          ],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "cJSON_Duplicate",
+          "params": [
+            "item",
+            "recurse"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "skip_oneline_comment",
+          "params": [
+            "input"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "skip_multiline_comment",
+          "params": [
+            "input"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "minify_string",
+          "params": [
+            "input",
+            "output"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "cJSON_Minify",
+          "params": [
+            "json"
+          ],
+          "exported": true,
+          "lineCount": 47
+        },
+        {
+          "name": "cJSON_IsInvalid",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsFalse",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsTrue",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsBool",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsNull",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsNumber",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsString",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsArray",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsObject",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_IsRaw",
+          "params": [
+            "item"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "cJSON_Compare",
+          "params": [
+            "a",
+            "b",
+            "case_sensitive"
+          ],
+          "exported": true,
+          "lineCount": 124
+        },
+        {
+          "name": "cJSON_malloc",
+          "params": [
+            "size"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "cJSON_free",
+          "params": [
+            "object"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        },
+        {
+          "source": "stdio.h",
+          "specifiers": [
+            "stdio.h"
+          ]
+        },
+        {
+          "source": "math.h",
+          "specifiers": [
+            "math.h"
+          ]
+        },
+        {
+          "source": "stdlib.h",
+          "specifiers": [
+            "stdlib.h"
+          ]
+        },
+        {
+          "source": "limits.h",
+          "specifiers": [
+            "limits.h"
+          ]
+        },
+        {
+          "source": "ctype.h",
+          "specifiers": [
+            "ctype.h"
+          ]
+        },
+        {
+          "source": "float.h",
+          "specifiers": [
+            "float.h"
+          ]
+        },
+        {
+          "source": "cJSON.h",
+          "specifiers": [
+            "cJSON.h"
+          ]
+        }
+      ],
+      "exports": [
+        "cJSON_GetErrorPtr",
+        "cJSON_GetStringValue",
+        "cJSON_GetNumberValue",
+        "cJSON_Version",
+        "cJSON_InitHooks",
+        "cJSON_Delete",
+        "cJSON_SetNumberHelper",
+        "cJSON_SetValuestring",
+        "cJSON_ParseWithOpts",
+        "cJSON_ParseWithLengthOpts",
+        "cJSON_Parse",
+        "cJSON_ParseWithLength",
+        "cJSON_Print",
+        "cJSON_PrintUnformatted",
+        "cJSON_PrintBuffered",
+        "cJSON_PrintPreallocated",
+        "cJSON_GetArraySize",
+        "cJSON_GetArrayItem",
+        "cJSON_GetObjectItem",
+        "cJSON_GetObjectItemCaseSensitive",
+        "cJSON_HasObjectItem",
+        "cJSON_AddItemToArray",
+        "cJSON_AddItemToObject",
+        "cJSON_AddItemToObjectCS",
+        "cJSON_AddItemReferenceToArray",
+        "cJSON_AddItemReferenceToObject",
+        "cJSON_AddNullToObject",
+        "cJSON_AddTrueToObject",
+        "cJSON_AddFalseToObject",
+        "cJSON_AddBoolToObject",
+        "cJSON_AddNumberToObject",
+        "cJSON_AddStringToObject",
+        "cJSON_AddRawToObject",
+        "cJSON_AddObjectToObject",
+        "cJSON_AddArrayToObject",
+        "cJSON_DetachItemViaPointer",
+        "cJSON_DetachItemFromArray",
+        "cJSON_DeleteItemFromArray",
+        "cJSON_DetachItemFromObject",
+        "cJSON_DetachItemFromObjectCaseSensitive",
+        "cJSON_DeleteItemFromObject",
+        "cJSON_DeleteItemFromObjectCaseSensitive",
+        "cJSON_InsertItemInArray",
+        "cJSON_ReplaceItemViaPointer",
+        "cJSON_ReplaceItemInArray",
+        "cJSON_ReplaceItemInObject",
+        "cJSON_ReplaceItemInObjectCaseSensitive",
+        "cJSON_CreateNull",
+        "cJSON_CreateTrue",
+        "cJSON_CreateFalse",
+        "cJSON_CreateBool",
+        "cJSON_CreateNumber",
+        "cJSON_CreateString",
+        "cJSON_CreateStringReference",
+        "cJSON_CreateObjectReference",
+        "cJSON_CreateArrayReference",
+        "cJSON_CreateRaw",
+        "cJSON_CreateArray",
+        "cJSON_CreateObject",
+        "cJSON_CreateIntArray",
+        "cJSON_CreateFloatArray",
+        "cJSON_CreateDoubleArray",
+        "cJSON_CreateStringArray",
+        "cJSON_Duplicate",
+        "cJSON_Minify",
+        "cJSON_IsInvalid",
+        "cJSON_IsFalse",
+        "cJSON_IsTrue",
+        "cJSON_IsBool",
+        "cJSON_IsNull",
+        "cJSON_IsNumber",
+        "cJSON_IsString",
+        "cJSON_IsArray",
+        "cJSON_IsObject",
+        "cJSON_IsRaw",
+        "cJSON_Compare",
+        "cJSON_malloc",
+        "cJSON_free"
+      ],
+      "totalLines": 3165,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_agent.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_agent.c",
+      "contentHash": "ef244d65f70c48dcefbf5174324eea39763726d5d9af421d4cd247ea90a4e24e",
+      "functions": [
+        {
+          "name": "wiz_claw_agent_run",
+          "params": [
+            "config",
+            "session_messages",
+            "user_text",
+            "out_reply",
+            "out_error_message"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 91
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_agent.h",
+          "specifiers": [
+            "wiz_claw_agent.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_agent_run"
+      ],
+      "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_http.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_http.c",
+      "contentHash": "179b8700bedf1b064fc1e65fe187e5f69ca7de98aa9c95dee129afd8fb89f138",
+      "functions": [
+        {
+          "name": "wiz_claw_http_parse_url",
+          "params": [
+            "url",
+            "out"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 56
+        },
+        {
+          "name": "wiz_claw_tcp_connect",
+          "params": [
+            "sn",
+            "ip",
+            "port",
+            "timeout_ms"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 51
+        },
+        {
+          "name": "wiz_claw_tcp_close",
+          "params": [
+            "sn"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "wiz_claw_tcp_send_all",
+          "params": [
+            "sn",
+            "data",
+            "len",
+            "timeout_ms"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "wiz_claw_tcp_recv_wait",
+          "params": [
+            "sn",
+            "buf",
+            "len",
+            "timeout_ms"
+          ],
+          "returnType": "int32_t",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "transport_recv",
+          "params": [
+            "t",
+            "buf",
+            "len"
+          ],
+          "returnType": "int32_t",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "transport_send",
+          "params": [
+            "t",
+            "data",
+            "len"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "transport_close",
+          "params": [
+            "t"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "recv_headers",
+          "params": [
+            "t",
+            "hbuf",
+            "hbuf_size",
+            "out_hlen"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 28
+        },
+        {
+          "name": "parse_status_code",
+          "params": [
+            "headers"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "recv_chunked_body",
+          "params": [
+            "t",
+            "inout_buf",
+            "inout_cap",
+            "out_len"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 56
+        },
+        {
+          "name": "recv_body_by_length",
+          "params": [
+            "t",
+            "inout_buf",
+            "inout_cap",
+            "content_len",
+            "out_len"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "do_http_request",
+          "params": [
+            "sn",
+            "method",
+            "url",
+            "auth_header",
+            "extra_headers",
+            "body",
+            "out_response",
+            "timeout_ms"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 145
+        },
+        {
+          "name": "wiz_claw_http_post_cb",
+          "params": [
+            "url",
+            "auth_header",
+            "body_json",
+            "out_response",
+            "user_ctx"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "wiz_claw_http_call_cb",
+          "params": [
+            "url",
+            "body_json",
+            "out_response",
+            "user_ctx"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_http.h",
+          "specifiers": [
+            "wiz_claw_http.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_net.h",
+          "specifiers": [
+            "wiz_claw_net.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_tls.h",
+          "specifiers": [
+            "wiz_claw_tls.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "ctype.h",
+          "specifiers": [
+            "ctype.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_http_parse_url",
+        "wiz_claw_tcp_connect",
+        "wiz_claw_tcp_close",
+        "wiz_claw_tcp_send_all",
+        "wiz_claw_tcp_recv_wait",
+        "wiz_claw_http_post_cb",
+        "wiz_claw_http_call_cb"
+      ],
+      "totalLines": 601,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_llm.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_llm.c",
+      "contentHash": "ffb95a53932679cd65e67fe9203e5bfb84c7581bc0a702211438c90c5bffb1e8",
+      "functions": [
+        {
+          "name": "parse_response_json",
+          "params": [
+            "body",
+            "out",
+            "out_error"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": false,
+          "lineCount": 88
+        },
+        {
+          "name": "wiz_claw_llm_chat",
+          "params": [
+            "config",
+            "system_prompt",
+            "messages",
+            "tools_json",
+            "out_response",
+            "out_error_message"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 61
+        },
+        {
+          "name": "wiz_claw_llm_response_free",
+          "params": [
+            "resp"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "wiz_claw_session_append_user",
+          "params": [
+            "messages",
+            "text"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_text",
+          "params": [
+            "messages",
+            "text"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "wiz_claw_session_append_assistant_tool_calls",
+          "params": [
+            "messages",
+            "resp"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "wiz_claw_session_append_tool_result",
+          "params": [
+            "messages",
+            "tool_call_id",
+            "result_json"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_llm.h",
+          "specifiers": [
+            "wiz_claw_llm.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_llm_chat",
+        "wiz_claw_llm_response_free",
+        "wiz_claw_session_append_user",
+        "wiz_claw_session_append_assistant_text",
+        "wiz_claw_session_append_assistant_tool_calls",
+        "wiz_claw_session_append_tool_result"
+      ],
+      "totalLines": 316,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_net.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_net.c",
+      "contentHash": "9d54ea9861b8e0d2574374d009048c5fea0f7e0faab7bef95c5e928a4d98149e",
+      "functions": [
+        {
+          "name": "wiz_claw_net_init",
+          "params": [
+            "config"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "wiz_claw_net_dns_resolve",
+          "params": [
+            "hostname",
+            "out_ip"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "dhcp_assign_cb",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "dhcp_update_cb",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "dhcp_conflict_cb",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "wiz_claw_net_dhcp_run",
+          "params": [
+            "inout_net_info"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "wiz_claw_net_1s_tick",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "wiz_claw_net_print_info",
+          "params": [
+            "net_info"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_net.h",
+          "specifiers": [
+            "wiz_claw_net.h"
+          ]
+        },
+        {
+          "source": "dns.h",
+          "specifiers": [
+            "dns.h"
+          ]
+        },
+        {
+          "source": "dhcp.h",
+          "specifiers": [
+            "dhcp.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_net_init",
+        "wiz_claw_net_dns_resolve",
+        "wiz_claw_net_dhcp_run",
+        "wiz_claw_net_1s_tick",
+        "wiz_claw_net_print_info"
+      ],
+      "totalLines": 149,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_telegram.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_telegram.c",
+      "contentHash": "b3a38a26ed2ea3040f8beaefe6a06c7a94debc2d1c2065016ae86d18a129c2a5",
+      "functions": [
+        {
+          "name": "wiz_claw_tg_message_free",
+          "params": [
+            "msg"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "wiz_claw_tg_parse_updates",
+          "params": [
+            "response_json",
+            "inout_next_offset",
+            "callback",
+            "user_ctx"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 93
+        },
+        {
+          "name": "wiz_claw_tg_poll",
+          "params": [
+            "config",
+            "timeout_s",
+            "inout_next_offset",
+            "callback",
+            "user_ctx"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 48
+        },
+        {
+          "name": "wiz_claw_tg_send_text",
+          "params": [
+            "config",
+            "chat_id",
+            "text"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_telegram.h",
+          "specifiers": [
+            "wiz_claw_telegram.h"
+          ]
+        },
+        {
+          "source": "cJSON.h",
+          "specifiers": [
+            "cJSON.h"
+          ]
+        },
+        {
+          "source": "inttypes.h",
+          "specifiers": [
+            "inttypes.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_tg_message_free",
+        "wiz_claw_tg_parse_updates",
+        "wiz_claw_tg_poll",
+        "wiz_claw_tg_send_text"
+      ],
+      "totalLines": 228,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/src/wiz_claw_tls.c": {
+      "filePath": "port/wiz-claw/src/wiz_claw_tls.c",
+      "contentHash": "dc601b38d0267fc0e857787777fb9a70d0ab9308bf16d5e0eed29c26b89e96c0",
+      "functions": [
+        {
+          "name": "trng_entropy_poll",
+          "params": [
+            "data",
+            "output",
+            "len",
+            "olen"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "bio_send",
+          "params": [
+            "ctx",
+            "buf",
+            "len"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "bio_recv",
+          "params": [
+            "ctx",
+            "buf",
+            "len"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "bio_recv_timeout",
+          "params": [
+            "ctx",
+            "buf",
+            "len",
+            "timeout_ms"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "wiz_claw_tls_init",
+          "params": [
+            "tls",
+            "socket_no",
+            "timeout_ms"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 93
+        },
+        {
+          "name": "wiz_claw_tls_connect",
+          "params": [
+            "tls",
+            "ip",
+            "port",
+            "hostname",
+            "timeout_ms"
+          ],
+          "returnType": "wiz_claw_err_t",
+          "exported": true,
+          "lineCount": 44
+        },
+        {
+          "name": "wiz_claw_tls_write",
+          "params": [
+            "tls",
+            "buf",
+            "len"
+          ],
+          "returnType": "int32_t",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "wiz_claw_tls_read",
+          "params": [
+            "tls",
+            "buf",
+            "len",
+            "timeout_ms"
+          ],
+          "returnType": "int32_t",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "wiz_claw_tls_close",
+          "params": [
+            "tls"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "wiz_claw_tls_free",
+          "params": [
+            "tls"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "wiz_claw_tls.h",
+          "specifiers": [
+            "wiz_claw_tls.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_http.h",
+          "specifiers": [
+            "wiz_claw_http.h"
+          ]
+        },
+        {
+          "source": "wiz_claw_ca_bundle.h",
+          "specifiers": [
+            "wiz_claw_ca_bundle.h"
+          ]
+        },
+        {
+          "source": "socket.h",
+          "specifiers": [
+            "socket.h"
+          ]
+        },
+        {
+          "source": "pico/rand.h",
+          "specifiers": [
+            "pico/rand.h"
+          ]
+        },
+        {
+          "source": "pico/stdlib.h",
+          "specifiers": [
+            "pico/stdlib.h"
+          ]
+        },
+        {
+          "source": "pico/time.h",
+          "specifiers": [
+            "pico/time.h"
+          ]
+        },
+        {
+          "source": "mbedtls/error.h",
+          "specifiers": [
+            "mbedtls/error.h"
+          ]
+        },
+        {
+          "source": "string.h",
+          "specifiers": [
+            "string.h"
+          ]
+        }
+      ],
+      "exports": [
+        "wiz_claw_tls_init",
+        "wiz_claw_tls_connect",
+        "wiz_claw_tls_write",
+        "wiz_claw_tls_read",
+        "wiz_claw_tls_close",
+        "wiz_claw_tls_free"
+      ],
+      "totalLines": 328,
+      "hasStructuralAnalysis": true
+    },
+    "port/wiz-claw/tools/gen_ca_bundle.py": {
+      "filePath": "port/wiz-claw/tools/gen_ca_bundle.py",
+      "contentHash": "7a26d3eafcca7cf1aacb0672038a24c5a68b94d322eaf121ef2f6ee029408786",
+      "functions": [
+        {
+          "name": "fetch_chain_pems",
+          "params": [
+            "host",
+            "port"
+          ],
+          "returnType": "list[str]",
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "get_root_ca",
+          "params": [
+            "host",
+            "port",
+            "label"
+          ],
+          "returnType": "str | None",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "pem_to_c_string",
+          "params": [
+            "pem"
+          ],
+          "returnType": "list[str]",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "subprocess",
+          "specifiers": [
+            "subprocess"
+          ]
+        },
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "re",
+          "specifiers": [
+            "re"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        }
+      ],
+      "exports": [
+        "fetch_chain_pems",
+        "get_root_ca",
+        "pem_to_c_string",
+        "main"
+      ],
+      "totalLines": 126,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "b5c68eef798c03ffb0514f7d1e71fa76b853d8685d385aef6a6df66d9da3022a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 118,
+      "hasStructuralAnalysis": true
+    },
+    "wiznet_pico_c_sdk_version.cmake": {
+      "filePath": "wiznet_pico_c_sdk_version.cmake",
+      "contentHash": "24e992a04a76551cb4e7f12f5807e0004f78b4a6ddf180d1507cd8836c7fa2e8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    }
+  }
+}

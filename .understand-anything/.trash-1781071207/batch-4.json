@@ -1,0 +1,769 @@
+{
+  "nodes": [
+    {
+      "id": "config:.gitmodules",
+      "type": "config",
+      "name": ".gitmodules",
+      "filePath": ".gitmodules",
+      "summary": "Declares five Git submodule dependencies: WIZnet ioLibrary_Driver, ARM mbedTLS, Raspberry Pi pico-sdk and pico-extras, and the open62541 OPC UA stack.",
+      "tags": ["configuration", "submodules", "dependencies", "build-system"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "CMakeLists.txt",
+      "summary": "Top-level CMake build configuration that selects the target WIZnet board (currently W6300_EVB_PICO2 with QSPI_QUAD_MODE), sets compile definitions for the chosen chip, initializes the Pico SDK, and includes all library and example subdirectories.",
+      "tags": ["configuration", "build-system", "cmake", "entry-point"],
+      "complexity": "moderate",
+      "languageNotes": "Uses board-name dispatch via if/elseif chains to set chip-specific preprocessor macros and QSPI mode before calling pico_sdk_init()."
+    },
+    {
+      "id": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "file",
+      "name": "10M_Complience_Test.c",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "summary": "Interactive 10 Mbit/s Ethernet compliance test application for the W6300 chip that configures PHY settings (MDI/MDIX, speed, duplex) via UART prompts and transmits raw Ethernet test frames using socket-level WIZnet APIs.",
+      "tags": ["entry-point", "utility", "hardware-test", "networking"],
+      "complexity": "complex",
+      "languageNotes": "Directly accesses WIZnet MDIO registers (wiz_mdio_write/read) and low-level socket commands (wiz_send_data, setSn_CR) to send frames without IP stack."
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [48, 169],
+      "summary": "Entry point that initializes the WIZnet chip, presents an interactive UART menu for selecting test modes and PHY parameters, then loops transmitting Ethernet test frames.",
+      "tags": ["entry-point", "hardware-test", "networking"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:send_test_frame",
+      "type": "function",
+      "name": "send_test_frame",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [171, 233],
+      "summary": "Opens a raw socket and transmits a compliance test frame of the requested packet type by directly writing to the TX buffer and issuing a send command register.",
+      "tags": ["networking", "hardware-test", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "function",
+      "name": "complience_test_initialize",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [272, 309],
+      "summary": "Registers QSPI/CS callbacks, configures socket memory buffers, and calls W6300_PHY_CONFIG to set up the PHY before the compliance test loop begins.",
+      "tags": ["hardware-test", "initialization", "networking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "function",
+      "name": "W6300_PHY_CONFIG",
+      "filePath": "examples/10M_Complience_Test/10M_Complience_Test.c",
+      "lineRange": [255, 269],
+      "summary": "Sets the W6300 PHY configuration (mode, speed, duplex) using wizphy_setphyconf and prints the resulting status.",
+      "tags": ["hardware-test", "utility", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/10M_Complience_Test/CMakeLists.txt",
+      "summary": "CMake build configuration for the 10M compliance test example, linking against WIZnet ioLibrary port libraries and the pico_stdlib.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/10M_Complience_Test/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/10M_Complience_Test/README.md",
+      "summary": "Step-by-step guide (9 sections) covering software prerequisites, hardware setup, board-specific configuration for W55RP20/W6300/generic SPI, CMake build, and flashing the 10M compliance test firmware.",
+      "tags": ["documentation", "hardware-setup", "build-system"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:examples/buffer_read/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/buffer_read/CMakeLists.txt",
+      "summary": "CMake build configuration for the buffer_read example, defining the executable target and linking WIZnet port and pico_stdlib libraries.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/buffer_read/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/buffer_read/README.md",
+      "summary": "Step-by-step guide (9 sections) for the buffer_read example covering software setup, hardware wiring for multiple board variants, CMake configuration, build, and firmware upload.",
+      "tags": ["documentation", "hardware-setup", "build-system"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "file",
+      "name": "WIZnet_Chip_Buffer_Test.c",
+      "filePath": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "summary": "Diagnostic test program that writes a known pattern into the WIZnet chip TX buffer using direct block-write register macros and then reads it back to verify data integrity.",
+      "tags": ["hardware-test", "utility", "networking"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "lineRange": [101, 263],
+      "summary": "Initializes the WIZnet chip, writes a data pattern to the socket TX buffer via WIZCHIP_TXBUF_BLOCK macros, reads it back, and prints a pass/fail comparison over UART.",
+      "tags": ["entry-point", "hardware-test", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:examples/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/CMakeLists.txt",
+      "summary": "Top-level examples directory CMake file that adds all example subdirectories as CMake sub-projects.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:examples/loopback/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/loopback/CMakeLists.txt",
+      "summary": "CMake build configuration for the loopback example, defining the executable and linking WIZnet ioLibrary port and pico_stdlib.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:examples/loopback/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/loopback/README.md",
+      "summary": "Comprehensive 9-section guide for the loopback example covering software prerequisites, hardware wiring for W55RP20/W6300/generic SPI boards, CMake configuration, build, and upload steps.",
+      "tags": ["documentation", "hardware-setup", "networking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/loopback/wizchip_loopback.c",
+      "type": "file",
+      "name": "wizchip_loopback.c",
+      "filePath": "examples/loopback/wizchip_loopback.c",
+      "summary": "Loopback network example that initializes the WIZnet chip and network stack, then runs TCP server, TCP client, and UDP loopback handlers in a cooperative polling loop.",
+      "tags": ["entry-point", "networking", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/loopback/wizchip_loopback.c",
+      "lineRange": [180, 285],
+      "summary": "Initializes the WIZnet SPI/CRIS/network stack and then cooperatively calls loopback_tcps, loopback_tcpc, and loopback_udps handlers in a round-robin loop.",
+      "tags": ["entry-point", "networking", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/images/.gitkeep",
+      "type": "file",
+      "name": ".gitkeep",
+      "filePath": "examples/opcua_usb_stdio/images/.gitkeep",
+      "summary": "Empty placeholder file that keeps the images directory tracked in Git for the opcua_usb_stdio example.",
+      "tags": ["data", "placeholder"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "type": "file",
+      "name": "data_table.h",
+      "filePath": "examples/opcua_usb_stdio/inc/data_table.h",
+      "summary": "Header defining the DataTable struct (three float channels, raw frame buffer, counters) and declaring the data_table_* API for initializing, clearing, updating, and snapshotting sensor data.",
+      "tags": ["type-definition", "api-handler", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "type": "file",
+      "name": "opcua_node_map.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "summary": "Defines OPC UA namespace-1 node ID constants and string identifiers for Device and USB_Stdio sensor nodes exposed through the UAExpert-visible address space.",
+      "tags": ["type-definition", "schema-definition", "api-schema"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "type": "file",
+      "name": "opcua_server.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_server.h",
+      "summary": "Header declaring the OPC UA server lifecycle API (init/poll/get_status/print_status), the OpcUaServerStatus struct, server state enum, and hardcoded endpoint/URI constants.",
+      "tags": ["type-definition", "api-handler", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "type": "file",
+      "name": "opcua_tcp_probe.h",
+      "filePath": "examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "summary": "Header declaring the TCP probe module API and OpcUaTcpProbeStatus struct with per-state counters tracking OPC UA HEL/OpenSecureChannel handshake statistics.",
+      "tags": ["type-definition", "api-handler", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "type": "file",
+      "name": "usb_stdio_link.h",
+      "filePath": "examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "summary": "Minimal header declaring the four public functions of the USB stdio link module: init, poll, print_help, and print_state.",
+      "tags": ["type-definition", "api-handler"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "type": "file",
+      "name": "wiznet_network.h",
+      "filePath": "examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "summary": "Header defining the WiznetNetworkStatus struct, network state enum, OPC UA TCP port constant, and declaring the network init/poll/get_status/print_status/is_ready API.",
+      "tags": ["type-definition", "api-handler", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "file",
+      "name": "data_table.c",
+      "filePath": "examples/opcua_usb_stdio/src/data_table.c",
+      "summary": "Implements the shared sensor data table used by both the USB stdio input parser and the OPC UA server, providing thread-safe snapshot copies of three float channels and a raw frame string.",
+      "tags": ["data-model", "service", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "function",
+      "name": "data_table_set_channels",
+      "filePath": "examples/opcua_usb_stdio/src/data_table.c",
+      "lineRange": [22, 34],
+      "summary": "Updates the global data table with new float channel values and a raw frame string, stamping the entry with the current millisecond timestamp.",
+      "tags": ["data-model", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/main.c",
+      "type": "file",
+      "name": "main.c",
+      "filePath": "examples/opcua_usb_stdio/src/main.c",
+      "summary": "Entry point for the opcua_usb_stdio example: waits for USB CDC connection, then initializes the data table, USB stdio link, WIZnet network, and OPC UA server before entering the cooperative polling loop.",
+      "tags": ["entry-point", "service", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/opcua_usb_stdio/src/main.c",
+      "lineRange": [11, 34],
+      "summary": "Waits for USB stdio connection, then sequentially calls data_table_init, usb_stdio_link_init, wiznet_network_init, and opcua_server_init before entering a polling loop.",
+      "tags": ["entry-point", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "file",
+      "name": "opcua_server.c",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "summary": "Implements the open62541-based OPC UA server lifecycle and address space for the EVB-PICO2: configures server identity and endpoint URL, builds a namespace-1 node tree with live sensor data variables, and polls the server iterate loop alongside the TCP probe.",
+      "tags": ["service", "api-handler", "networking"],
+      "complexity": "complex",
+      "languageNotes": "Uses open62541 UA_Server data-source callbacks (UA_Server_addDataSourceVariableNode) so OPC UA reads are satisfied by calling data_table_snapshot at read time rather than pushing values."
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "function",
+      "name": "opcua_server_init",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [387, 464],
+      "summary": "Allocates and configures the UA_Server with a minimal custom buffer, sets server identity and URL, starts up the server, populates the address space, and launches the TCP probe.",
+      "tags": ["service", "initialization", "networking"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "function",
+      "name": "opcua_server_poll",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [466, 473],
+      "summary": "Drives one iteration of the OPC UA server event loop and polls the TCP probe for new connections.",
+      "tags": ["service", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "function",
+      "name": "opcua_server_print_status",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_server.c",
+      "lineRange": [480, 502],
+      "summary": "Prints the current OPC UA server state, endpoint URL, status text, and delegates TCP probe status printing for diagnostic output.",
+      "tags": ["service", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "file",
+      "name": "opcua_tcp_probe.c",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "summary": "Implements a lightweight WIZnet-socket TCP listener that decodes the OPC UA binary HEL/ACK handshake on port 4840, tracking connection statistics and endpoint URLs for diagnostic visibility into OPC UA client connections before the main server processes them.",
+      "tags": ["networking", "service", "utility"],
+      "complexity": "complex",
+      "languageNotes": "Parses the OPC UA Binary Transport protocol (MessageType, ChunkType, MessageSize) directly from the TCP byte stream using little-endian read/write helpers, operating independently of the open62541 stack."
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:poll_socket",
+      "type": "function",
+      "name": "poll_socket",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [196, 282],
+      "summary": "State machine polling a WIZnet socket through CLOSED/OPENED/LISTENING/ESTABLISHED states, receiving data and dispatching to process_rx for OPC UA handshake parsing.",
+      "tags": ["networking", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:process_rx",
+      "type": "function",
+      "name": "process_rx",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [144, 188],
+      "summary": "Parses an OPC UA binary transport frame from the receive buffer, recognizing HEL and OpenSecureChannel message types and dispatching ACK or error responses accordingly.",
+      "tags": ["networking", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "function",
+      "name": "opcua_tcp_probe_init",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [284, 299],
+      "summary": "Zeroes the probe state, closes any existing socket, and prints initialization status.",
+      "tags": ["initialization", "networking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "function",
+      "name": "opcua_tcp_probe_poll",
+      "filePath": "examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "lineRange": [301, 313],
+      "summary": "Checks network readiness and, if the link is down, closes the probe socket; otherwise drives poll_socket for one iteration.",
+      "tags": ["networking", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "file",
+      "name": "usb_stdio_link.c",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "summary": "Reads newline-delimited ASCII frames from USB CDC stdin, parses DATA/CLEAR/STATUS/HELP commands, and forwards parsed float channel values to the shared data table.",
+      "tags": ["service", "utility", "api-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:process_line",
+      "type": "function",
+      "name": "process_line",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "lineRange": [101, 161],
+      "summary": "Dispatches a trimmed command line to help, status, network, opcua, clear, or DATA handlers, parsing float tokens and updating the data table for sensor frames.",
+      "tags": ["service", "utility"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "function",
+      "name": "usb_stdio_link_poll",
+      "filePath": "examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "lineRange": [168, 200],
+      "summary": "Non-blocking USB CDC character reader that accumulates bytes into a line buffer and calls process_line when a newline is received or the buffer overflows.",
+      "tags": ["service", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:.understand-anything/.understandignore",
+      "type": "config",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "Ignore-pattern file for the understand-anything analysis tool, listing paths and glob patterns to exclude from codebase scanning.",
+      "tags": ["configuration", "tooling"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "config:CMakeLists.txt",
+      "target": "config:examples/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/buffer_read/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/CMakeLists.txt",
+      "target": "config:examples/loopback/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/10M_Complience_Test/CMakeLists.txt",
+      "target": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/buffer_read/CMakeLists.txt",
+      "target": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/loopback/CMakeLists.txt",
+      "target": "file:examples/loopback/wizchip_loopback.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:examples/10M_Complience_Test/README.md",
+      "target": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/buffer_read/README.md",
+      "target": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:examples/loopback/README.md",
+      "target": "file:examples/loopback/wizchip_loopback.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:send_test_frame",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:W6300_PHY_CONFIG",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/10M_Complience_Test/10M_Complience_Test.c",
+      "target": "function:examples/10M_Complience_Test/10M_Complience_Test.c:complience_test_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "target": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/buffer_read/WIZnet_Chip_Buffer_Test.c",
+      "target": "function:examples/buffer_read/WIZnet_Chip_Buffer_Test.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/loopback/wizchip_loopback.c",
+      "target": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/loopback/wizchip_loopback.c",
+      "target": "function:examples/loopback/wizchip_loopback.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "target": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "target": "function:examples/opcua_usb_stdio/src/data_table.c:data_table_set_channels",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "function:examples/opcua_usb_stdio/src/main.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_server.c:opcua_server_print_status",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:poll_socket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:process_rx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "target": "function:examples/opcua_usb_stdio/src/opcua_tcp_probe.c:opcua_tcp_probe_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:process_line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "function:examples/opcua_usb_stdio/src/usb_stdio_link.c:usb_stdio_link_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/main.c",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/data_table.h",
+      "target": "file:examples/opcua_usb_stdio/src/data_table.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_server.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_tcp_probe.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/usb_stdio_link.h",
+      "target": "file:examples/opcua_usb_stdio/src/usb_stdio_link.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/wiznet_network.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_tcp_probe.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/inc/opcua_node_map.h",
+      "target": "file:examples/opcua_usb_stdio/src/opcua_server.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -1,0 +1,632 @@
+{
+  "nodes": [
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "file",
+      "name": "wizchip_qspi_pio.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "summary": "Implements the WIZnet QSPI PIO driver for RP2040/RP2350: opens/closes PIO state machines and DMA channels for W6300 QSPI quad-mode communication, provides frame-level CS management, and exposes read/write byte and buffer transfer functions.",
+      "tags": ["hardware-driver", "spi", "pio", "service"],
+      "complexity": "complex",
+      "languageNotes": "Uses RP2040 PIO + DMA for high-throughput QSPI transfers; supports SPI, dual-SPI, and quad-SPI modes selected at open time via the spi_config structure."
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "function",
+      "name": "wiznet_spi_pio_open",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [180, 358],
+      "summary": "Allocates and configures PIO state machines and DMA channels for the requested SPI mode (SPI/dual/quad), setting GPIO functions, clock dividers, and shift register directions.",
+      "tags": ["initialization", "hardware-driver", "spi"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_close",
+      "type": "function",
+      "name": "wiznet_spi_pio_close",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [360, 381],
+      "summary": "Releases PIO programs, state machines, and DMA channels previously claimed by wiznet_spi_pio_open.",
+      "tags": ["hardware-driver", "spi", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:pio_spi_gpio_setup",
+      "type": "function",
+      "name": "pio_spi_gpio_setup",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [117, 178],
+      "summary": "Initialises all GPIO pins (CS, SCK, MOSI, MISO, and quad data lines) and sets their direction and initial values for PIO-based SPI communication.",
+      "tags": ["initialization", "hardware-driver", "gpio"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_frame_start",
+      "type": "function",
+      "name": "wiznet_spi_pio_frame_start",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "lineRange": [393, 418],
+      "summary": "Begins a QSPI transaction frame by switching GPIO pins to PIO function and asserting chip-select.",
+      "tags": ["hardware-driver", "spi", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "type": "file",
+      "name": "wizchip_qspi_pio.pio",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "summary": "RP2040 PIO assembly programs implementing SPI, dual-SPI, and quad-SPI (QSPI) data transfers for WIZnet W6300 QSPI_QUAD_MODE communication.",
+      "tags": ["hardware-driver", "pio", "spi"],
+      "complexity": "moderate",
+      "languageNotes": "Three separate PIO programs for SPI, dual-SPI, and quad-SPI; each handles command/address phase plus payload using sideset for clock generation."
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "file",
+      "name": "wizchip_spi.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "summary": "Core WIZnet SPI port layer: initialises the hardware SPI peripheral or PIO QSPI interface, registers WIZnet ioLibrary callbacks, performs chip reset, handles DMA burst transfers, and provides network initialisation and status printing utilities shared across all examples.",
+      "tags": ["hardware-driver", "spi", "service", "network"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "function",
+      "name": "wizchip_spi_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [196, 237],
+      "summary": "Initialises SPI or PIO QSPI for the WIZnet chip: configures GPIO/SPI pins, claims DMA channels for burst transfers, and sets up DMA channel configurations.",
+      "tags": ["initialization", "hardware-driver", "spi"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "function",
+      "name": "wizchip_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [244, 301],
+      "summary": "Registers all WIZnet ioLibrary SPI/CS/burst callbacks, selects between SPI and QSPI modes, and sets socket buffer sizes for the detected chip.",
+      "tags": ["initialization", "hardware-driver", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "function",
+      "name": "wizchip_check",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [303, 337],
+      "summary": "Reads and prints the WIZnet chip version/ID registers to verify the correct chip is connected, printing a warning if the ID does not match the expected value.",
+      "tags": ["utility", "hardware-driver", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "function",
+      "name": "wizchip_reset",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [90, 107],
+      "summary": "Hardware-resets the WIZnet chip by toggling the reset GPIO line with appropriate hold and release delays.",
+      "tags": ["initialization", "hardware-driver", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "function",
+      "name": "print_network_information",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_spi.c",
+      "lineRange": [350, 388],
+      "summary": "Reads network configuration from the WIZnet chip and prints MAC address, IP, subnet mask, gateway, DNS, DHCP mode, and all IPv6 addresses.",
+      "tags": ["utility", "network", "logging"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:port/mbedtls/inc/ssl_config.h",
+      "type": "config",
+      "name": "ssl_config.h",
+      "filePath": "port/mbedtls/inc/ssl_config.h",
+      "summary": "mbedTLS configuration header for the WIZnet Pico port, enabling/disabling specific TLS cipher suites, algorithms, and memory management settings appropriate for embedded use.",
+      "tags": ["configuration", "security", "tls"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:port/open62541/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "port/open62541/CMakeLists.txt",
+      "summary": "CMake configuration for the open62541 OPC UA port layer, adding the open62541 library with WIZnet-specific event loop and lwIP socket shim sources.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/open62541/lwip/sockets.h",
+      "type": "file",
+      "name": "sockets.h",
+      "filePath": "port/open62541/lwip/sockets.h",
+      "summary": "Minimal lwIP sockets shim header redirecting BSD socket API calls used by open62541 to the WIZnet ioLibrary socket implementations.",
+      "tags": ["type-definition", "network", "compatibility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "type": "file",
+      "name": "open62541_wiznet_eventloop.c",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "summary": "WIZnet-specific open62541 event loop implementation: provides OPC UA timer management, delayed callbacks, TCP connection manager (open/send/close/poll), and time functions backed by the RP2040 hardware timer.",
+      "tags": ["service", "event-handler", "network", "opcua"],
+      "complexity": "complex",
+      "languageNotes": "Bridges the open62541 UA_EventLoop interface to WIZnet ioLibrary socket calls; UA_DateTime timestamps are derived from the RP2040 64-bit microsecond counter scaled to 100-ns OPC UA ticks."
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "function",
+      "name": "wiz_el_run",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [219, 239],
+      "summary": "Runs one iteration of the OPC UA event loop: executes pending delayed callbacks, fires due timers, and polls all active TCP connection managers.",
+      "tags": ["event-handler", "opcua", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_add_timer",
+      "type": "function",
+      "name": "wiz_el_add_timer",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [270, 304],
+      "summary": "Adds a periodic or one-shot timer to the event loop timer array, calculating the initial deadline from the current Pico time.",
+      "tags": ["event-handler", "opcua", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_modify_timer",
+      "type": "function",
+      "name": "wiz_el_modify_timer",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [306, 327],
+      "summary": "Updates the interval or base time of an existing event loop timer identified by its timer ID.",
+      "tags": ["event-handler", "opcua", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_poll",
+      "type": "function",
+      "name": "wiz_cm_poll",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [515, 562],
+      "summary": "Polls all WIZnet TCP sockets managed by the connection manager, handling connect signals, received data callbacks, disconnection, and re-opening listen sockets.",
+      "tags": ["service", "network", "event-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_open_connection",
+      "type": "function",
+      "name": "wiz_cm_open_connection",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [591, 617],
+      "summary": "Opens a WIZnet TCP connection for the OPC UA connection manager, configuring a socket slot and initiating a listen or connect operation.",
+      "tags": ["service", "network", "opcua"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_send",
+      "type": "function",
+      "name": "wiz_cm_send",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [619, 640],
+      "summary": "Sends a data buffer over a managed WIZnet TCP connection, queuing a close if the send fails.",
+      "tags": ["service", "network", "opcua"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_run_timers",
+      "type": "function",
+      "name": "wiz_run_timers",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [189, 217],
+      "summary": "Iterates the event loop timer array, fires callbacks for all timers whose deadline has passed, and reschedules repeating timers.",
+      "tags": ["event-handler", "opcua", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_deregister_eventsource",
+      "type": "function",
+      "name": "wiz_el_deregister_eventsource",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [107, 127],
+      "summary": "Removes an event source from the loop's registered list, calling its stop callback if the event loop is already running.",
+      "tags": ["event-handler", "opcua", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_free",
+      "type": "function",
+      "name": "wiz_el_free",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [157, 174],
+      "summary": "Stops and frees all resources held by the event loop, including stopping all event sources and freeing the timer and delay arrays.",
+      "tags": ["utility", "opcua", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_signal_active_open",
+      "type": "function",
+      "name": "wiz_signal_active_open",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [437, 459],
+      "summary": "Notifies the OPC UA connection manager callback with a connection-opened event, passing the remote IP and port from WIZnet socket registers.",
+      "tags": ["event-handler", "network", "opcua"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_process_pending_close",
+      "type": "function",
+      "name": "wiz_process_pending_close",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [465, 490],
+      "summary": "Processes any queued TCP close operations on a connection slot, notifying the callback and closing the underlying WIZnet socket.",
+      "tags": ["service", "network", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_open_listen_socket",
+      "type": "function",
+      "name": "wiz_open_listen_socket",
+      "filePath": "port/open62541/open62541_wiznet_eventloop.c",
+      "lineRange": [492, 513],
+      "summary": "Opens and starts listening on a WIZnet TCP socket, signalling the OPC UA callback on success or failure.",
+      "tags": ["service", "network", "initialization"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_close",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:pio_spi_gpio_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_frame_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.pio",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:print_network_information",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_qspi_pio.c:wiznet_spi_pio_open",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_add_timer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_modify_timer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_open_connection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_cm_send",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_run_timers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_deregister_eventsource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_free",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_signal_active_open",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_process_pending_close",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_open_listen_socket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "function:port/open62541/open62541_wiznet_eventloop.c:wiz_el_run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "target": "file:port/open62541/lwip/sockets.h",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/open62541/CMakeLists.txt",
+      "target": "file:port/open62541/open62541_wiznet_eventloop.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/mbedtls/inc/ssl_config.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/board/can/can.h",
+      "target": "file:port/board/can/can.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:libraries/CMakeLists.txt",
+      "target": "config:port/open62541/CMakeLists.txt",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_spi_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_initialize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_reset",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_spi.c:wizchip_check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

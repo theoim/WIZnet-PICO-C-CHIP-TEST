@@ -38,6 +38,7 @@
 #define CAM_PIN_HREF        33      /* FFC  9 */
 #define CAM_PIN_SIOD        36      /* FFC  3 -- I2C0 SDA */
 #define CAM_PIN_SIOC        37      /* FFC  5 -- I2C0 SCL */
+#define CAM_SCCB_I2C        i2c0
 
 #define CAM_PIN_D0          24      /* FFC 19, DVP_Y2 */
 #define CAM_PIN_D1          25      /* FFC 21, DVP_Y3 */

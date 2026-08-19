@@ -1,0 +1,555 @@
+{
+  "nodes": [
+    {
+      "id": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "type": "file",
+      "name": "wiznet_network.c",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "summary": "Manages WIZnet chip initialization and network lifecycle for the OPC UA USB stdio example, providing non-blocking chip bring-up, link status polling, and network status reporting.",
+      "tags": ["service", "network", "initialization", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "function",
+      "name": "wiznet_network_init",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [140, 169],
+      "summary": "Initializes the WIZnet network stack: sets up SPI, resets and initializes the chip, configures network parameters, and logs the resulting link and PHY status.",
+      "tags": ["initialization", "network", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "function",
+      "name": "wiznet_network_poll",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [171, 181],
+      "summary": "Periodically polls the WIZnet PHY link status every 1 second using Pico timing, updating the internal link state.",
+      "tags": ["polling", "network", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "function",
+      "name": "wiznet_network_print_status",
+      "filePath": "examples/opcua_usb_stdio/src/wiznet_network.c",
+      "lineRange": [188, 204],
+      "summary": "Prints the current WIZnet network status including IP address, state name, and MAC address to stdout.",
+      "tags": ["utility", "logging", "network"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/PING_TEST/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/PING_TEST/CMakeLists.txt",
+      "summary": "CMake build configuration for the PING_TEST example, linking the example executable against the WIZnet ioLibrary and Pico SDK targets.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "file",
+      "name": "PING_TEST.c",
+      "filePath": "examples/PING_TEST/PING_TEST.c",
+      "summary": "Entry-point for the PING_TEST example: initializes the WIZnet chip via SPI, configures network settings, then drives the W6300 hardware ping engine in a polling loop to send ICMP pings and report results.",
+      "tags": ["entry-point", "example", "network", "ping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/PING_TEST/PING_TEST.c",
+      "lineRange": [102, 195],
+      "summary": "Initialises SPI and WIZnet chip, configures the W6300 ping engine registers (SLRTR, SLIMR, SLCR, etc.), then loops polling SLIR to receive ping replies and report RTT.",
+      "tags": ["entry-point", "network", "ping", "example"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/PING_TEST/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "examples/PING_TEST/README.md",
+      "summary": "Step-by-step guide (9 sections) covering software/hardware preparation, CMake setup for W55RP20/W6300 and generic SPI boards, build, and flashing for the PING_TEST example.",
+      "tags": ["documentation", "example", "setup-guide"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "examples/wiz_claw_agent/CMakeLists.txt",
+      "summary": "CMake build configuration for the wiz_claw_agent example, linking the AI agent application against WIZnet networking and the wiz_claw library targets.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/main.c",
+      "type": "file",
+      "name": "main.c",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "summary": "Entry-point for the wiz_claw AI agent: initialises the Pico hardware and WIZnet Ethernet, registers a GPIO tool handler, polls a Telegram bot for incoming messages, and invokes the OpenAI-backed wiz_claw agent to dispatch tool calls controlling GPIO pins.",
+      "tags": ["entry-point", "ai-agent", "network", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:gpio_tool_handler",
+      "type": "function",
+      "name": "gpio_tool_handler",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [79, 125],
+      "summary": "Tool callback registered with the wiz_claw agent that parses JSON arguments to read or write Pico GPIO pins, returning the result as a JSON string.",
+      "tags": ["event-handler", "gpio", "ai-agent"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:on_telegram_message",
+      "type": "function",
+      "name": "on_telegram_message",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [166, 200],
+      "summary": "Telegram message callback that creates a wiz_claw agent session, runs the AI agent against the incoming message to produce a reply, then sends the response back via Telegram.",
+      "tags": ["event-handler", "ai-agent", "network"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "examples/wiz_claw_agent/main.c",
+      "lineRange": [204, 293],
+      "summary": "Application entry point: brings up Pico stdio/GPIO/SPI, initialises WIZnet networking and the wiz_claw network layer, registers a 1-second timer tick, and enters the main Telegram polling loop.",
+      "tags": ["entry-point", "initialization", "ai-agent"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:examples/wiz_claw_agent/README_kr.md",
+      "type": "document",
+      "name": "README_kr.md",
+      "filePath": "examples/wiz_claw_agent/README_kr.md",
+      "summary": "Korean-language README for the wiz_claw_agent example describing operation flow, network/API configuration, socket usage, GPIO tool interface, Telegram test instructions, and related files (9 sections).",
+      "tags": ["documentation", "ai-agent", "setup-guide"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:libraries/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "libraries/CMakeLists.txt",
+      "summary": "Top-level CMake configuration for all third-party and WIZnet libraries (ioLibrary_Driver, mbedTLS, lwIP, open62541, wiz_claw, cJSON), adding their subdirectories and defining interface targets.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:pico_sdk_import.cmake",
+      "type": "config",
+      "name": "pico_sdk_import.cmake",
+      "filePath": "pico_sdk_import.cmake",
+      "summary": "Pico SDK CMake import helper that locates the Raspberry Pi Pico SDK from the PICO_SDK_PATH environment variable or a cached path and imports its top-level CMakeLists.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board_list.h",
+      "type": "file",
+      "name": "board_list.h",
+      "filePath": "port/board_list.h",
+      "summary": "Minimal header listing all supported WIZnet Pico board variants via preprocessor defines, used to select board-specific configuration at compile time.",
+      "tags": ["type-definition", "configuration", "board-support"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board/can/can.c",
+      "type": "file",
+      "name": "can.c",
+      "filePath": "port/board/can/can.c",
+      "summary": "Complete software CAN 2.0B controller implementation (can2040) for the RP2040/RP2350, using PIO state machines for bit-level timing, hardware-accelerated bit stuffing/unstuffing, CRC computation, and interrupt-driven frame reception and transmission.",
+      "tags": ["service", "hardware-driver", "pio", "can-bus"],
+      "complexity": "complex",
+      "languageNotes": "Implements the full CAN 2.0B protocol stack in software on top of RP2040 PIO peripherals; uses GCC builtins (__builtin_clz, __builtin_bswap32) and ARM DMB memory barriers for correctness on Cortex-M0+."
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "function",
+      "name": "can2040_pio_irq_handler",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [1280, 1310],
+      "summary": "PIO IRQ handler that dispatches incoming CAN bus events (RX data, ACK done, line matched, may-TX, TX pending) to the appropriate report handlers.",
+      "tags": ["event-handler", "hardware-driver", "pio"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_transmit",
+      "type": "function",
+      "name": "can2040_transmit",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [1327, 1393],
+      "summary": "Encodes a CAN frame (standard or extended ID, data payload) with bit stuffing and CRC into the TX queue and triggers PIO transmission.",
+      "tags": ["hardware-driver", "can-bus", "serialization"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_start",
+      "type": "function",
+      "name": "can2040_start",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [1420, 1428],
+      "summary": "Starts the can2040 controller by resetting data state, initializing PIO hardware, and entering the initial discard state.",
+      "tags": ["initialization", "hardware-driver", "can-bus"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/board/can/can.c:can2040_setup",
+      "type": "function",
+      "name": "can2040_setup",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [1400, 1411],
+      "summary": "Initialises a can2040 state structure with a given PIO number, zeroing all fields and recording the PIO base address.",
+      "tags": ["initialization", "hardware-driver", "can-bus"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/board/can/can.c:pio_setup",
+      "type": "function",
+      "name": "pio_setup",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [382, 413],
+      "summary": "Configures all four PIO state machines (sync, RX, match, TX) for CAN bus timing, sets clock dividers, and assigns GPIO pins to PIO functions.",
+      "tags": ["hardware-driver", "pio", "initialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:port/board/can/can.c:process_rx",
+      "type": "function",
+      "name": "process_rx",
+      "filePath": "port/board/can/can.c",
+      "lineRange": [1251, 1277],
+      "summary": "Processes a raw PIO RX word by feeding bits through the unstuffer and data state machine, handling passive and error conditions.",
+      "tags": ["hardware-driver", "can-bus", "serialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/board/can/can.h",
+      "type": "file",
+      "name": "can.h",
+      "filePath": "port/board/can/can.h",
+      "summary": "Public header for the can2040 software CAN controller, declaring the can2040 state struct, can2040_msg frame type, statistics struct, and the public API (setup, start, stop, transmit, check_transmit, callback_config, get_statistics, pio_irq_handler).",
+      "tags": ["type-definition", "hardware-driver", "can-bus"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/board/can/can.pio",
+      "type": "file",
+      "name": "can.pio",
+      "filePath": "port/board/can/can.pio",
+      "summary": "RP2040 PIO assembly programs (sync, RX, match, TX state machines) implementing the low-level CAN bus bit sampling, matching, and transmission timing used by can2040.",
+      "tags": ["hardware-driver", "pio", "can-bus"],
+      "complexity": "moderate",
+      "languageNotes": "PIO assembly for the RP2040 programmable I/O subsystem; each program handles a specific phase of the CAN protocol (sync detection, bit reception, frame matching, bit transmission)."
+    },
+    {
+      "id": "config:port/CMakeLists.txt",
+      "type": "config",
+      "name": "CMakeLists.txt",
+      "filePath": "port/CMakeLists.txt",
+      "summary": "CMake configuration for the port layer, defining the wizchip_spi, wizchip_qspi_pio, wizchip_gpio_irq, and CAN library targets with their sources, include paths, and Pico SDK dependencies.",
+      "tags": ["configuration", "build-system", "cmake"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "type": "file",
+      "name": "wizchip_gpio_irq.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_gpio_irq.h",
+      "summary": "Header declaring the GPIO interrupt initialization function and the user-configurable callback pointer for WIZnet chip interrupt handling.",
+      "tags": ["type-definition", "hardware-driver", "interrupt"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "type": "file",
+      "name": "wizchip_qspi_pio.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_qspi_pio.h",
+      "summary": "Header for the QSPI PIO driver, declaring the SPI configuration structure, handle type, and the open/close/frame/register functions for WIZnet QSPI communication via RP2040 PIO.",
+      "tags": ["type-definition", "hardware-driver", "spi"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "type": "file",
+      "name": "wizchip_spi.h",
+      "filePath": "port/ioLibrary_Driver/inc/wizchip_spi.h",
+      "summary": "Main port header declaring WIZnet SPI initialization, chip reset, network initialization, and information-printing functions, plus network info and status structures used across all examples.",
+      "tags": ["type-definition", "hardware-driver", "network"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "file",
+      "name": "wizchip_gpio_irq.c",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "summary": "Implements GPIO interrupt support for the WIZnet chip, configuring socket interrupt masks and attaching a user-supplied callback to the interrupt GPIO.",
+      "tags": ["hardware-driver", "interrupt", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "function",
+      "name": "wizchip_gpio_interrupt_initialize",
+      "filePath": "port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "lineRange": [34, 51],
+      "summary": "Enables per-socket interrupt masks on the WIZnet chip and registers the GPIO falling-edge callback with the Pico SDK IRQ system.",
+      "tags": ["initialization", "interrupt", "hardware-driver"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_init",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_poll",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/opcua_usb_stdio/src/wiznet_network.c",
+      "target": "function:examples/opcua_usb_stdio/src/wiznet_network.c:wiznet_network_print_status",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/PING_TEST/PING_TEST.c",
+      "target": "function:examples/PING_TEST/PING_TEST.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:gpio_tool_handler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:on_telegram_message",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/main.c",
+      "target": "function:examples/wiz_claw_agent/main.c:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:examples/PING_TEST/README.md",
+      "target": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:examples/wiz_claw_agent/README_kr.md",
+      "target": "file:examples/wiz_claw_agent/main.c",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:examples/PING_TEST/CMakeLists.txt",
+      "target": "file:examples/PING_TEST/PING_TEST.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:examples/wiz_claw_agent/CMakeLists.txt",
+      "target": "file:examples/wiz_claw_agent/main.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_transmit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:pio_setup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:process_rx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_pio_irq_handler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_transmit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_start",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.c",
+      "target": "function:port/board/can/can.c:can2040_setup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:port/board/can/can.pio",
+      "target": "file:port/board/can/can.c",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "target": "function:port/ioLibrary_Driver/src/wizchip_gpio_irq.c:wizchip_gpio_interrupt_initialize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_spi.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_qspi_pio.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/ioLibrary_Driver/src/wizchip_gpio_irq.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:port/CMakeLists.txt",
+      "target": "file:port/board/can/can.c",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:libraries/CMakeLists.txt",
+      "target": "config:port/CMakeLists.txt",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:pico_sdk_import.cmake",
+      "target": "config:libraries/CMakeLists.txt",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ]
+}

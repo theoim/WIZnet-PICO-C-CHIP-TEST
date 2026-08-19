@@ -1,0 +1,13 @@
+{
+  "projectRoot": "D:\\theo_git_project\\WIZnet-PICO-C-CHIP-TEST",
+  "batchFiles": [
+    {"path": "examples/opcua_usb_stdio/CMakeLists.txt", "language": "cmake", "sizeLines": 50, "fileCategory": "config"},
+    {"path": "examples/opcua_usb_stdio/README_eng.md", "language": "markdown", "sizeLines": 100, "fileCategory": "docs"},
+    {"path": "examples/opcua_usb_stdio/README_kor.md", "language": "markdown", "sizeLines": 100, "fileCategory": "docs"}
+  ],
+  "batchImportData": {
+    "examples/opcua_usb_stdio/CMakeLists.txt": [],
+    "examples/opcua_usb_stdio/README_eng.md": [],
+    "examples/opcua_usb_stdio/README_kor.md": []
+  }
+}
