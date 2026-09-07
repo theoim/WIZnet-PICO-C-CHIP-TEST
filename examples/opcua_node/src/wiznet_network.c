@@ -113,7 +113,7 @@ static void print_phy_details(void) {
 static int wiznet_chip_initialize_nonblocking(void) {
 #if _WIZCHIP_ == W6300
     extern wiznet_spi_handle_t spi_handle;
-    /* 소켓 예산 — docs/product_direction.md D-5
+    /* 소켓 예산 — W6300 하드웨어 소켓 8개를 이렇게 나눈다.
      *   0-3 OPC UA 4KB x4 (균일 필수: 칩이 빈 소켓을 임의로 고른다)
      *   4   HTTP 설정 8KB   5 DHCP 2KB   6 DNS/SNTP 2KB   7 미사용
      * 합계 TX/RX 각 28KB, 4KB 미할당.

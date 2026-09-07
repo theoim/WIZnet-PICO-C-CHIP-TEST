@@ -13,7 +13,7 @@ SOAK_HOURS=12 python soak_test.py  # 장시간 누수 (시간 누수 / 개폐당
 반드시 포함해야 한다. 2026-09-03 측정에서 이것을 빠뜨려 한도가 3개로
 보였다 — 실제로는 UAExpert 1 + 스크립트 3 = 4개였다.
 
-결과는 `docs/memory_budget.md` 와 `docs/product_direction.md` 8장에 있다.
+결과는 `docs/memory_budget.md` 에 있다.
 
 전송 계층(다중 listen · 버퍼 크기) 자체를 보는 시험은 별도다 —
 `examples/socket_listen_test` 를 장비에 올려서 쓴다.

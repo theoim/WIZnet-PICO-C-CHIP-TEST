@@ -3,7 +3,7 @@
 
 목적 두 가지:
   1) 세션 1~4개일 때 FreeHeap 실측  (memory_budget.md 표의 3·4행을 실측으로 대체)
-  2) 5번째 접속이 어떻게 거절되는가  (product_direction.md 8-5)
+  2) 5번째 접속이 어떻게 거절되는가  (매달리지 않고 RST 로 거절된다)
 
 조건을 기존 표와 맞춘다: 세션마다 Subscription 1개 + MonitoredItem 1개.
 UAExpert 가 하던 것과 같은 부하다.

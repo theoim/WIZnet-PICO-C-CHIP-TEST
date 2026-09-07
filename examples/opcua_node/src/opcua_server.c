@@ -422,17 +422,22 @@ int opcua_server_init(const opcua_settings_t *cfg) {
     UA_ServerConfig config;
     memset(&config, 0, sizeof(config));
 
-    /* 트랜스포트가 동시에 LISTEN 할 하드웨어 소켓 수 (D-5).
+    /* 트랜스포트가 동시에 LISTEN 할 하드웨어 소켓 수.
      * 반드시 서버 생성 전에 지정한다. */
     UA_EventLoop_LWIP_setSocketCount(OPCUA_MAX_SOCKETS);
 
     UA_StatusCode res = UA_ServerConfig_setMinimalCustomBuffer(
         &config, WIZNET_OPCUA_TCP_PORT, NULL, 8192u, 8192u);
 
-    /* 리소스 상한 — docs/product_direction.md D-7
-     * 기본값(세션 100 / 채널 100)은 소켓 4개짜리 장치에 맞지 않는다.
-     * 트랜스포트 수와 어긋나면, TCP 는 못 붙는데 서버는 여유가 있다고
-     * 판단하는 불일치가 생긴다. */
+    /* 리소스 상한. open62541 기본값은 세션 100 / 보안채널 100 이라
+     * 소켓 4개짜리 장치에 맞지 않는다. 트랜스포트 수와 어긋나면 TCP 는
+     * 못 붙는데 서버는 여유가 있다고 판단하는 불일치가 생긴다.
+     *
+     * 한도 초과 시 동작이 항목마다 다르다. maxSessions 를 넘으면
+     * BadTooManySessions 로 깔끔하게 거부되지만, maxSecureChannels 를
+     * 넘으면 세션이 붙지 않은 채널을 먼저 강제 종료한다
+     * (purgeFirstChannelWithoutSession). 즉 동작 중인 클라이언트가
+     * 쫓겨나지는 않아도 핸드셰이크 중인 접속은 밀려날 수 있다. */
     if(res == UA_STATUSCODE_GOOD) {
         config.maxSecureChannels          = OPCUA_MAX_SOCKETS;
         config.maxSessions                = OPCUA_MAX_SOCKETS;

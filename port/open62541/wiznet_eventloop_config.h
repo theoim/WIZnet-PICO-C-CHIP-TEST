@@ -11,7 +11,7 @@
  * 예제의 값이 라이브러리 전체에 적용된다. 그래서 런타임 설정으로 둔다.
  *
  * 기본값은 소켓 1개이므로, 아무것도 호출하지 않는 예제는 기존 동작 그대로다.
- * (opcua_usb_stdio 는 회귀 기준이라 손대지 않는다 — TASK_BRIEF 참조)
+ * (opcua_usb_stdio 는 회귀 비교 기준이라 손대지 않는다)
  */
 
 #ifdef __cplusplus
@@ -28,7 +28,7 @@ extern "C" {
  *
  * 주의: 여기서 정한 개수만큼 소켓 버퍼가 배분되어 있어야 한다.
  *       버퍼 배분은 애플리케이션이 wizchip 초기화 때 직접 넘긴다.
- *       (docs/product_direction.md D-5)
+ *       예: examples/opcua_node/src/wiznet_network.c 의 memsize
  */
 void UA_EventLoop_LWIP_setSocketCount(uint8_t count);
 

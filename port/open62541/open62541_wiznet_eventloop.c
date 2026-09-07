@@ -17,11 +17,11 @@
  * UA_EventLoop_LWIP_setSocketCount() 로 서버 시작 전에 지정한다.
  *
  * 기본 1 — 아무것도 호출하지 않으면 기존 동작 그대로다.
- * opcua_usb_stdio 는 회귀 기준이므로 손대지 않는다 (TASK_BRIEF 참조).
+ * opcua_usb_stdio 는 회귀 비교 기준이므로 손대지 않는다.
  *
  * W6300 이 같은 포트로 여러 소켓을 동시에 LISTEN 시킬 수 있다는 것은
- * 2026-09-03 실기로 확인했다 (docs/product_direction.md F-1).
- * 소켓 버퍼 배분은 애플리케이션이 wizchip 초기화 때 정한다 (D-5). */
+ * 2026-09-03 실기로 확인했다. 소켓 버퍼 배분은 애플리케이션이 wizchip
+ * 초기화 때 정한다 (examples/opcua_node/src/wiznet_network.c 의 memsize). */
 #define WIZ_UA_SOCKET_MAX 8u
 
 #ifndef WIZ_UA_SOCKET_COUNT_DEFAULT

@@ -30,7 +30,9 @@
 
 /* 동시에 받을 OPC UA 클라이언트 수 = 트랜스포트가 LISTEN 하는 하드웨어 소켓 수.
  * 소켓 버퍼 배분(wiznet_network.c 의 memsize)과 반드시 일치해야 한다.
- * docs/product_direction.md D-5 / D-7 */
+ * open62541 의 maxSecureChannels / maxSessions 도 같은 값으로 맞춘다
+ * (opcua_server.c). 세 곳이 어긋나면 TCP 는 못 붙는데 서버는 자리가
+ * 남았다고 판단하는 불일치가 생긴다. */
 #define OPCUA_MAX_SOCKETS         4u
 #define OPCUA_NAME_MAX           32u
 #define OPCUA_UNIT_MAX           16u
@@ -62,7 +64,7 @@ typedef enum {
  * opcua_settings.c). If you add/remove a field, bump OPCUA_SETTINGS_VERSION and
  * extend opcua_settings_migrate().
  *
- * Extensions beyond the original TASK_BRIEF schema (documented in
+ * Extensions beyond the original channel schema (documented in
  * docs/node_map.md): eu_low, eu_high (EURange property source), enabled,
  * poll_ms (per-channel Modbus poll override).
  */

@@ -86,8 +86,12 @@ measured value is 406,888, off by 308 B. The linear model holds.
 Total RAM at 4 sessions (measured): static 63.4 KB + heap 51.3 KB
 = **114.6 KB, 22.1 % of the 520 KB SRAM.**
 
-A 5th connection is refused at the transport layer -- see
-`product_direction.md` 8-5.
+A 5th connection is refused at the transport layer. Measured on hardware
+2026-09-03 with all four sockets held open: the extra connection gets an
+explicit RST rather than hanging, and closing one session frees a slot
+immediately (0 ms on retry). The refusal itself takes about 2 s, which is
+not yet explained -- likely the first SYN is dropped and the RST arrives on
+the retransmit, but confirming that needs a packet capture.
 
 **Memory is not the constraint.** The transport socket count was, and that is
 now resolved (4 sockets). Phase B security has ample room.
