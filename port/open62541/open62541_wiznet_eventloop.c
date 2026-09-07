@@ -8,10 +8,68 @@
 #include "socket.h"
 #include "wizchip_conf.h"
 
-#define WIZ_UA_SOCKET 0u
+#include "wiznet_eventloop_config.h"
+
+/* 동시에 LISTEN 시킬 하드웨어 소켓 개수.
+ *
+ * 컴파일 상수가 아니라 런타임 값이다. OPEN62541_WIZNET 은 모든 예제가
+ * 공유하는 정적 라이브러리라, 예제별 compile definition 으로는 값이 안 갈린다.
+ * UA_EventLoop_LWIP_setSocketCount() 로 서버 시작 전에 지정한다.
+ *
+ * 기본 1 — 아무것도 호출하지 않으면 기존 동작 그대로다.
+ * opcua_usb_stdio 는 회귀 기준이므로 손대지 않는다 (TASK_BRIEF 참조).
+ *
+ * W6300 이 같은 포트로 여러 소켓을 동시에 LISTEN 시킬 수 있다는 것은
+ * 2026-09-03 실기로 확인했다 (docs/product_direction.md F-1).
+ * 소켓 버퍼 배분은 애플리케이션이 wizchip 초기화 때 정한다 (D-5). */
+#define WIZ_UA_SOCKET_MAX 8u
+
+#ifndef WIZ_UA_SOCKET_COUNT_DEFAULT
+#define WIZ_UA_SOCKET_COUNT_DEFAULT 1u
+#endif
+
+static uint8_t g_wizSocketCount = WIZ_UA_SOCKET_COUNT_DEFAULT;
+
+/* OPC UA 가 쓰는 첫 하드웨어 소켓 번호. 이후 COUNT 개를 연속으로 점유한다. */
+#ifndef WIZ_UA_SOCKET_BASE
+#define WIZ_UA_SOCKET_BASE 0u
+#endif
+
+#define WIZ_SOCKET_OF(idx) ((uint8_t)(WIZ_UA_SOCKET_BASE + (idx)))
+
 #define WIZ_OPCUA_TCP_PORT 4840u
-#define WIZ_LISTEN_CONNECTION_ID 1u
-#define WIZ_ACTIVE_CONNECTION_ID 2u
+
+/* 연결 ID 공간. 소켓 번호에서 유도한다.
+ *   10..19  listen   (지금은 논리 listener 1개만 쓴다)
+ *   20..29  active   소켓 인덱스별
+ *   30..    예약 — 나중에 HTTP 설정 서버 등이 같은 이벤트루프에 들어올 자리 */
+#define WIZ_LISTEN_ID_BASE 10u
+#define WIZ_ACTIVE_ID_BASE 20u
+#define WIZ_LISTEN_CONNECTION_ID WIZ_LISTEN_ID_BASE
+#define WIZ_ACTIVE_ID(idx) ((uintptr_t)(WIZ_ACTIVE_ID_BASE + (idx)))
+
+void UA_EventLoop_LWIP_setSocketCount(uint8_t count) {
+    if(count < 1u)
+        count = 1u;
+    if(count > WIZ_UA_SOCKET_MAX)
+        count = WIZ_UA_SOCKET_MAX;
+    g_wizSocketCount = count;
+}
+
+uint8_t UA_EventLoop_LWIP_getSocketCount(void) {
+    return g_wizSocketCount;
+}
+
+/* 임시 진단. 멀티소켓 브링업이 끝나면 제거한다. */
+#ifndef WIZ_EL_DEBUG
+#define WIZ_EL_DEBUG 0
+#endif
+#if WIZ_EL_DEBUG
+#define WIZ_DBG(...) printf("[el] " __VA_ARGS__)
+#else
+#define WIZ_DBG(...) do {} while(0)
+#endif
+
 #define WIZ_RX_BUFFER_SIZE 8192u
 #define WIZ_TIMER_MAX 32u
 
@@ -33,19 +91,31 @@ typedef struct {
     UA_UInt64 nextTimerId;
 } WizEventLoop;
 
+/* 소켓 하나분의 연결 상태. 예전에는 이 필드들이 매니저에 직접 있었다. */
+typedef struct {
+    void *activeContext;
+    bool activeAnnounced;
+    bool pendingActiveClose;
+    uint8_t peerIp[4];
+    uint16_t peerPort;
+} WizSocketState;
+
 typedef struct {
     UA_ConnectionManager cm;
     UA_ConnectionManager_connectionCallback callback;
     void *application;
+
+    /* listen 은 논리적으로 하나다. 하드웨어 소켓이 여러 개여도
+     * 상위에는 "포트 4840 을 듣고 있다" 하나로만 보인다. */
     void *listenContext;
-    void *activeContext;
     bool listenAnnounced;
-    bool activeAnnounced;
     bool pendingListenClose;
-    bool pendingActiveClose;
+
     uint16_t port;
-    uint8_t peerIp[4];
-    uint16_t peerPort;
+    WizSocketState s[WIZ_UA_SOCKET_MAX];
+
+    /* recv() 직후 콜백에 넘겨 그 자리에서 소비되므로 소켓마다 둘 필요가 없다.
+     * 소켓을 늘려도 RAM 은 그대로다. */
     uint8_t rxBuffer[WIZ_RX_BUFFER_SIZE];
 } WizTcpConnectionManager;
 
@@ -399,19 +469,32 @@ UA_EventLoop *UA_EventLoop_new_LWIP(const UA_Logger *logger,
     return el;
 }
 
-static int wiz_send_all(const uint8_t *buf, uint16_t len) {
+static int wiz_send_all(uint8_t sock, const uint8_t *buf, uint16_t len) {
     uint16_t sentTotal = 0u;
 
     while(sentTotal < len) {
-        int32_t sent = send(WIZ_UA_SOCKET, (uint8_t *)buf + sentTotal,
+        int32_t sent = send(sock, (uint8_t *)buf + sentTotal,
                             (uint16_t)(len - sentTotal));
-        if(sent <= 0)
+        if(sent <= 0) {
+            WIZ_DBG("send s%u FAIL rc=%ld sent=%u/%u sr=0x%02X\r\n",
+                    sock, (long)sent, sentTotal, len, getSn_SR(sock));
             return -1;
+        }
 
         sentTotal = (uint16_t)(sentTotal + (uint16_t)sent);
     }
 
     return 0;
+}
+
+/* active 연결 ID -> 소켓 인덱스. 범위 밖이면 -1. */
+static int wiz_index_of_active_id(uintptr_t connectionId) {
+    if(connectionId < WIZ_ACTIVE_ID_BASE)
+        return -1;
+    uintptr_t idx = connectionId - WIZ_ACTIVE_ID_BASE;
+    if(idx >= g_wizSocketCount)
+        return -1;
+    return (int)idx;
 }
 
 static void wiz_signal_listen(WizTcpConnectionManager *tcp) {
@@ -434,16 +517,18 @@ static void wiz_signal_listen(WizTcpConnectionManager *tcp) {
     tcp->listenAnnounced = true;
 }
 
-static void wiz_signal_active_open(WizTcpConnectionManager *tcp) {
-    if(tcp->activeAnnounced || !tcp->callback)
+static void wiz_signal_active_open(WizTcpConnectionManager *tcp, unsigned idx) {
+    WizSocketState *st = &tcp->s[idx];
+    if(st->activeAnnounced || !tcp->callback)
         return;
 
-    getSn_DIPR(WIZ_UA_SOCKET, tcp->peerIp);
-    tcp->peerPort = getSn_DPORT(WIZ_UA_SOCKET);
+    uint8_t sock = WIZ_SOCKET_OF(idx);
+    getSn_DIPR(sock, st->peerIp);
+    st->peerPort = getSn_DPORT(sock);
 
     char remote[24];
     snprintf(remote, sizeof(remote), "%u.%u.%u.%u",
-             tcp->peerIp[0], tcp->peerIp[1], tcp->peerIp[2], tcp->peerIp[3]);
+             st->peerIp[0], st->peerIp[1], st->peerIp[2], st->peerIp[3]);
 
     UA_String remoteAddress = UA_STRING(remote);
     UA_KeyValuePair kvp;
@@ -451,55 +536,73 @@ static void wiz_signal_active_open(WizTcpConnectionManager *tcp) {
     UA_Variant_setScalar(&kvp.value, &remoteAddress, &UA_TYPES[UA_TYPES_STRING]);
     UA_KeyValueMap kvm = {1, &kvp};
 
-    tcp->activeContext = tcp->listenContext;
-    tcp->callback(&tcp->cm, WIZ_ACTIVE_CONNECTION_ID, tcp->application,
-                  &tcp->activeContext, UA_CONNECTIONSTATE_ESTABLISHED,
+    st->activeContext = tcp->listenContext;
+    tcp->callback(&tcp->cm, WIZ_ACTIVE_ID(idx), tcp->application,
+                  &st->activeContext, UA_CONNECTIONSTATE_ESTABLISHED,
                   &kvm, UA_BYTESTRING_NULL);
-    tcp->activeAnnounced = true;
+    st->activeAnnounced = true;
+    WIZ_DBG("open s%u id=%lu peer=%u.%u.%u.%u:%u\r\n",
+            sock, (unsigned long)WIZ_ACTIVE_ID(idx),
+            st->peerIp[0], st->peerIp[1], st->peerIp[2], st->peerIp[3],
+            st->peerPort);
 }
 
-static void wiz_queue_active_close(WizTcpConnectionManager *tcp) {
-    tcp->pendingActiveClose = true;
+static void wiz_queue_active_close(WizTcpConnectionManager *tcp, unsigned idx) {
+    tcp->s[idx].pendingActiveClose = true;
 }
 
-static void wiz_process_pending_close(WizTcpConnectionManager *tcp) {
-    if(tcp->pendingActiveClose) {
-        tcp->pendingActiveClose = false;
-        if(tcp->activeAnnounced && tcp->callback) {
-            tcp->callback(&tcp->cm, WIZ_ACTIVE_CONNECTION_ID, tcp->application,
-                          &tcp->activeContext, UA_CONNECTIONSTATE_CLOSING,
-                          &UA_KEYVALUEMAP_NULL, UA_BYTESTRING_NULL);
-        }
-        tcp->activeAnnounced = false;
-        tcp->activeContext = NULL;
-        close(WIZ_UA_SOCKET);
+/* 소켓 하나의 미처리 close 를 반영한다. 상위에 CLOSING 을 통보하고 소켓을 닫는다.
+ * 닫힌 소켓은 다음 폴링에서 wiz_open_listen_socket() 이 다시 LISTEN 으로 돌린다. */
+static void wiz_process_pending_active_close(WizTcpConnectionManager *tcp,
+                                             unsigned idx) {
+    WizSocketState *st = &tcp->s[idx];
+    if(!st->pendingActiveClose)
         return;
-    }
 
-    if(tcp->pendingListenClose) {
-        tcp->pendingListenClose = false;
-        if(tcp->listenAnnounced && tcp->callback) {
-            tcp->callback(&tcp->cm, WIZ_LISTEN_CONNECTION_ID, tcp->application,
-                          &tcp->listenContext, UA_CONNECTIONSTATE_CLOSING,
-                          &UA_KEYVALUEMAP_NULL, UA_BYTESTRING_NULL);
-        }
-        tcp->listenAnnounced = false;
-        tcp->listenContext = NULL;
-        close(WIZ_UA_SOCKET);
+    st->pendingActiveClose = false;
+    if(st->activeAnnounced && tcp->callback) {
+        tcp->callback(&tcp->cm, WIZ_ACTIVE_ID(idx), tcp->application,
+                      &st->activeContext, UA_CONNECTIONSTATE_CLOSING,
+                      &UA_KEYVALUEMAP_NULL, UA_BYTESTRING_NULL);
     }
+    WIZ_DBG("close s%u id=%lu\r\n", WIZ_SOCKET_OF(idx),
+            (unsigned long)WIZ_ACTIVE_ID(idx));
+    st->activeAnnounced = false;
+    st->activeContext = NULL;
+    close(WIZ_SOCKET_OF(idx));
 }
 
-static void wiz_open_listen_socket(WizTcpConnectionManager *tcp) {
-    uint8_t sr = getSn_SR(WIZ_UA_SOCKET);
+/* listen 을 내리면 모든 소켓을 닫는다. */
+static void wiz_process_pending_listen_close(WizTcpConnectionManager *tcp) {
+    if(!tcp->pendingListenClose)
+        return;
+
+    tcp->pendingListenClose = false;
+    if(tcp->listenAnnounced && tcp->callback) {
+        tcp->callback(&tcp->cm, WIZ_LISTEN_CONNECTION_ID, tcp->application,
+                      &tcp->listenContext, UA_CONNECTIONSTATE_CLOSING,
+                      &UA_KEYVALUEMAP_NULL, UA_BYTESTRING_NULL);
+    }
+    tcp->listenAnnounced = false;
+    tcp->listenContext = NULL;
+
+    for(unsigned i = 0; i < g_wizSocketCount; i++)
+        close(WIZ_SOCKET_OF(i));
+}
+
+static void wiz_open_listen_socket(WizTcpConnectionManager *tcp, unsigned idx) {
+    uint8_t sock = WIZ_SOCKET_OF(idx);
+    uint8_t sr = getSn_SR(sock);
 
     switch(sr) {
     case SOCK_CLOSED:
-        if(socket(WIZ_UA_SOCKET, Sn_MR_TCP, tcp->port, SF_TCP_NODELAY) < 0)
+        /* 모든 소켓이 같은 포트로 열린다. W6300 에서 허용된다 (F-1). */
+        if(socket(sock, Sn_MR_TCP, tcp->port, SF_TCP_NODELAY) < 0)
             return;
         break;
 
     case SOCK_INIT:
-        if(listen(WIZ_UA_SOCKET) == SOCK_OK)
+        if(listen(sock) == SOCK_OK)
             wiz_signal_listen(tcp);
         break;
 
@@ -512,53 +615,89 @@ static void wiz_open_listen_socket(WizTcpConnectionManager *tcp) {
     }
 }
 
-static void wiz_cm_poll(WizTcpConnectionManager *tcp) {
-    if(tcp->cm.eventSource.state != UA_EVENTSOURCESTATE_STARTED)
+static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
+    WizSocketState *st = &tcp->s[idx];
+    uint8_t sock = WIZ_SOCKET_OF(idx);
+
+    wiz_process_pending_active_close(tcp, idx);
+    if(st->pendingActiveClose)
         return;
 
-    wiz_process_pending_close(tcp);
-    if(tcp->pendingActiveClose || tcp->pendingListenClose)
-        return;
-
-    uint8_t sr = getSn_SR(WIZ_UA_SOCKET);
+    uint8_t sr = getSn_SR(sock);
 
     if(sr == SOCK_ESTABLISHED) {
-        wiz_signal_active_open(tcp);
+        wiz_signal_active_open(tcp, idx);
 
-        uint16_t rxSize = getSn_RX_RSR(WIZ_UA_SOCKET);
+        uint16_t rxSize = getSn_RX_RSR(sock);
         if(rxSize > 0u) {
             if(rxSize > sizeof(tcp->rxBuffer))
                 rxSize = sizeof(tcp->rxBuffer);
 
-            int32_t received = recv(WIZ_UA_SOCKET, tcp->rxBuffer, rxSize);
-            if(received > 0 && tcp->activeAnnounced && tcp->callback) {
+            int32_t received = recv(sock, tcp->rxBuffer, rxSize);
+            WIZ_DBG("rx s%u rsr=%u recv=%ld announced=%d cb=%d\r\n",
+                    sock, rxSize, (long)received, st->activeAnnounced,
+                    tcp->callback != NULL);
+            if(received > 0 && st->activeAnnounced && tcp->callback) {
                 UA_ByteString msg;
                 msg.length = (size_t)received;
                 msg.data = tcp->rxBuffer;
-                tcp->callback(&tcp->cm, WIZ_ACTIVE_CONNECTION_ID,
-                              tcp->application, &tcp->activeContext,
+                tcp->callback(&tcp->cm, WIZ_ACTIVE_ID(idx),
+                              tcp->application, &st->activeContext,
                               UA_CONNECTIONSTATE_ESTABLISHED,
                               &UA_KEYVALUEMAP_NULL, msg);
             } else if(received < 0) {
-                wiz_queue_active_close(tcp);
+                wiz_queue_active_close(tcp, idx);
             }
         }
         return;
     }
 
     if(sr == SOCK_CLOSE_WAIT) {
-        disconnect(WIZ_UA_SOCKET);
-        wiz_queue_active_close(tcp);
+        disconnect(sock);
+        wiz_queue_active_close(tcp, idx);
         return;
     }
 
-    if(tcp->activeAnnounced &&
+    if(st->activeAnnounced &&
        (sr == SOCK_CLOSED || sr == SOCK_INIT || sr == SOCK_LISTEN)) {
-        wiz_queue_active_close(tcp);
+        wiz_queue_active_close(tcp, idx);
         return;
     }
 
-    wiz_open_listen_socket(tcp);
+    wiz_open_listen_socket(tcp, idx);
+}
+
+#if WIZ_EL_DEBUG
+static uint32_t g_wizDbgLast = 0;
+static void wiz_dbg_dump(WizTcpConnectionManager *tcp) {
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if(now - g_wizDbgLast < 2000u)
+        return;
+    g_wizDbgLast = now;
+    printf("[el] n=%u", g_wizSocketCount);
+    for(unsigned i = 0; i < g_wizSocketCount; i++) {
+        uint8_t sk = WIZ_SOCKET_OF(i);
+        printf("  s%u:sr=0x%02X rsr=%u ann=%d", sk, getSn_SR(sk),
+               getSn_RX_RSR(sk), tcp->s[i].activeAnnounced);
+    }
+    printf("  listenAnn=%d\r\n", tcp->listenAnnounced);
+}
+#endif
+
+static void wiz_cm_poll(WizTcpConnectionManager *tcp) {
+    if(tcp->cm.eventSource.state != UA_EVENTSOURCESTATE_STARTED)
+        return;
+
+#if WIZ_EL_DEBUG
+    wiz_dbg_dump(tcp);
+#endif
+
+    wiz_process_pending_listen_close(tcp);
+    if(tcp->pendingListenClose)
+        return;
+
+    for(unsigned i = 0; i < g_wizSocketCount; i++)
+        wiz_cm_poll_socket(tcp, i);
 }
 
 static UA_StatusCode wiz_cm_start(UA_EventSource *es) {
@@ -569,9 +708,12 @@ static UA_StatusCode wiz_cm_start(UA_EventSource *es) {
 static void wiz_cm_stop(UA_EventSource *es) {
     WizTcpConnectionManager *tcp = (WizTcpConnectionManager *)es;
 
-    tcp->pendingActiveClose = tcp->activeAnnounced;
+    for(unsigned i = 0; i < g_wizSocketCount; i++) {
+        tcp->s[i].pendingActiveClose = tcp->s[i].activeAnnounced;
+        wiz_process_pending_active_close(tcp, i);
+    }
     tcp->pendingListenClose = tcp->listenAnnounced;
-    wiz_process_pending_close(tcp);
+    wiz_process_pending_listen_close(tcp);
     es->state = UA_EVENTSOURCESTATE_STOPPED;
 }
 
@@ -604,15 +746,19 @@ wiz_cm_open_connection(UA_ConnectionManager *cm, const UA_KeyValueMap *params,
     tcp->port = *port;
     tcp->application = application;
     tcp->listenContext = context;
-    tcp->activeContext = NULL;
     tcp->callback = callback;
     tcp->listenAnnounced = false;
-    tcp->activeAnnounced = false;
     tcp->pendingListenClose = false;
-    tcp->pendingActiveClose = false;
 
-    close(WIZ_UA_SOCKET);
-    wiz_open_listen_socket(tcp);
+    for(unsigned i = 0; i < g_wizSocketCount; i++) {
+        tcp->s[i].activeContext = NULL;
+        tcp->s[i].activeAnnounced = false;
+        tcp->s[i].pendingActiveClose = false;
+        close(WIZ_SOCKET_OF(i));
+    }
+    for(unsigned i = 0; i < g_wizSocketCount; i++)
+        wiz_open_listen_socket(tcp, i);
+
     return UA_STATUSCODE_GOOD;
 }
 
@@ -623,14 +769,18 @@ wiz_cm_send(UA_ConnectionManager *cm, uintptr_t connectionId,
     WizTcpConnectionManager *tcp = (WizTcpConnectionManager *)cm;
     UA_StatusCode result = UA_STATUSCODE_GOOD;
 
-    if(connectionId != WIZ_ACTIVE_CONNECTION_ID || !buf || !buf->data) {
+    int idx = wiz_index_of_active_id(connectionId);
+    if(idx < 0 || !buf || !buf->data || !tcp->s[idx].activeAnnounced) {
+        WIZ_DBG("send REJECT id=%lu idx=%d buf=%d announced=%d\r\n",
+                (unsigned long)connectionId, idx, buf && buf->data,
+                (idx >= 0) ? tcp->s[idx].activeAnnounced : -1);
         result = UA_STATUSCODE_BADCONNECTIONCLOSED;
         goto out;
     }
 
-    if(wiz_send_all(buf->data, (uint16_t)buf->length) != 0) {
+    if(wiz_send_all(WIZ_SOCKET_OF(idx), buf->data, (uint16_t)buf->length) != 0) {
         result = UA_STATUSCODE_BADCONNECTIONCLOSED;
-        wiz_queue_active_close(tcp);
+        wiz_queue_active_close(tcp, (unsigned)idx);
     }
 
 out:
@@ -643,9 +793,10 @@ static UA_StatusCode wiz_cm_close(UA_ConnectionManager *cm,
                                     uintptr_t connectionId) {
     WizTcpConnectionManager *tcp = (WizTcpConnectionManager *)cm;
 
-    if(connectionId == WIZ_ACTIVE_CONNECTION_ID) {
-        disconnect(WIZ_UA_SOCKET);
-        wiz_queue_active_close(tcp);
+    int idx = wiz_index_of_active_id(connectionId);
+    if(idx >= 0) {
+        disconnect(WIZ_SOCKET_OF(idx));
+        wiz_queue_active_close(tcp, (unsigned)idx);
         return UA_STATUSCODE_GOOD;
     }
 

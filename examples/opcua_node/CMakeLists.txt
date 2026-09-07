@@ -1,4 +1,4 @@
-set(TARGET_NAME opcua_usb_stdio)
+set(TARGET_NAME opcua_node)
 
 # 두 OPC UA 예제가 동시에 활성화되면 같은 바이너리 디렉터리를 두 번
 # 쓰게 되어 CMake 가 중단된다. 먼저 처리된 쪽이 타깃을 만들므로 가드한다.
@@ -14,6 +14,7 @@ add_executable(${TARGET_NAME}
     src/wiznet_network.c
     src/usb_stdio_link.c
     src/data_table.c
+    src/opcua_settings.c
 )
 
 target_include_directories(${TARGET_NAME} PRIVATE
@@ -25,6 +26,8 @@ target_link_libraries(${TARGET_NAME}
     hardware_spi
     hardware_dma
     hardware_pio
+    hardware_flash
+    hardware_sync
     ETHERNET_FILES
     IOLIBRARY_FILES
     PORT_COMMON_FILES

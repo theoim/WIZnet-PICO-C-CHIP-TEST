@@ -91,6 +91,10 @@ target_include_directories(OPEN62541_WIZNET PUBLIC
 target_compile_definitions(OPEN62541_WIZNET PUBLIC
     UA_ARCHITECTURE_LWIP
     UA_LOGLEVEL=300
+    # 이벤트루프 진단. 멀티소켓 브링업(2026-09-03)에 썼다.
+    # 소켓 배정·수신 크기·연결 개폐를 [el] 접두어로 찍는다.
+    # 문제 추적이 필요하면 1 로 올린다.
+    WIZ_EL_DEBUG=0
 )
 
 target_link_libraries(OPEN62541_WIZNET PUBLIC
