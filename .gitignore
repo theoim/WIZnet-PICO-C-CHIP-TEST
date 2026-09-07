@@ -5,3 +5,5 @@ build*/
 # 내부 문서 — 공개 저장소에 올리지 않는다
 examples/opcua_node/TASK_BRIEF.md
 examples/opcua_node/docs/product_direction.md
+__pycache__/
+*.pyc
