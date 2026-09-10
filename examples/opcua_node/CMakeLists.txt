@@ -35,9 +35,15 @@ target_link_libraries(${TARGET_NAME}
     OPEN62541_WIZNET
 )
 
+# memory_budget.md 의 채널 스윕(3/8/16/32)을 소스 수정 없이 재빌드하기 위한 값이다.
+# 플래시에 저장된 설정이 없을 때 사용하는 기본 채널 수를 덮어쓴다.
+set(OPCUA_DEFAULT_CHANNEL_COUNT 3 CACHE STRING
+    "Default channel count when flash holds no settings blob (RAM sweep)")
+
 target_compile_definitions(${TARGET_NAME} PRIVATE
     OPCUA_ENABLE=1
     OPCUA_TCP_PROBE_ENABLE=0
+    OPCUA_DEFAULT_CHANNEL_COUNT=${OPCUA_DEFAULT_CHANNEL_COUNT}u
 )
 
 pico_enable_stdio_usb(${TARGET_NAME} 1)

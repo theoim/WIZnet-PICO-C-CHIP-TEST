@@ -82,9 +82,14 @@ void opcua_settings_defaults(opcua_settings_t *out) {
     out->sec_policy = 0u;       /* None */
     out->sec_user_token = 0u;   /* Anonymous */
 
-    /* Three demo channels mirroring the original fixed Channel_1..3 floats. */
-    out->channel_count = 3u;
-    for(uint16_t i = 0; i < 3u; i++) {
+    /* Demo channels mirroring the original fixed Channel_1..3 floats.
+     * The count is OPCUA_DEFAULT_CHANNEL_COUNT so a build flag can drive the
+     * RAM sweep; every channel past the third is an identical Float placeholder. */
+    uint16_t n = (uint16_t)OPCUA_DEFAULT_CHANNEL_COUNT;
+    if(n > OPCUA_MAX_CHANNELS)
+        n = OPCUA_MAX_CHANNELS;
+    out->channel_count = n;
+    for(uint16_t i = 0; i < n; i++) {
         channel_def_t *c = &out->channels[i];
         c->id = (uint16_t)(i + 1u);
         snprintf(c->name, sizeof(c->name), "Channel_%u", (unsigned)(i + 1u));

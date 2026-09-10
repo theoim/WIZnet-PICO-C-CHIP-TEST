@@ -28,6 +28,13 @@
 
 #define OPCUA_MAX_CHANNELS       32u
 
+/* Channel count used when flash holds no valid settings blob.
+ * Overridable at build time so the memory_budget.md sweep (3/8/16/32) can be
+ * built without editing source: -DOPCUA_DEFAULT_CHANNEL_COUNT=16 */
+#ifndef OPCUA_DEFAULT_CHANNEL_COUNT
+#define OPCUA_DEFAULT_CHANNEL_COUNT 3u
+#endif
+
 /* 동시에 받을 OPC UA 클라이언트 수 = 트랜스포트가 LISTEN 하는 하드웨어 소켓 수.
  * 소켓 버퍼 배분(wiznet_network.c 의 memsize)과 반드시 일치해야 한다.
  * open62541 의 maxSecureChannels / maxSessions 도 같은 값으로 맞춘다

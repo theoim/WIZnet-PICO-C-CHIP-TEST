@@ -512,19 +512,50 @@ UA_EventLoop *UA_EventLoop_new_LWIP(const UA_Logger *logger,
     return el;
 }
 
+/* 한 번의 send() 로 보낼 수 있는 양은 소켓 TX 버퍼 크기(W5500 기본 2KB)가
+ * 상한이므로, 그보다 큰 메시지는 반드시 여러 번에 나눠 보내야 한다.
+ *
+ * 이때 ioLibrary send() 의 반환값 0 을 실패로 보면 안 된다. 0 은 SOCK_BUSY
+ * (socket.h) 로, "직전 SEND 가 아직 끝나지 않았으니 다시 부르라"는 뜻이다.
+ * 실제 오류는 음수로만 온다 (SOCKERR_TIMEOUT, SOCKERR_SOCKSTATUS 등).
+ *
+ * 2026-09-10 W55RP20 실기: 채널 32개에서 Browse 응답 2,349 B 를 보내다
+ * `send s0 FAIL rc=0 sent=2048/2349 sr=0x17` 로 연결이 끊겼다. 소켓 상태는
+ * 0x17(ESTABLISHED) 로 정상이었고, 0 을 실패로 오판한 것이 원인이었다.
+ *
+ * 무한 대기를 막기 위해 "진행이 없는 시간"에만 상한을 둔다. 한 조각이라도
+ * 나가면 기한을 다시 잡는다. W5500 자체 재전송 타임아웃(RTR/RCR 기본 약 1.8초)
+ * 이 먼저 걸려 음수를 돌려주므로 그보다 넉넉한 값이면 충분하다. */
+#define WIZ_SEND_STALL_TIMEOUT_MS 5000u
+
 static int wiz_send_all(uint8_t sock, const uint8_t *buf, uint16_t len) {
     uint16_t sentTotal = 0u;
+    uint32_t deadline = to_ms_since_boot(get_absolute_time()) +
+                        WIZ_SEND_STALL_TIMEOUT_MS;
 
     while(sentTotal < len) {
         int32_t sent = send(sock, (uint8_t *)buf + sentTotal,
                             (uint16_t)(len - sentTotal));
-        if(sent <= 0) {
+
+        if(sent < 0) {
             WIZ_DBG("send s%u FAIL rc=%ld sent=%u/%u sr=0x%02X\r\n",
                     sock, (long)sent, sentTotal, len, getSn_SR(sock));
             return -1;
         }
 
+        if(sent == 0) {
+            /* SOCK_BUSY — 칩이 앞 조각을 아직 내보내는 중이다. */
+            if((int32_t)(to_ms_since_boot(get_absolute_time()) - deadline) >= 0) {
+                WIZ_DBG("send s%u STALL sent=%u/%u sr=0x%02X\r\n",
+                        sock, sentTotal, len, getSn_SR(sock));
+                return -1;
+            }
+            continue;
+        }
+
         sentTotal = (uint16_t)(sentTotal + (uint16_t)sent);
+        deadline = to_ms_since_boot(get_absolute_time()) +
+                   WIZ_SEND_STALL_TIMEOUT_MS;
     }
 
     return 0;
