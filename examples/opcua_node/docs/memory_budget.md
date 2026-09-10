@@ -125,6 +125,10 @@ Caveats:
   change; for the 2 / 4 session figures see the per-session table above.
 - `EURange` failed to be added on all 3 channels at this measurement, so the
   real per-channel cost is slightly higher than this reading implies.
+  **Fixed 2026-09-10**: `add_range_property()` set `valueRank = 1` without
+  `arrayDimensions`, which AddNode rejects with `BadTypeMismatch`. The heap
+  figures above therefore under-count one Double[2] property per channel and
+  must be re-measured.
 - Stack high-water is NOT measured. The 8,192 B is the reserved region, not usage.
 
 ## Notes

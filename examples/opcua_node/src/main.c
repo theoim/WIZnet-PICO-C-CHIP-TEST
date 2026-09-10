@@ -25,7 +25,13 @@ int main(void) {
     printf("\r\n=== WIZnet OPC UA Node (Phase A) ===\r\n");
     printf("Device: %s  channels: %u\r\n",
            g_settings.device_name, (unsigned)g_settings.channel_count);
-    printf("USB CDC console active on the RP2350 USB-C port.\r\n");
+    /* 보드에 따라 MCU 가 다르다 — W55RP20 은 RP2040, EVB-Pico2 계열은 RP2350.
+     * 로그가 실제 하드웨어와 어긋나면 어느 보드에서 잰 값인지 나중에 못 가린다. */
+#if PICO_RP2040
+    printf("USB CDC console active on the RP2040 USB port.\r\n");
+#else
+    printf("USB CDC console active on the RP2350 USB port.\r\n");
+#endif
 
     wiznet_network_init(&g_settings);
     opcua_server_init(&g_settings);

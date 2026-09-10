@@ -119,20 +119,53 @@ typedef struct {
     uint8_t rxBuffer[WIZ_RX_BUFFER_SIZE];
 } WizTcpConnectionManager;
 
-static UA_DateTime pico_datetime_now(void) {
-    return UA_DATETIME_UNIX_EPOCH + (UA_DateTime)(time_us_64() * UA_DATETIME_USEC);
+/* ── 시계 ──────────────────────────────────────────────────────────
+ * 두 시계를 반드시 분리해서 둔다.
+ *
+ * nowMonotonic 은 부팅 기준 단조 시간이고 UTC 오프셋을 절대 섞지 않는다.
+ * open62541 은 이 값으로 구독 발행 주기, 세션 타임아웃, 재전송 타이머를
+ * 돌린다. 여기에 시각 동기화 결과를 더하면 동기화가 성립하는 순간 시간이
+ * 수십 년 앞으로 점프하고 **모든 타이머가 한꺼번에 만료된다.**
+ *
+ * now 는 벽시계다. 동기화 전에는 Unix epoch + 부팅 경과시간이므로 실제로는
+ * 1970년이다. 그 상태를 정상 시각처럼 내보내지 않도록, 동기화 여부를
+ * wiz_clock_is_synced() 로 노출하고 애플리케이션이 타임스탬프를 붙일지
+ * 판단한다.
+ *
+ * 참고: 이 분리는 open62541 의 posix 구현과 같은 구조다 —
+ * CLOCK_MONOTONIC_RAW(부팅 기준) 와 CLOCK_REALTIME(벽시계) 는 서로 다른
+ * 값이며, 라이브러리는 둘을 섞어 비교하지 않는다. */
+
+static bool       s_clock_synced;
+static UA_DateTime s_clock_utc_base;  /* 동기화 시점의 UTC - 그 시점의 monotonic */
+
+static UA_DateTime pico_monotonic(void) {
+    return (UA_DateTime)(time_us_64() * UA_DATETIME_USEC);
 }
 
 UA_DateTime UA_DateTime_now(void) {
-    return pico_datetime_now();
+    if(!s_clock_synced)
+        return UA_DATETIME_UNIX_EPOCH + pico_monotonic();
+    return s_clock_utc_base + pico_monotonic();
 }
 
 UA_DateTime UA_DateTime_nowMonotonic(void) {
-    return pico_datetime_now();
+    return pico_monotonic();
 }
 
 UA_Int64 UA_DateTime_localTimeUtcOffset(void) {
     return 0;
+}
+
+void wiz_clock_set_utc(int64_t utc_now) {
+    /* 오프셋만 갱신한다. monotonic 은 건드리지 않으므로 이미 걸려 있는
+     * 타이머는 영향을 받지 않는다. */
+    s_clock_utc_base = utc_now - pico_monotonic();
+    s_clock_synced = true;
+}
+
+bool wiz_clock_is_synced(void) {
+    return s_clock_synced;
 }
 
 static void set_eventloop_state(UA_EventLoop *el, UA_EventLoopState state) {
@@ -257,7 +290,7 @@ static void wiz_run_delayed_callbacks(WizEventLoop *wel) {
 }
 
 static void wiz_run_timers(WizEventLoop *wel) {
-    UA_DateTime now = pico_datetime_now();
+    UA_DateTime now = pico_monotonic();
 
     for(size_t i = 0; i < WIZ_TIMER_MAX; i++) {
         WizTimerSlot *slot = &wel->timers[i];
@@ -312,9 +345,19 @@ static void wiz_el_cancel(UA_EventLoop *el) {
     (void)el;
 }
 
+/* 벽시계. 라이브러리는 이 값을 요청/응답 타임스탬프에 쓴다.
+ * 동기화 전에는 1970년이라는 점을 애플리케이션이 알고 있어야 한다. */
 static UA_DateTime wiz_el_now(UA_EventLoop *el) {
     (void)el;
-    return pico_datetime_now();
+    return UA_DateTime_now();
+}
+
+/* 단조 시계. 라이브러리는 이 값을 SecureChannel 토큰 수명, 세션 타임아웃,
+ * 요청 타임아웃, 재전송에 쓴다. 벽시계와 반드시 분리해야 한다 —
+ * 같은 함수로 두면 시각 동기화 순간 이 타이머들이 한꺼번에 만료된다. */
+static UA_DateTime wiz_el_now_monotonic(UA_EventLoop *el) {
+    (void)el;
+    return pico_monotonic();
 }
 
 static UA_Int64 wiz_el_utc_offset(UA_EventLoop *el) {
@@ -327,7 +370,7 @@ static UA_DateTime wiz_el_next_timer(UA_EventLoop *el) {
     UA_DateTime next = UA_INT64_MAX;
 
     if(wel->delayedCallbacks)
-        return pico_datetime_now();
+        return pico_monotonic();
 
     for(size_t i = 0; i < WIZ_TIMER_MAX; i++) {
         if(wel->timers[i].active && wel->timers[i].nextTime < next)
@@ -350,7 +393,7 @@ static UA_StatusCode wiz_el_add_timer(UA_EventLoop *el, UA_Callback cb,
         if(slot->active)
             continue;
 
-        UA_DateTime base = baseTime ? *baseTime : pico_datetime_now();
+        UA_DateTime base = baseTime ? *baseTime : pico_monotonic();
         UA_DateTime interval =
             (UA_DateTime)(intervalMs * (UA_Double)UA_DATETIME_MSEC);
 
@@ -385,7 +428,7 @@ static UA_StatusCode wiz_el_modify_timer(UA_EventLoop *el,
         if(!slot->active || slot->id != timerId)
             continue;
 
-        UA_DateTime base = baseTime ? *baseTime : pico_datetime_now();
+        UA_DateTime base = baseTime ? *baseTime : pico_monotonic();
         slot->intervalMs = intervalMs;
         slot->policy = timerPolicy;
         slot->nextTime = base +
@@ -453,7 +496,7 @@ UA_EventLoop *UA_EventLoop_new_LWIP(const UA_Logger *logger,
     el->run = wiz_el_run;
     el->cancel = wiz_el_cancel;
     el->dateTime_now = wiz_el_now;
-    el->dateTime_nowMonotonic = wiz_el_now;
+    el->dateTime_nowMonotonic = wiz_el_now_monotonic;
     el->dateTime_localTimeUtcOffset = wiz_el_utc_offset;
     el->nextTimer = wiz_el_next_timer;
     el->addTimer = wiz_el_add_timer;

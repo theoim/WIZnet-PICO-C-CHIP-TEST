@@ -29,6 +29,7 @@ Objects
       UartErrorCount    UInt32         ns;s="Diag.UartErrorCount"
       ModbusPollCount   UInt32         ns;s="Diag.ModbusPollCount"
       ModbusTimeoutCount UInt32        ns;s="Diag.ModbusTimeoutCount"
+      TimeSync          String         ns;s="Diag.TimeSync"         (Unsynchronised|Synchronised)
     Channels                           ns;i=1002
       <name>            <datatype>     ns;s="Channels/<name>"      (DataSource, read-only)
         EngineeringUnits String        ns;i=5000+idx*4+0           (Property, if unit set)
@@ -72,6 +73,39 @@ The callback's `node_context` encodes the source: channel index `0..N-1` for cha
 Bad quality: when an input driver marks a channel via `data_table_set_status()`
 (e.g. `UA_STATUSCODE_BADCOMMUNICATIONERROR` on Modbus timeout), the read callback
 returns that StatusCode with no value — quality is exposed, stale values are not held.
+
+## Quality on first read
+
+A channel that has never been written returns `Bad_WaitingForInitialData`
+(`UA_STATUSCODE_BADWAITINGFORINITIALDATA`) rather than a Good 0.0. The test is
+`update_ms == 0`, evaluated in `read_channel()` — not in `data_table.c`, which is
+deliberately free of open62541 headers so the driver layer stays unaware of OPC UA.
+open62541 itself uses this same StatusCode for the equivalent case
+(`ua_services_attribute.c`).
+
+## Timestamps and the two clocks
+
+The porting layer keeps **two separate clocks** (`port/open62541/wiznet_eventloop_config.h`):
+
+| Clock | Source | Used for |
+|---|---|---|
+| `UA_DateTime_nowMonotonic()` | boot-relative `time_us_64()`, **never offset** | subscription publishing, session timeout, SecureChannel token lifetime, retransmission |
+| `UA_DateTime_now()` | wall clock; Unix epoch + uptime until synchronised | request/response timestamps, `sourceTimestamp` |
+
+The same split is applied at the EventLoop level — `dateTime_now` and
+`dateTime_nowMonotonic` are distinct callbacks. Wiring them to one function is a
+latent fault: the moment a time source lands, every timer expires at once.
+
+**Until a time source is attached there is no wall clock**, so `UA_DateTime_now()`
+returns 1970. Channel reads therefore omit `sourceTimestamp` entirely rather than
+publishing a wrong absolute time — a missing timestamp is recoverable, a wrong one
+silently corrupts historian and alarm correlation. `Device/TimeSync` reports which
+state the device is in.
+
+When SNTP or an RTC is added, call `wiz_clock_set_utc()`; it adjusts only the wall
+clock, so timers already running are unaffected. `update_ms` remains the right field
+for age and relative timing. The accurate long-term design is to record UTC at
+sample time once the clock is valid, rather than back-computing it at read time.
 
 ## EURange / EngineeringUnits decision
 

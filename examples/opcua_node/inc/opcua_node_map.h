@@ -50,6 +50,9 @@ typedef enum {
     OPCUA_DIAG_UART_ERRORS,
     OPCUA_DIAG_MODBUS_POLLS,
     OPCUA_DIAG_MODBUS_TIMEOUTS,
+    /* 시각원(SNTP/RTC) 동기화 상태. 이 값이 Unsynchronised 인 동안에는
+     * 채널 값에 sourceTimestamp 를 붙이지 않는다 — 붙이면 1970년이 나간다. */
+    OPCUA_DIAG_TIME_SYNC,
     OPCUA_DIAG__COUNT
 } OpcUaDiagKind;
 

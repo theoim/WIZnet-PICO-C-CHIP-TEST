@@ -114,6 +114,17 @@ static UA_StatusCode configure_server_identity(UA_ServerConfig *config) {
 }
 
 /* ── value helpers ────────────────────────────────────────────────── */
+
+/* 시각원이 붙기 전에는 UA_DateTime_now() 가 Unix epoch + 부팅 경과시간,
+ * 즉 1970년이다. 그 값을 sourceTimestamp 로 내보내면 클라이언트는 그것을
+ * 정상 시각으로 받아 히스토리안·알람 상관분석에 쓴다. 그래서 동기화 전에는
+ * 타임스탬프를 아예 붙이지 않는다 — 없는 것이 틀린 것보다 낫다.
+ *
+ * 동기화 여부는 Device/TimeSync 진단 노드로 노출한다. */
+static UA_Boolean timestamp_allowed(void) {
+    return wiz_clock_is_synced() ? true : false;
+}
+
 static UA_StatusCode emit_scalar(UA_DataValue *value, const void *data,
                                  const UA_DataType *type, UA_Boolean ts) {
     UA_StatusCode res = UA_Variant_setScalarCopy(&value->value, data, type);
@@ -123,7 +134,7 @@ static UA_StatusCode emit_scalar(UA_DataValue *value, const void *data,
         return UA_STATUSCODE_GOOD;
     }
     value->hasValue = true;
-    if(ts) {
+    if(ts && timestamp_allowed()) {
         value->hasSourceTimestamp = true;
         value->sourceTimestamp = UA_DateTime_now();
     }
@@ -142,6 +153,18 @@ static UA_StatusCode read_channel(uint16_t idx, UA_DataValue *value,
     if(!data_table_get(idx, &v)) {
         value->hasStatus = true;
         value->status = UA_STATUSCODE_BADNODEIDUNKNOWN;
+        return UA_STATUSCODE_GOOD;
+    }
+    /* 아직 한 번도 기록되지 않은 채널. data_table 은 open62541 헤더에
+     * 의존하지 않으므로 UA status code 는 여기서 붙인다 — 그쪽에 심으면
+     * 드라이버 계층이 OPC UA 를 알게 된다.
+     *
+     * 판정은 update_ms == 0 이다. data_table_clear() 가 0 으로 밀고,
+     * 어떤 쓰기 경로든 now_ms() 로 갱신한다. 부팅 첫 1 ms 안에 값이
+     * 들어오면 한 번 놓칠 수 있으나, 그 경우 다음 갱신에서 정상화된다. */
+    if(v.update_ms == 0u) {
+        value->hasStatus = true;
+        value->status = UA_STATUSCODE_BADWAITINGFORINITIALDATA;
         return UA_STATUSCODE_GOOD;
     }
     if(v.status != UA_STATUSCODE_GOOD) {
@@ -228,6 +251,14 @@ static UA_StatusCode read_diag(uint16_t kind, UA_DataValue *value,
     case OPCUA_DIAG_MODBUS_TIMEOUTS:
         return emit_scalar(value, &d.modbus_timeout_count,
                            &UA_TYPES[UA_TYPES_UINT32], ts);
+    case OPCUA_DIAG_TIME_SYNC:
+        /* 시각원이 없으면 채널 값에 sourceTimestamp 가 붙지 않는다.
+         * 클라이언트가 그 이유를 알 수 있도록 상태를 노출한다.
+         * SNTP 를 붙이면 "Synchronised" 로 바뀌고, 동기화를 잃은 상태를
+         * 구분하게 되면 "Lost" 를 추가한다. */
+        return emit_string(value,
+                           wiz_clock_is_synced() ? "Synchronised"
+                                                 : "Unsynchronised", ts);
     default:
         value->hasStatus = true;
         value->status = UA_STATUSCODE_BADNODEIDUNKNOWN;
@@ -316,6 +347,14 @@ static UA_StatusCode add_range_property(UA_UInt32 numeric_id, UA_NodeId parent,
     attr.displayName = UA_LOCALIZEDTEXT("en", "EURange");
     attr.dataType = UA_NODEID_NUMERIC(0, UA_NS0ID_DOUBLE);
     attr.valueRank = UA_VALUERANK_ONE_DIMENSION;
+    /* valueRank 가 양수면 arrayDimensions 의 원소 수가 그 값과 같아야 한다.
+     * 이걸 비워 두면 AddNode 가 BadTypeMismatch 로 거절한다 —
+     * "The number of ArrayDimensions is not equal to the (positive) ValueRank".
+     * 채널 노드 생성이 먼저 실패하던 동안에는 이 코드에 도달하지 못해
+     * 결함이 드러나지 않았다 (2026-09-10 실기에서 확인). */
+    UA_UInt32 dims[1] = {2};
+    attr.arrayDimensions = dims;
+    attr.arrayDimensionsSize = 1;
     UA_Variant_setArray(&attr.value, range, 2, &UA_TYPES[UA_TYPES_DOUBLE]);
     return UA_Server_addVariableNode(
         s_server, UA_NODEID_NUMERIC(s_ns, numeric_id), parent,
@@ -380,6 +419,7 @@ static UA_StatusCode add_address_space(void) {
     add_diag_var(device, OPCUA_DIAG_UART_ERRORS,    "UartErrorCount",   UA_NS0ID_UINT32);
     add_diag_var(device, OPCUA_DIAG_MODBUS_POLLS,   "ModbusPollCount",  UA_NS0ID_UINT32);
     add_diag_var(device, OPCUA_DIAG_MODBUS_TIMEOUTS,"ModbusTimeoutCount",UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_TIME_SYNC,      "TimeSync",         UA_NS0ID_STRING);
 
     /* Channels. */
     for(uint16_t i = 0; i < s_cfg->channel_count; i++) {
@@ -439,6 +479,18 @@ int opcua_server_init(const opcua_settings_t *cfg) {
      * (purgeFirstChannelWithoutSession). 즉 동작 중인 클라이언트가
      * 쫓겨나지는 않아도 핸드셰이크 중인 접속은 밀려날 수 있다. */
     if(res == UA_STATUSCODE_GOOD) {
+        /* 값이 아직 없는 DataSource 노드를 허용한다.
+         *
+         * 기본값(UA_RULEHANDLING_DEFAULT)은 AddNode 때 타입 검사를 하다가
+         * 값이 비어 있으면 setDefaultValue() 로 기본값을 **쓰려고** 한다.
+         * 우리 채널은 읽기 전용 DataSource 라 쓰기 콜백이 없으므로 그 쓰기가
+         * BadWriteNotSupported 로 실패하고, 그 결과 채널 노드가 아예 생성되지
+         * 않는다 (2026-09-10 실기에서 Channel_1..3 전부 실패).
+         *
+         * 한 번도 기록되지 않은 채널이 Bad_WaitingForInitialData 를 값 없이
+         * 반환하는 것은 의도된 동작이므로, 규칙 쪽을 ACCEPT 으로 낮춘다.
+         * 런타임 읽기는 그대로 DataSource 콜백을 탄다. */
+        config.allowEmptyVariables        = UA_RULEHANDLING_ACCEPT;
         config.maxSecureChannels          = OPCUA_MAX_SOCKETS;
         config.maxSessions                = OPCUA_MAX_SOCKETS;
         config.maxSessionTimeout          = 10.0 * 60.0 * 1000.0; /* 10분 */

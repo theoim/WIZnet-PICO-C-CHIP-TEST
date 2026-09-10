@@ -1,6 +1,7 @@
 #ifndef WIZNET_EVENTLOOP_CONFIG_H
 #define WIZNET_EVENTLOOP_CONFIG_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /*
@@ -34,6 +35,28 @@ void UA_EventLoop_LWIP_setSocketCount(uint8_t count);
 
 /* 현재 설정값을 돌려준다. 진단·로그용. */
 uint8_t UA_EventLoop_LWIP_getSocketCount(void);
+
+/* ── 시각 동기화 ───────────────────────────────────────────────────
+ * 이 포팅 계층은 시계를 두 개로 분리해서 제공한다.
+ *
+ *   UA_DateTime_nowMonotonic()  부팅 기준 단조 시간. 오프셋 미포함.
+ *                               open62541 의 타이머가 쓰는 시계다.
+ *   UA_DateTime_now()           벽시계. 동기화 전에는 1970년이다.
+ *
+ * 아래 두 함수는 그 벽시계만 조정한다. monotonic 은 바뀌지 않으므로
+ * 이미 걸려 있는 구독·세션·재전송 타이머가 깨지지 않는다.
+ *
+ * SNTP 등 시각원을 붙일 때 반드시 wiz_clock_set_utc() 를 쓰고,
+ * pico_monotonic 쪽에 오프셋을 더하지 않는다. */
+
+/* 동기화된 현재 UTC 를 알려준다.
+ * 단위는 UA_DateTime 과 같다 — 1601-01-01 기준 100ns 틱. 이 헤더는
+ * open62541.h 보다 먼저 포함될 수 있어 int64_t 로 받는다(같은 타입이다). */
+void wiz_clock_set_utc(int64_t utc_now);
+
+/* 한 번이라도 동기화됐으면 true. 애플리케이션은 이 값을 보고
+ * sourceTimestamp 를 붙일지 결정한다. */
+bool wiz_clock_is_synced(void);
 
 #ifdef __cplusplus
 }
