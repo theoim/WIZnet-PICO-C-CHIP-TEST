@@ -10,7 +10,12 @@ cmake_minimum_required(VERSION 3.12)
 # set(BOARD_NAME W6300_EVB_PICO)
 # set(BOARD_NAME W5500_EVB_PICO2)
 # set(BOARD_NAME W6100_EVB_PICO2)
-set(BOARD_NAME W55RP20_EVB_PICO)
+# The default stays W55RP20, and -DBOARD_NAME=... overrides it so the same
+# source builds for two boards without editing this file. That matters for
+# measurement: an A/B between parts is only honest if nothing else moved.
+if(NOT DEFINED BOARD_NAME)
+    set(BOARD_NAME W55RP20_EVB_PICO)
+endif()
 
 
 if(${BOARD_NAME} STREQUAL WIZnet_Ethernet_HAT)
@@ -86,6 +91,14 @@ else()
 endif()
 
 message(STATUS "WIZNET_CHIP = ${WIZNET_CHIP}")
+
+# A/B switch for the crypto benchmark. ssl_config.h reads BENCH_NO_ASM and
+# drops MBEDTLS_HAVE_ASM when it is set, which builds bignum multiply in C
+# instead of the Thumb assembly path. Nothing else looks at the define.
+if(BENCH_NO_ASM)
+    add_definitions(-DBENCH_NO_ASM)
+    message(STATUS "BENCH_NO_ASM = 1 (mbedTLS bignum in C)")
+endif()
 
 
 if(NOT DEFINED PICO_SDK_PATH)

@@ -35,7 +35,25 @@
 #define _CRT_SECURE_NO_DEPRECATE 1
 #endif
 
-// #define MBEDTLS_HAVE_ASM
+/*
+ * Bignum multiply in assembly rather than C.
+ *
+ * mbedTLS ships a Thumb-1 path for gcc (library/bn_mul.h), which is what a
+ * Cortex-M0+ gets. The part has no 32x32 multiply instruction, so every limb
+ * product is synthesised either way - but the hand-written version does it with
+ * far fewer instructions than the compiler emits.
+ *
+ * This was commented out, and with RSA-2048 private operations measured at
+ * 2.27 s on an RP2040 it is the first thing to try: it costs nothing but a
+ * rebuild. Measure before and after rather than assuming - see
+ * examples/crypto_bench.
+ *
+ * -DBENCH_NO_ASM=1 at configure time takes it back out, so an A/B pair of
+ * images differs in this one thing and nothing else.
+ */
+#if !defined(BENCH_NO_ASM)
+#define MBEDTLS_HAVE_ASM
+#endif
 #define MBEDTLS_CIPHER_MODE_CBC
 #define MBEDTLS_REMOVE_ARC4_CIPHERSUITES
 #define MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
