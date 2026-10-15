@@ -92,10 +92,109 @@ typedef struct {
 } WizEventLoop;
 
 /* 소켓 하나분의 연결 상태. 예전에는 이 필드들이 매니저에 직접 있었다. */
+/* ── 핸드셰이크 어드미션 컨트롤 ───────────────────────────────────
+ *
+ * RSA SecureChannel 생성은 이 부품에서 비싸고 중단할 수 없다. 2026-10-15 실측
+ * (RP2350 @150MHz, Basic256Sha256 SignAndEncrypt, 접속 1건당 약 1.66초):
+ *
+ *     동시 1개  1.706s   2개  3.357s   3개  5.034s ✗   4개  6.238s, 2개 실패
+ *
+ * 마지막 하나만 늦는 것이 아니라 전원이 전체 연산량을 함께 기다린다. 3개부터
+ * 모두가 클라이언트 5초 타임아웃을 넘기고, 4개에서는 절반이 떨어진다.
+ *
+ * 더 나쁜 것은 실패한 뒤다. 클라이언트가 포기해도 서버는 CreateSession 까지
+ * 끝낸 상태라 그 세션이 maxSessionTimeout(10분)까지 슬롯을 문다. 즉 재접속
+ * 폭주는 그 순간 실패하고 끝나는 것이 아니라 이후 10분간 용량을 깎는다.
+ *
+ * ── 세는 대상: 클라이언트가 이미 기다린 시간 ──
+ *
+ * 여기까지 오는 데 모델을 두 번 버렸고, 둘 다 전달이 동기적이라는 사실에
+ * 걸렸다. 소켓 0 의 OPN 을 서버에 넘기면 그 자리에서 RSA 가 끝나고 응답까지
+ * 나간 뒤에야 콜백이 돌아온다.
+ *
+ *   "지금 진행 중인 핸드셰이크 수"  소켓 1 을 볼 때쯤 소켓 0 은 이미 끝나 있다.
+ *                                   그 숫자는 영원히 0 아니면 1 이다.
+ *   "서버 시간 예약 장부"            블로킹 1.7초 동안 장부도 같이 소진된다.
+ *                                   매번 비어 있어서 아무도 못 막는다.
+ *
+ * 둘 다 놓친 것은 대기열이 우리 쪽 변수가 아니라 W6300 의 RX 버퍼에 있다는
+ * 점이다. 버스트에서는 네 클라이언트의 OPN 이 거의 동시에 도착해 버퍼에
+ * 앉아 있고, 우리는 그것을 1.7초 간격으로 하나씩 꺼내 읽는다. 읽은 시각만
+ * 보면 언제나 서버는 한가해 보인다.
+ *
+ * 알 수 있는 것은 각 소켓이 언제 TCP 로 연결됐는지다. 그것이 그 클라이언트가
+ * 실제로 기다린 시간이고, 거기에 핸드셰이크 비용을 더하면 그 클라이언트가
+ * 답을 받을 시각이 나온다. 그 시각이 예산을 넘으면 **어차피 타임아웃될 일**
+ * 이므로 시작하지 않는다.
+ *
+ *     c0  대기 0.0s + 1.7 = 1.7 ≤ 3.5 → 수락   c2  대기 3.4s + 1.7 = 5.1 → 거부
+ *     c1  대기 1.7s + 1.7 = 3.4 ≤ 3.5 → 수락   c3  거부
+ *
+ * 거부는 TCP 를 끊는 것이고, 클라이언트는 빠르게 재시도할 수 있다. 받아놓고
+ * 못 지키는 것보다 낫다 — 5초를 버리고 전원이 실패하며 유령 세션까지 남는다.
+ *
+ * 이것은 세션 용량이 아니다. 순차로 붙이면 1.69초로 일정하고 4개가 전부
+ * 유지·응답한다. 제한은 "핸드셰이크 시작"에만 건다.
+ *
+ * 예산 0 이면 무제한 — A/B 측정용이다.
+ */
+#ifndef WIZ_HANDSHAKE_COST_MS
+#define WIZ_HANDSHAKE_COST_MS   1700u   /* 실측 1.66s, 올림 */
+#endif
+
+/* 5초 클라이언트 타임아웃에서 왕복·인코딩·재시도 몫을 남긴 값이다.
+ * 3,500 이면 2건까지 받고 3건째를 거절한다. */
+#ifndef WIZ_HANDSHAKE_BUDGET_MS
+#define WIZ_HANDSHAKE_BUDGET_MS 3500u
+#endif
+
+static uint32_t g_wizHandshakeRefused = 0;
+
+/* OPC UA TCP 메시지 헤더는 3바이트 타입 + 1바이트 청크 표시로 시작한다.
+ * SecureChannel 을 여는 것은 "OPN" 뿐이고, HEL/ACK 는 그 앞에서 끝난다. */
+#define WIZ_IS_OPN(p, n)  ((n) >= 4u && (p)[0] == 'O' && (p)[1] == 'P' && (p)[2] == 'N')
+
+/* 모든 OPN 이 비싼 것은 아니다.
+ *
+ * 클라이언트는 보안 접속 전에 SecurityPolicy#None 채널을 먼저 열어
+ * GetEndpoints 를 한다(asyncua, UAExpert 모두 그렇다). 그 채널에는 비대칭
+ * 연산이 없는데, 첫 구현은 OPN 이면 무조건 1.7초를 예약해서 **정작 보안
+ * 핸드셰이크가 시작되기도 전에 예산을 다 써버렸다.** 로그에 거부로 찍힌 것이
+ * 전부 GetEndpoints 채널이었다.
+ *
+ * OPN 본문은 헤더(8) + SecureChannelId(4) 다음에 SecurityPolicyUri 가
+ * 길이 접두 문자열로 온다. 그 자리를 읽어 None 이면 공짜로 통과시킨다.
+ * 못 읽으면 비싼 쪽으로 가정한다 — 과소 청구보다 과대 청구가 안전하다. */
+static bool wiz_opn_needs_asymmetric(const uint8_t *p, size_t n) {
+    static const char none_uri[] =
+        "http://opcfoundation.org/UA/SecurityPolicy#None";
+    const size_t none_len = sizeof(none_uri) - 1u;
+
+    if(n < 16u)
+        return true;
+
+    uint32_t uriLen = (uint32_t)p[12] | ((uint32_t)p[13] << 8) |
+                      ((uint32_t)p[14] << 16) | ((uint32_t)p[15] << 24);
+
+    if(uriLen == 0xFFFFFFFFu || uriLen > n - 16u)
+        return true;
+
+    if(uriLen == none_len && memcmp(p + 16, none_uri, none_len) == 0)
+        return false;
+
+    return true;
+}
+
 typedef struct {
     void *activeContext;
     bool activeAnnounced;
     bool pendingActiveClose;
+    /* OPN 을 받아 서버에 넘겼고 아직 응답을 못 보낸 상태. 응답을 보내는
+     * 순간 내려간다 — OPN 다음에 그 소켓으로 나가는 첫 송신이 OPN 응답이다. */
+    bool handshaking;
+    /* TCP 가 연결된 시각. 이 클라이언트가 얼마나 기다렸는지를 알아야
+     * "끝낼 수 없는 일을 시작하지 않는" 판단을 할 수 있다. */
+    uint32_t connectedAtMs;
     uint8_t peerIp[4];
     uint16_t peerPort;
 } WizSocketState;
@@ -599,6 +698,11 @@ static void wiz_signal_active_open(WizTcpConnectionManager *tcp, unsigned idx) {
     uint8_t sock = WIZ_SOCKET_OF(idx);
     getSn_DIPR(sock, st->peerIp);
     st->peerPort = getSn_DPORT(sock);
+    /* The client's clock starts here, not when we get round to reading its
+     * request. During a burst its bytes can sit in the chip's RX buffer for
+     * seconds while earlier handshakes run, and that waiting is most of what
+     * it experiences. */
+    st->connectedAtMs = to_ms_since_boot(get_absolute_time());
 
     char remote[24];
     snprintf(remote, sizeof(remote), "%u.%u.%u.%u",
@@ -643,6 +747,9 @@ static void wiz_process_pending_active_close(WizTcpConnectionManager *tcp,
             (unsigned long)WIZ_ACTIVE_ID(idx));
     st->activeAnnounced = false;
     st->activeContext = NULL;
+    /* A connection that dies mid-handshake must give the slot back, or the
+     * limit ratchets down one refused client at a time until nothing connects. */
+    st->handshaking = false;
     close(WIZ_SOCKET_OF(idx));
 }
 
@@ -711,6 +818,38 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
             WIZ_DBG("rx s%u rsr=%u recv=%ld announced=%d cb=%d\r\n",
                     sock, rxSize, (long)received, st->activeAnnounced,
                     tcp->callback != NULL);
+
+            /* Admission control, before the bytes reach the server.
+             *
+             * Once an OPN is handed over, the RSA work is committed and cannot
+             * be taken back, so the decision has to happen here. Refusing at
+             * this point costs the client a TCP reset it can retry; letting it
+             * through costs every client in flight five seconds and leaves a
+             * session occupying a slot for ten minutes. */
+            if(received > 0 && WIZ_IS_OPN(tcp->rxBuffer, (size_t)received) &&
+               wiz_opn_needs_asymmetric(tcp->rxBuffer, (size_t)received) &&
+               !st->handshaking && WIZ_HANDSHAKE_BUDGET_MS > 0u) {
+                uint32_t now = to_ms_since_boot(get_absolute_time());
+                uint32_t waited = now - st->connectedAtMs;
+                uint32_t wouldFinishAt = waited + WIZ_HANDSHAKE_COST_MS;
+
+                if(wouldFinishAt > WIZ_HANDSHAKE_BUDGET_MS) {
+                    g_wizHandshakeRefused++;
+                    printf("[el] handshake refused s%u "
+                           "(waited %lums + %ums > %ums, refused=%lu) "
+                           "%u.%u.%u.%u:%u\n",
+                           sock, (unsigned long)waited, WIZ_HANDSHAKE_COST_MS,
+                           WIZ_HANDSHAKE_BUDGET_MS,
+                           (unsigned long)g_wizHandshakeRefused,
+                           st->peerIp[0], st->peerIp[1],
+                           st->peerIp[2], st->peerIp[3], st->peerPort);
+                    wiz_queue_active_close(tcp, idx);
+                    return;
+                }
+
+                st->handshaking = true;
+            }
+
             if(received > 0 && st->activeAnnounced && tcp->callback) {
                 UA_ByteString msg;
                 msg.length = (size_t)received;
@@ -828,6 +967,7 @@ wiz_cm_open_connection(UA_ConnectionManager *cm, const UA_KeyValueMap *params,
         tcp->s[i].activeContext = NULL;
         tcp->s[i].activeAnnounced = false;
         tcp->s[i].pendingActiveClose = false;
+        tcp->s[i].handshaking = false;
         close(WIZ_SOCKET_OF(i));
     }
     for(unsigned i = 0; i < g_wizSocketCount; i++)
@@ -856,6 +996,12 @@ wiz_cm_send(UA_ConnectionManager *cm, uintptr_t connectionId,
         result = UA_STATUSCODE_BADCONNECTIONCLOSED;
         wiz_queue_active_close(tcp, (unsigned)idx);
     }
+
+    /* The handshake slot is held from the OPN request until its response goes
+     * out, and the first send on this socket after that request is it. Clearing
+     * on any send is deliberate: if the server answers with an error instead,
+     * the slot still has to come back. */
+    tcp->s[idx].handshaking = false;
 
 out:
     if(buf)
