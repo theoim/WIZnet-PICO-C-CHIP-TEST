@@ -85,6 +85,27 @@ hardware_dma
 hardware_pio
 )
 
+# ── WIZ_ENTROPY_FILES: mbedTLS 엔트로피 소스 ─────────────────────
+#
+# wiz_claw_tls.c 안에 file-static 으로 들어 있던 콜백을 공용으로 뽑은 것이다.
+# OPC UA 서버가 cJSON 과 wiz_claw 전체를 끌어오지 않고 쓰려면 분리가 필요했다.
+# 하드웨어 RNG 가 없는 부품에서는 wiz_entropy.h 가 빌드를 멈춘다 —
+# 쓰는 쪽이 WIZ_ENTROPY_ALLOW_NO_TRNG 로 의식적으로 허용해야 한다.
+
+add_library(WIZ_ENTROPY_FILES STATIC
+    ${PORT_DIR}/mbedtls/src/wiz_entropy.c
+)
+
+target_include_directories(WIZ_ENTROPY_FILES PUBLIC
+    ${PORT_DIR}/mbedtls/inc
+)
+
+target_link_libraries(WIZ_ENTROPY_FILES PUBLIC
+    pico_stdlib
+    pico_rand
+    mbedcrypto
+)
+
 # ── cJSON (FetchContent — CMake 구성 시 자동 다운로드) ───────────
 include(FetchContent)
 
