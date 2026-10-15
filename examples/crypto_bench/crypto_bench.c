@@ -81,6 +81,7 @@
 #include "mbedtls/ecdsa.h"
 
 #include "bench_keys.h"
+#include "wiz_entropy.h"
 
 #define THROUGHPUT_BYTES    8192        /* the server's send buffer size */
 
@@ -133,6 +134,17 @@
 #define BENCH_ECP           "NIST_OPTIM on"
 #else
 #define BENCH_ECP           "NIST_OPTIM off (generic reduction)"
+#endif
+
+/*
+ * Where the code runs from. The SDK defines this either way, 0 for an ordinary
+ * flash image, so the banner can state it rather than leaving it to be inferred
+ * from the build command.
+ */
+#if defined(PICO_COPY_TO_RAM) && PICO_COPY_TO_RAM
+#define BENCH_XIP           "RAM (copy_to_ram, no XIP cache)"
+#else
+#define BENCH_XIP           "flash (XIP)"
 #endif
 
 /*
@@ -474,6 +486,71 @@ static void bench_symmetric(void)
 }
 
 /*
+ * The entropy source, which everything above quietly assumes.
+ *
+ * The benchmark's own RNG is a counter, so none of the timings here include the
+ * cost of real randomness - but a handshake does, twice over: seeding the DRBG
+ * at startup and drawing from it per signature. Two things are worth knowing
+ * before any of that ships.
+ *
+ * How long seeding takes, because it happens inside the window a client is
+ * waiting on, and the handshake totals above exclude it.
+ *
+ * What the source actually emits. A block of raw output is printed so it can be
+ * captured from the serial port and examined offline. That matters most on the
+ * RP2040, which has no TRNG: pico_rand falls back to the ring oscillator there,
+ * and nobody has shown that output is good enough to carry an ECDSA nonce. A
+ * repeated or predictable nonce does not weaken the signature, it publishes the
+ * private key. Printing the bytes is not a test; it is what makes a test
+ * possible.
+ */
+static void bench_entropy(void)
+{
+    result_t *seed = result_begin("CTR-DRBG seed");
+    result_t *draw = result_begin("entropy 1 KB");
+
+    printf("  source   %s\n", wiz_entropy_source_name());
+
+    for (int i = 0; i < 5; i++) {
+        mbedtls_entropy_context  ent;
+        mbedtls_ctr_drbg_context drbg;
+
+        mbedtls_entropy_init(&ent);
+        mbedtls_ctr_drbg_init(&drbg);
+
+        uint64_t t0 = time_us_64();
+        int rc = wiz_entropy_seed_drbg(&drbg, &ent, "crypto_bench");
+        result_add(seed, time_us_64() - t0, rc);
+
+        mbedtls_ctr_drbg_free(&drbg);
+        mbedtls_entropy_free(&ent);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        uint64_t t0 = time_us_64();
+        int rc = wiz_entropy_raw(s_buf, 1024);
+        result_add(draw, time_us_64() - t0, rc);
+    }
+
+    result_report(seed);
+    result_report(draw);
+
+    /* 32 bytes, for reading rather than for using. */
+    unsigned char sample[32];
+    if (wiz_entropy_raw(sample, sizeof(sample)) == 0) {
+        printf("  raw      ");
+        for (size_t i = 0; i < sizeof(sample); i++) {
+            printf("%02x", sample[i]);
+        }
+        printf("\n");
+        printf("  (one sample proves nothing - capture many and test offline)\n");
+    }
+
+    /* s_buf was overwritten above; the symmetric rows want it filled again. */
+    memset(s_buf, 0x42, sizeof(s_buf));
+}
+
+/*
  * The same handshake with elliptic curves instead of RSA.
  *
  * This exists because the RSA figures closed a door that ECC may leave open.
@@ -794,6 +871,7 @@ static void bench_banner(void)
     printf("  clk_sys  %lu Hz\n", (unsigned long)clock_get_hz(clk_sys));
     printf("  bignum   %s\n", BENCH_BIGNUM);
     printf("  ecp      %s\n", BENCH_ECP);
+    printf("  code     %s\n", BENCH_XIP);
     printf("  git      %s\n", BENCH_GIT);
     printf("  built    %s\n", BENCH_BUILT);
     printf("==============================================\n");
@@ -871,6 +949,9 @@ int main(void)
 
         printf("\n  the same handshake with ECC instead of RSA\n");
         bench_ecc();
+
+        printf("\n  entropy - the floor everything above stands on\n");
+        bench_entropy();
 
         verdict();
         report_alternatives();

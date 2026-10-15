@@ -39,11 +39,17 @@ BOARD_RP2040="W55RP20_EVB_PICO"
 BOARD_RP2350="W6300_EVB_PICO2"
 
 # variant | board | BENCH_NO_ASM
+#
+# A variant whose name ends in _ram is built to run from RAM instead of
+# executing in place from flash (see the crypto_bench CMakeLists for why).
+# Deriving it from the name keeps this table to three columns.
 VARIANTS="
 rp2040_asm   : $BOARD_RP2040 : 0
 rp2040_noasm : $BOARD_RP2040 : 1
+rp2040_ram   : $BOARD_RP2040 : 0
 rp2350_asm   : $BOARD_RP2350 : 0
 rp2350_noasm : $BOARD_RP2350 : 1
+rp2350_ram   : $BOARD_RP2350 : 0
 "
 
 die() { printf 'bench_matrix: %s\n' "$*" >&2; exit 1; }
@@ -70,6 +76,18 @@ find_nmake() {
 
 bignum_label() {
     if [ "$1" = "1" ]; then printf 'C'; else printf 'assembly'; fi
+}
+
+# A trailing _ram in the variant name means "run from RAM".
+wants_ram() {
+    case "$1" in
+        *_ram) return 0 ;;
+        *)     return 1 ;;
+    esac
+}
+
+code_label() {
+    if wants_ram "$1"; then printf 'RAM'; else printf 'flash'; fi
 }
 
 list_matrix() {
@@ -109,7 +127,7 @@ build_one() {
 
     echo
     echo "=============================================================="
-    echo " $variant   board=$board   BENCH_NO_ASM=$noasm"
+    echo " $variant   board=$board   BENCH_NO_ASM=$noasm   code=$(code_label "$variant")"
     echo "=============================================================="
 
     local args
@@ -119,6 +137,7 @@ build_one() {
           -DBOARD_NAME="$board"
           -DPICO_SDK_PATH="$REPO/libraries/pico-sdk")
     if [ "$noasm" = "1" ]; then args+=(-DBENCH_NO_ASM=1); fi
+    if wants_ram "$variant"; then args+=(-DBENCH_RAM=1); fi
 
     if ! cmake "${args[@]}" > "$dir.configure.log" 2>&1; then
         tail -25 "$dir.configure.log"
@@ -145,8 +164,8 @@ build_one() {
     local md5 size
     md5="$(md5sum "$OUT/crypto_bench_$variant.uf2" | cut -d' ' -f1)"
     size="$(stat -c %s "$OUT/crypto_bench_$variant.uf2")"
-    printf '%-14s %-20s %-9s %-34s %10s  %s\n' \
-        "$variant" "$board" "$(bignum_label "$noasm")" \
+    printf '%-14s %-20s %-9s %-6s %-34s %10s  %s\n' \
+        "$variant" "$board" "$(bignum_label "$noasm")" "$(code_label "$variant")" \
         "$md5" "$size" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$OUT/manifest.txt"
 
     echo "  staged  build_bench_out/crypto_bench_$variant.uf2"
@@ -260,7 +279,7 @@ mkdir -p "$OUT"
         printf ' (dirty working tree)'
     fi
     printf '\n'
-    printf '%-14s %-20s %-9s %-34s %10s  %s\n' VARIANT BOARD BIGNUM MD5 BYTES STAGED_UTC
+    printf '%-14s %-20s %-9s %-6s %-34s %10s  %s\n' VARIANT BOARD BIGNUM CODE MD5 BYTES STAGED_UTC
 } > "$OUT/manifest.txt"
 
 built=0
