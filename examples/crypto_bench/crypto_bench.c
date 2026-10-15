@@ -76,6 +76,9 @@
 #include "mbedtls/aes.h"
 #include "mbedtls/md.h"
 #include "mbedtls/x509_crt.h"
+#include "mbedtls/ecp.h"
+#include "mbedtls/ecdh.h"
+#include "mbedtls/ecdsa.h"
 
 #include "bench_keys.h"
 
@@ -119,6 +122,17 @@
 #define BENCH_BIGNUM        "assembly (MBEDTLS_HAVE_ASM)"
 #else
 #define BENCH_BIGNUM        "C (MBEDTLS_HAVE_ASM off)"
+#endif
+
+/*
+ * The ECC rows are meaningless without this line. The first ECC measurements
+ * were taken with NIST_OPTIM off by accident, and nothing in the output said
+ * so - a later reader would have compared two different configurations.
+ */
+#if defined(MBEDTLS_ECP_NIST_OPTIM)
+#define BENCH_ECP           "NIST_OPTIM on"
+#else
+#define BENCH_ECP           "NIST_OPTIM off (generic reduction)"
 #endif
 
 /*
@@ -183,7 +197,7 @@ typedef struct {
     int         failed;
 } result_t;
 
-#define MAX_RESULTS 16
+#define MAX_RESULTS 24
 static result_t s_res[MAX_RESULTS];
 static int      s_n_res;
 
@@ -415,6 +429,28 @@ static void bench_symmetric(void)
         result_add(hmac, time_us_64() - t0, rc);
     }
 
+    /*
+     * HMAC over a full buffer, not only the 32-byte case.
+     *
+     * Basic256Sha256 signs every message as well as encrypting it, so the real
+     * per-message cost is AES over the payload PLUS HMAC over the payload. A
+     * secure-throughput figure built from the AES row alone is optimistic by
+     * roughly a factor of two, which is exactly the mistake this row exists to
+     * stop. The 32-byte row above is the fixed overhead; this one is what
+     * signing a full message actually costs.
+     */
+    result_t *hmac8k = result_begin("HMAC-SHA256 8 KB");
+
+    for (int i = 0; i < 20; i++) {
+        const mbedtls_md_info_t *info =
+            mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);
+
+        uint64_t t0 = time_us_64();
+        int rc = mbedtls_md_hmac(info, key, sizeof(key),
+                                 s_buf, sizeof(s_buf), out);
+        result_add(hmac8k, time_us_64() - t0, rc);
+    }
+
     /* The whole P-SHA256 derivation, both directions, as the policy runs it. */
     result_t *kd = result_begin("key derivation (14 HMAC)");
 
@@ -433,7 +469,112 @@ static void bench_symmetric(void)
     result_report(sha);
     result_report(aes);
     result_report(hmac);
+    result_report(hmac8k);
     result_report(kd);
+}
+
+/*
+ * The same handshake with elliptic curves instead of RSA.
+ *
+ * This exists because the RSA figures closed a door that ECC may leave open.
+ * An OPC UA ECC policy (securitypolicy_eccnistp256.c, already in the tree) and
+ * a TLS handshake both need the same operations once per connection: an
+ * ephemeral key pair, one key agreement, one signature with our own key, and
+ * one verification of the peer's. P-256 private operations are a different
+ * order of magnitude from RSA-2048 ones, so a part that cannot finish an RSA
+ * handshake inside a client's timeout may still finish an ECC one.
+ *
+ * There is a second reason to measure it. mbedTLS has a restartable ECP path
+ * (MBEDTLS_ECP_RESTARTABLE, off in our config) and no RSA equivalent, so with
+ * ECC the stall can be split across loop iterations instead of blocking the
+ * whole cooperative loop. Neither point is worth arguing about without numbers.
+ *
+ * The cost of ECC is interoperability, not arithmetic: a client has to offer
+ * the policy. That is a separate question from this one.
+ */
+static void bench_ecc(void)
+{
+    result_t *kg = result_begin("ECDH P-256 keygen");
+    result_t *dh = result_begin("ECDH P-256 agree");
+    result_t *sg = result_begin("ECDSA P-256 sign");
+    result_t *vr = result_begin("ECDSA P-256 verify");
+
+    mbedtls_ecp_group grp;
+    mbedtls_mpi d, dpeer, z;
+    mbedtls_ecp_point Q, Qpeer;
+
+    mbedtls_ecp_group_init(&grp);
+    mbedtls_mpi_init(&d);
+    mbedtls_mpi_init(&dpeer);
+    mbedtls_mpi_init(&z);
+    mbedtls_ecp_point_init(&Q);
+    mbedtls_ecp_point_init(&Qpeer);
+
+    int rc = mbedtls_ecp_group_load(&grp, MBEDTLS_ECP_DP_SECP256R1);
+    if (rc != 0) {
+        printf("  ECC                        FAILED  group load -0x%04x\n",
+               (unsigned)-rc);
+        return;
+    }
+
+    /* The peer's key, generated once - we are timing our own side only. */
+    mbedtls_ecp_gen_keypair(&grp, &dpeer, &Qpeer, bench_rng, NULL);
+
+    for (int i = 0; i < 10; i++) {
+        mbedtls_mpi_free(&d);
+        mbedtls_ecp_point_free(&Q);
+        mbedtls_mpi_init(&d);
+        mbedtls_ecp_point_init(&Q);
+
+        uint64_t t0 = time_us_64();
+        rc = mbedtls_ecp_gen_keypair(&grp, &d, &Q, bench_rng, NULL);
+        result_add(kg, time_us_64() - t0, rc);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        uint64_t t0 = time_us_64();
+        rc = mbedtls_ecdh_compute_shared(&grp, &z, &Qpeer, &d,
+                                         bench_rng, NULL);
+        result_add(dh, time_us_64() - t0, rc);
+    }
+
+    /* Signed over the same 32-byte digest the RSA rows use, for comparability. */
+    mbedtls_ecdsa_context ecdsa;
+    mbedtls_ecdsa_init(&ecdsa);
+
+    if (mbedtls_ecdsa_genkey(&ecdsa, MBEDTLS_ECP_DP_SECP256R1,
+                             bench_rng, NULL) == 0) {
+        unsigned char sig[MBEDTLS_ECDSA_MAX_LEN];
+        size_t slen = 0;
+
+        for (int i = 0; i < 10; i++) {
+            uint64_t t0 = time_us_64();
+            rc = mbedtls_ecdsa_write_signature(&ecdsa, MBEDTLS_MD_SHA256,
+                                               s_hash, 32,
+                                               sig, sizeof(sig), &slen,
+                                               bench_rng, NULL);
+            result_add(sg, time_us_64() - t0, rc);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            uint64_t t0 = time_us_64();
+            rc = mbedtls_ecdsa_read_signature(&ecdsa, s_hash, 32, sig, slen);
+            result_add(vr, time_us_64() - t0, rc);
+        }
+    }
+
+    mbedtls_ecdsa_free(&ecdsa);
+    mbedtls_ecp_point_free(&Q);
+    mbedtls_ecp_point_free(&Qpeer);
+    mbedtls_mpi_free(&d);
+    mbedtls_mpi_free(&dpeer);
+    mbedtls_mpi_free(&z);
+    mbedtls_ecp_group_free(&grp);
+
+    result_report(kg);
+    result_report(dh);
+    result_report(sg);
+    result_report(vr);
 }
 
 /*
@@ -548,6 +689,103 @@ static void verdict(void)
     printf("    margin here: %.0f ms\n", 5000.0 - total);
 }
 
+/*
+ * Two figures the RSA verdict above does not contain, kept separate from it so
+ * that they still print when an RSA row fails.
+ *
+ * The first is what a message costs once the channel is open. SignAndEncrypt
+ * means both AES and HMAC over the payload, so quoting the AES row on its own
+ * overstates the achievable rate by about a factor of two. Even the sum here is
+ * a ceiling: it counts the two primitives and nothing else - no chunk framing,
+ * padding, copies, SPI transfer or TOE service time - so an end-to-end number
+ * measured through the stack will be lower, and that is the number a datasheet
+ * may quote.
+ *
+ * The second is the same handshake under an ECC policy. It decides whether the
+ * RSA result closes the door for a part or only for one policy.
+ */
+static void report_alternatives(void)
+{
+    double aes8 = avg_ms("AES-256-CBC 8 KB");
+    double hm8  = avg_ms("HMAC-SHA256 8 KB");
+    double kd   = avg_ms("key derivation (14 HMAC)");
+
+    if (aes8 >= 0 && hm8 >= 0) {
+        double ms = aes8 + hm8;
+
+        printf("\n  Per-message cost of SignAndEncrypt, %d B payload\n",
+               THROUGHPUT_BYTES);
+        printf("    AES-256-CBC                   %8.2f ms\n", aes8);
+        printf("    HMAC-SHA256                   %8.2f ms\n", hm8);
+        printf("                                  --------\n");
+        printf("    %8.2f ms  =  %.2f Mbit/s of payload (primitives only)\n",
+               ms, (THROUGHPUT_BYTES * 8.0) / (ms * 1000.0));
+        printf("    Not a link rate and not an application rate. The AES row\n");
+        printf("    alone would read about %.2f Mbit/s, which is why it must\n",
+               (THROUGHPUT_BYTES * 8.0) / (aes8 * 1000.0));
+        printf("    never be quoted as a secure throughput on its own.\n");
+    }
+
+    double ekg = avg_ms("ECDH P-256 keygen");
+    double edh = avg_ms("ECDH P-256 agree");
+    double esg = avg_ms("ECDSA P-256 sign");
+    double evr = avg_ms("ECDSA P-256 verify");
+
+    if (ekg < 0 || edh < 0 || esg < 0 || evr < 0) {
+        printf("\n  (no ECC comparison - an operation failed or did not run)\n");
+        return;
+    }
+
+    double ecc = ekg + edh + esg + evr + (kd >= 0 ? kd : 0.0);
+
+    printf("\n  The same handshake under an ECC policy (P-256)\n");
+    printf("    1 x ephemeral keygen          %8.2f ms\n", ekg);
+    printf("    1 x ECDH agree                %8.2f ms\n", edh);
+    printf("    1 x ECDSA sign (our key)      %8.2f ms\n", esg);
+    printf("    1 x ECDSA verify (peer)       %8.2f ms\n", evr);
+    if (kd >= 0) {
+        printf("    key derivation                %8.2f ms\n", kd);
+    }
+    printf("                                  --------\n");
+    printf("                                  %8.2f ms\n", ecc);
+    printf("    margin against the 5000 ms client timeout: %.0f ms\n",
+           5000.0 - ecc);
+
+    /*
+     * Compared against the whole RSA handshake, not only its private
+     * operations, because the ECC figure above also includes verifying the
+     * peer. The direction is printed explicitly: the first version of this line
+     * said "1x cheaper" for a ratio of 0.69, which read as a win when ECC was
+     * in fact the more expensive of the two.
+     */
+    double sign = avg_ms("RSA-2048 sign (private)");
+    double dec  = avg_ms("RSA-2048 OAEP dec (priv)");
+    double enc  = avg_ms("RSA-2048 OAEP enc (pub)");
+    double ver  = avg_ms("RSA-2048 verify (public)");
+    double vfy  = avg_ms("verify certificate chain");
+    double pkp  = avg_ms("parse private key (DER)");
+
+    if (sign >= 0 && dec >= 0 && enc >= 0 && ver >= 0 && vfy >= 0 && ecc > 0.0) {
+        double rsa = OPN_REQUEST_BLOCKS * dec + ver + sign
+                   + OPN_RESPONSE_BLOCKS * enc + vfy
+                   + (pkp >= 0 ? pkp : 0.0) + (kd >= 0 ? kd : 0.0);
+
+        if (ecc < rsa) {
+            printf("    against the RSA handshake (%.0f ms): %.2fx cheaper\n",
+                   rsa, rsa / ecc);
+        } else {
+            printf("    against the RSA handshake (%.0f ms): %.2fx MORE"
+                   " expensive\n", rsa, ecc / rsa);
+            printf("    On this part ECC is not the cheaper policy. Check the\n");
+            printf("    ecp line in the banner before reading anything into it.\n");
+        }
+    }
+
+    printf("\n  What this does NOT settle: whether the clients in the field\n");
+    printf("    offer an ECC policy at all. That is interoperability, not\n");
+    printf("    arithmetic, and it has to be checked separately.\n");
+}
+
 static void bench_banner(void)
 {
     printf("\n================ crypto_bench ================\n");
@@ -555,6 +793,7 @@ static void bench_banner(void)
     printf("  part     %s\n", BENCH_PART);
     printf("  clk_sys  %lu Hz\n", (unsigned long)clock_get_hz(clk_sys));
     printf("  bignum   %s\n", BENCH_BIGNUM);
+    printf("  ecp      %s\n", BENCH_ECP);
     printf("  git      %s\n", BENCH_GIT);
     printf("  built    %s\n", BENCH_BUILT);
     printf("==============================================\n");
@@ -630,7 +869,11 @@ int main(void)
         printf("\n  per-message symmetric work\n");
         bench_symmetric();
 
+        printf("\n  the same handshake with ECC instead of RSA\n");
+        bench_ecc();
+
         verdict();
+        report_alternatives();
 
         printf("\n  repeating in 30 s\n");
         sleep_ms(30000);
