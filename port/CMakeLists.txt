@@ -92,15 +92,27 @@ hardware_pio
 # 하드웨어 RNG 가 없는 부품에서는 wiz_entropy.h 가 빌드를 멈춘다 —
 # 쓰는 쪽이 WIZ_ENTROPY_ALLOW_NO_TRNG 로 의식적으로 허용해야 한다.
 
-add_library(WIZ_ENTROPY_FILES STATIC
+# INTERFACE 라이브러리인 이유.
+#
+# mbedcrypto 가 mbedtls_hardware_poll() 을 필요로 하는데 이 코드는 mbedcrypto 의
+# 헤더가 필요하다. 의존이 양방향이라 정적 라이브러리로는 링커가 아카이브를 훑는
+# 순서에 걸리고, OBJECT 로 만들면 pico_stdlib 같은 SDK INTERFACE 라이브러리가
+# 자기 소스를 이 타깃에도 컴파일해 넣어 실행 파일과 중복 정의가 난다.
+#
+# INTERFACE 는 아무것도 컴파일하지 않고 소비자에게 소스를 넘긴다. 결과적으로
+# wiz_entropy.c 가 소비자 안에서 컴파일되므로 심볼은 항상 최종 링크에 있다.
+# 단, 한 실행 파일에 두 경로로 들어가면 또 중복이므로 소비자는 하나만 링크한다.
+add_library(WIZ_ENTROPY_FILES INTERFACE)
+
+target_sources(WIZ_ENTROPY_FILES INTERFACE
     ${PORT_DIR}/mbedtls/src/wiz_entropy.c
 )
 
-target_include_directories(WIZ_ENTROPY_FILES PUBLIC
+target_include_directories(WIZ_ENTROPY_FILES INTERFACE
     ${PORT_DIR}/mbedtls/inc
 )
 
-target_link_libraries(WIZ_ENTROPY_FILES PUBLIC
+target_link_libraries(WIZ_ENTROPY_FILES INTERFACE
     pico_stdlib
     pico_rand
     mbedcrypto
@@ -161,6 +173,9 @@ target_link_libraries(wiz_claw PUBLIC
     mbedtls
     mbedcrypto
     mbedx509
+    # MBEDTLS_ENTROPY_HARDWARE_ALT 이후로 mbedcrypto 를 쓰는 모든 타깃이
+    # mbedtls_hardware_poll() 을 제공해야 링크된다.
+    WIZ_ENTROPY_FILES
 )
 
 # mbedTLS

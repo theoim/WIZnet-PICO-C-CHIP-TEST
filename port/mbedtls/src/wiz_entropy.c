@@ -68,6 +68,36 @@ int wiz_entropy_raw(unsigned char *out, size_t len)
     return 0;
 }
 
+/*
+ * The platform source mbedTLS adds to every entropy context by itself.
+ *
+ * wiz_entropy_register() only works on a context we own. open62541's security
+ * policies own theirs: securitypolicy_basic256sha256.c:526 and
+ * securitypolicy_eccnistp256.c:70 each call mbedtls_entropy_init() on a context
+ * inside the policy and seed a DRBG from it, with no way in from outside. With
+ * MBEDTLS_NO_PLATFORM_ENTROPY set and no source registered, that seeding fails
+ * and the policy does not initialise - no secure endpoint at all.
+ *
+ * MBEDTLS_ENTROPY_HARDWARE_ALT makes mbedtls_entropy_init() add this function
+ * as a strong source on every context, including the ones we never see. Both
+ * mechanisms are needed and they are not alternatives: this one for contexts
+ * owned by library code, wiz_entropy_register() for ours.
+ */
+int mbedtls_hardware_poll(void *data, unsigned char *output,
+                          size_t len, size_t *olen)
+{
+    (void)data;
+
+    int rc = wiz_entropy_raw(output, len);
+    if (rc != 0) {
+        *olen = 0;
+        return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+    }
+
+    *olen = len;
+    return 0;
+}
+
 int wiz_entropy_register(mbedtls_entropy_context *entropy)
 {
     if (entropy == NULL) {

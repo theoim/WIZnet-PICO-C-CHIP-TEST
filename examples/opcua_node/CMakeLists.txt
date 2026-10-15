@@ -15,7 +15,27 @@ add_executable(${TARGET_NAME}
     src/usb_stdio_link.c
     src/data_table.c
     src/opcua_settings.c
+    src/opcua_security.c
 )
+
+# The certificates are generated, not committed: they hold private keys.
+# tools/make_opcua_certs.sh writes src/opcua_certs.c and inc/opcua_certs.h, and
+# both are git-ignored. Only the encryption build needs them.
+if(OPCUA_ENABLE_ENCRYPTION)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/opcua_certs.c")
+        message(FATAL_ERROR
+            "opcua_certs.c is missing. Run tools/make_opcua_certs.sh first - "
+            "the certificates are generated rather than committed because they "
+            "contain private keys.")
+    endif()
+    target_sources(${TARGET_NAME} PRIVATE src/opcua_certs.c)
+
+    # mbedtls_hardware_poll() has to be in this image. WIZ_ENTROPY_FILES is an
+    # INTERFACE library, so linking it compiles wiz_entropy.c into this
+    # executable rather than leaving the symbol in an archive the linker has
+    # already walked past. It is linked here and nowhere else in this image.
+    target_link_libraries(${TARGET_NAME} WIZ_ENTROPY_FILES)
+endif()
 
 target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/inc

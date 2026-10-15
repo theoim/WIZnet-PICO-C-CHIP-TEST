@@ -98,6 +98,40 @@
  */
 #define MBEDTLS_HKDF_C
 #define MBEDTLS_PK_WRITE_C
+
+/*
+ * Route every entropy context through mbedtls_hardware_poll()
+ * (port/mbedtls/src/wiz_entropy.c).
+ *
+ * Required, not optional: open62541's security policies call
+ * mbedtls_entropy_init() on contexts they own and seed a DRBG from them
+ * (securitypolicy_basic256sha256.c:526, securitypolicy_eccnistp256.c:70).
+ * With MBEDTLS_NO_PLATFORM_ENTROPY above and no source registered, that seed
+ * fails and the policy never initialises. Registering a source on our own
+ * context does not reach theirs.
+ *
+ * Anything linking mbedcrypto must now provide mbedtls_hardware_poll, which is
+ * why WIZ_ENTROPY_FILES is linked wherever the crypto library is.
+ */
+#define MBEDTLS_ENTROPY_HARDWARE_ALT
+
+/*
+ * Two more that open62541's policy setup reaches for.
+ *
+ * MBEDTLS_SELF_TEST: the policy context calls mbedtls_entropy_self_test(0)
+ * before it seeds anything and fails the policy if it returns non-zero. With
+ * MBEDTLS_ENTROPY_HARDWARE_ALT that test also runs
+ * mbedtls_entropy_source_self_test() against our own poll function, which is
+ * worth having rather than avoiding: a stuck or constant source fails loudly at
+ * startup instead of quietly producing predictable keys.
+ *
+ * MBEDTLS_X509_CSR_WRITE_C / MBEDTLS_X509_CREATE_C: certificate signing
+ * requests, used by the GDS push-management path. Compiled in whether or not
+ * that path is used, so they are needed to link.
+ */
+#define MBEDTLS_SELF_TEST
+#define MBEDTLS_X509_CSR_WRITE_C
+#define MBEDTLS_X509_CREATE_C
 #define MBEDTLS_MD5_C
 #define MBEDTLS_OID_C
 

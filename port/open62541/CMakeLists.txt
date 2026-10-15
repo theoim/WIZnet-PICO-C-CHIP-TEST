@@ -151,13 +151,15 @@ target_link_libraries(OPEN62541_WIZNET PUBLIC
     IOLIBRARY_FILES
 )
 
-# With the policies compiled in, the amalgamation calls into mbedTLS directly,
-# and it needs an entropy source registered before any of it runs - hence
-# WIZ_ENTROPY_FILES rather than the crypto libraries alone.
+# With the policies compiled in, the amalgamation calls into mbedTLS directly.
+#
+# WIZ_ENTROPY_FILES is deliberately NOT linked here. It is an INTERFACE library
+# that hands its source to whoever links it, so linking it both here and in the
+# executable would compile wiz_entropy.c twice into the same image. The
+# executable is the one that links it.
 if(OPCUA_ENABLE_ENCRYPTION)
     target_link_libraries(OPEN62541_WIZNET PUBLIC
         mbedcrypto
         mbedx509
-        WIZ_ENTROPY_FILES
     )
 endif()

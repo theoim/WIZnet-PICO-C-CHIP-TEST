@@ -1,4 +1,5 @@
 #include "opcua_server.h"
+#include "opcua_security.h"
 
 #include <malloc.h>
 #include <stdbool.h>
@@ -499,6 +500,21 @@ int opcua_server_init(const opcua_settings_t *cfg) {
     }
     if(res == UA_STATUSCODE_GOOD)
         res = configure_server_identity(&config);
+
+    /* Security policies and their endpoints, when the build has them.
+     *
+     * After the identity is set, because the certificates carry the same
+     * ApplicationUri in their subjectAltName and a client checks the two
+     * against each other. Before the server is created, because the endpoint
+     * list is read out of the config at that moment.
+     *
+     * A failure here is logged, not fatal: a device that still answers on
+     * SecurityPolicy#None can be reached and diagnosed, which a device that
+     * refuses to start cannot. */
+    if(res == UA_STATUSCODE_GOOD) {
+        opcua_security_apply(&config);
+        opcua_security_report(&config);
+    }
 
     if(res == UA_STATUSCODE_GOOD) {
         s_server = UA_Server_newWithConfig(&config);
