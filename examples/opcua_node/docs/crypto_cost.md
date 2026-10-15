@@ -22,8 +22,28 @@
 1. **RP2040에서 RSA-2048은 어떤 설정으로도 안 된다.** 이미 정격(133 MHz)을
    넘긴 200 MHz에서 측정했고 그래도 타임아웃을 넘는다.
 2. **ECC 정책을 쓰면 두 부품 모두 보안이 성립한다.** RP2040조차 384 ms다.
-3. **동시 접속 문제가 사라진다.** 4개 동시 핸드셰이크가 RP2040 1,536 ms,
-   RP2350 1,056 ms다.
+3. **ECC 경로에서는 동시 접속 문제가 사라진다.** 4개 동시 핸드셰이크가
+   RP2040 1,536 ms, RP2350 1,056 ms다. **RSA 경로에서는 남는다**(6-2).
+
+### ⚠ 그러나 성능이 제품을 결정하지 않는다 (2026-10-15 상호운용성 조사)
+
+외부 조사 결과 **ECC 단독 출하는 범용 산업 시장에서 성립하지 않는다.**
+Siemens SIMATIC/WinCC, Beckhoff TwinCAT, Ignition, KEPServerEX, Prosys,
+Python asyncua의 공개 정책 목록에 ECC가 없고, UAExpert와 node-opcua는 미확인이다.
+공통분모는 Basic256Sha256이다. 상세는 6-5.
+
+**그래서 제품 구조는 둘 중 하나를 고르는 것이 아니다.**
+
+```
+RP2350 + W6300    Basic256Sha256 = 호환성 경로 (유지 필수)
+                  ECC            = 성능 경로 (상대가 지원하면)
+                  → 범용 Secure OPC UA SKU
+
+RP2040 + W5500    ECC-only 범용 SKU = NO-GO (호환성 + 난수원 두 가지 이유)
+                  클라이언트 고정 특화 구성 = 조건부
+```
+
+RP2350의 RSA 1,229 ms는 **버리는 숫자가 아니라 호환성 경로의 비용**이다.
 
 **"RP2040은 보안이 불가능하다"는 2026-10-15 오전의 결론은 틀렸다.** RSA만
 측정하고 내린 결론이었다. 정확한 서술은 **"RP2040에서 RSA-2048 정책은 불가,
@@ -242,6 +262,61 @@ SRAM을 다투는 것이고, 플래시 실행에서는 코드가 XIP 캐시 / �
 
 ---
 
+## 4-3. L2 빌드 — Flash +103 KB, 정적 RAM +8.8 KB (2026-10-15 실측)
+
+`opcua_node`를 암호화 off/on 두 번 빌드해 비교했다. 보드 `W6300_EVB_PICO2`,
+같은 툴체인·같은 커밋.
+
+| 섹션 | OFF | ON | 증가 |
+|---|---|---|---|
+| `.text` | 239,616 | 326,816 | +87,200 (+36.4%) |
+| `.rodata` | 58,764 | 74,924 | +16,160 (+27.5%) |
+| `.data` | 54,344 | 54,352 | +8 |
+| `.bss` | 10,300 | 19,056 | +8,756 |
+| **Flash (text+rodata+data)** | 352,724 | **456,092** | **+103,368 (+29.3%)** |
+| **정적 RAM (data+bss)** | 64,644 | **73,408** | **+8,764** |
+
+보드 플래시는 4 MB다(`pico2.h:78`). **456 KB는 11%이고 Flash는 제약이 아니다.**
+
+**이 문서의 이전 예상이 틀렸다** — "mbedTLS RSA+AES+SHA+X.509를 넣으니 힙보다
+Flash가 먼저 터질 가능성이 높다"고 적었는데, 4 MB 중 103 KB다.
+
+### 이 숫자에 없는 것
+
+**정적 메모리만이다.** 실제 제약일 수 있는 둘이 빠져 있다.
+
+```
+SecureChannel 버퍼    채널·세션마다 붙는다. 소켓 4개면 4배
+mbedTLS 힙 피크       핸드셰이크 중 임시 할당. 실기 실행이 필요하다
+```
+
+`.bss` +8.8 KB는 정책 객체와 고정 버퍼이고 핸드셰이크 중 힙은 포함하지 않는다.
+
+### 두 정책을 모두 넣은 비용이다
+
+amalgamation은 RSA·ECC 정책 소스를 전부 포함하고 정의로 켠다(6-6 참조).
+즉 위 수치가 **"Basic256Sha256 호환 경로 + ECC 성능 경로"를 함께 싣는 비용**이고,
+현재 구조에서는 한쪽만 빼서 줄이는 선택지가 없다.
+
+### 빌드 방법 (함정 두 개)
+
+```bash
+cmake -S . -B build_l2_on -G "MinGW Makefiles" \
+  -DCMAKE_MAKE_PROGRAM="<mingw32-make>" \
+  -Dpioasm_DIR="<기존빌드>/pioasm-install/pioasm" \
+  -DBOARD_NAME=W6300_EVB_PICO2 -DPICO_SDK_PATH=./libraries/pico-sdk \
+  -DOPCUA_ENABLE_ENCRYPTION=ON
+```
+
+**1. 제너레이터는 MinGW여야 한다.** W6300 QSPI 드라이버가 PIO를 쓰고, SDK가
+`pioasm`을 **호스트용으로** 빌드한다. NMake 경로에는 호스트 C++ 툴체인이 없다.
+
+**2. `pioasm`은 기존 빌드 것을 재사용한다.** SDK가 `pioasm_DIR`을
+`find_package(pioasm CONFIG)`로 집어간다(`pico-sdk/tools/CMakeLists.txt:112-116`).
+이 머신에서는 호스트 C++ 빌드가 깨져 있어 새로 만들 수 없다.
+
+---
+
 ## 5. 이 숫자가 아닌 것
 
 **바닥값이다.** 산술만 재고 왕복·인코딩·PKI 목록 순회·DRBG 시딩·할당·이더넷
@@ -280,8 +355,13 @@ ECC   RP2350   4 ×   264 = 1,056 ms    ← 여유 큼
 ECC   RP2040   4 ×   384 = 1,536 ms    ← 여유 큼
 ```
 
-**소켓 수를 2개로 줄이는 안은 폐기할 수 있다** — ECC 정책을 쓰는 한.
-RSA로 가면 다시 살아난다.
+**이 항목은 2026-10-15에 다시 열렸다.** 처음에는 "ECC를 쓰는 한 소켓 수를 2개로
+줄이는 안은 폐기 가능"이라고 적었고 조건도 함께 적었다. 상호운용성 조사로
+**Basic256Sha256 병행이 확정되면서 그 조건이 항상 성립한다.**
+
+ECC를 제시해도 클라이언트가 RSA를 고르면 RSA 경로를 탄다. 설비 전원 복구로
+4대가 동시에 재접속하는 상황에서 그 4대가 Siemens·Beckhoff 같은 RSA 전용이면
+마지막 클라이언트가 4,916 ms다. **소켓 수 결정은 미결 항목으로 되돌린다.**
 
 ### 6-3. RSA 연산은 쪼갤 수 없고 ECC는 쪼갤 수 있다
 
@@ -342,25 +422,70 @@ file-static이라 OPC UA 쪽에서 보이지 않았을 뿐이다. 새로 쓰지 
 아무것도 증명되지 않는다.** 수십 KB를 모아 오프라인 통계 검정이 필요하다.
 `wiz_entropy_raw()`가 그 입구다. 대량 덤프 모드는 아직 없다.
 
-### 6-5. 남은 유일한 성능 외 게이트 — ECC 상호운용성
+### 6-5. ECC 상호운용성 — 조사 완료 (2026-10-15), 답은 "안 된다"
 
-성능 질문은 전부 닫혔다. 남은 것은 **현장 클라이언트가 ECC 정책
-(`ECC_nistP256`)을 제시하는가**다.
+성능 질문은 전부 닫혔고, 이 항목이 제품 구조를 결정했다.
 
-`libraries/open62541/plugins/crypto/mbedtls/`에 ECC 정책 플러그인 4개가 이미 있다
-(`securitypolicy_eccnistp256.c` 등). 서버 쪽 구현은 문제가 아니다.
+**외부 조사 결과다. 자사 실측이 아니다.** 공개 제조사 문서 기준이며
+실연결 시험으로 확인한 것이 아니다.
 
-**이건 측정이 아니라 조사다.** UAExpert와 주요 PLC/SCADA 클라이언트가 어떤
-정책을 지원하는지 확인해야 한다. 안 되면 RSA로 돌아가고, 그러면 RP2040은
-평문 등급이고 RP2350도 1,229 ms를 안고 간다.
+| 클라이언트 | ECC_nistP256 | Basic256Sha256 |
+|---|---|---|
+| Siemens SIMATIC / WinCC | 미지원 (정책 목록에 없음) | 지원 |
+| Beckhoff TwinCAT | 미지원 | 지원 |
+| Ignition 8.1 / 8.3 | 미지원 (API 허용 목록 6종에 없음) | 지원 |
+| PTC KEPServerEX | 미지원 | 지원 |
+| Prosys OPC UA Browser 2026.2.0 | 미지원 (SDK enum에도 없음) | 지원 |
+| Python asyncua | 미지원 (구현 요청 이슈 Open) | 지원 |
+| UAExpert | **미확인** | 지원 |
+| node-opcua | **미확인** (문서 상충) | 지원 |
+
+**ECC만 제시하는 서버는 공통 SecurityPolicy가 없어 SecureChannel을 못 연다.**
+프로토콜 수준 조건이지 UI 문제가 아니다.
+
+표준상으로는 ECC가 필수가 아니다 — 2025 Minimum Client Facet과 Nano Embedded
+Device Server Profile에서 ECC는 optional이다. **즉 Siemens·Beckhoff가 ECC를
+지원하지 않는 것은 표준 위반이 아니다.** "OPC UA 1.05 지원"이 ECC 지원을
+뜻하지 않는다.
+
+### 6-6. ⚠ 우리가 측정한 정책은 deprecated다
+
+**가장 중요한 추가 발견이다.** 벤치마크한
+`http://opcfoundation.org/UA/SecurityPolicy#ECC_nistP256`은 현재 OPC Foundation
+Profile DB에서 **Deprecated**이고, 후속은 **`ECC_nistP256-AesGcm`**이다
+(비-AEAD → AEAD 전환). 외부 조사 결과이며 자사 확인은 아니다.
+
+**자사 확인된 의존성:**
+
+```
+libraries/open62541   10022ffbc   2026-05-24   v1.5.4-224
+ECC 정책 파일          eccnistp256 · eccnistp384 · eccbrainpoolp256r1 · eccbrainpoolp384r1
+AesGcm/ChaChaPoly     0건
+deprecated 표기        없음
+```
+
+**우리 트리에는 후속 정책이 아예 없다.** 조사가 인용한 "open62541 master가
+non-AEAD ECC를 deprecated로 표기"는 2026-05-24 이후 변경이다.
+**AesGcm으로 가려면 open62541 업그레이드가 선행된다.**
+
+실무적 의미: **259 ms / 372 ms라는 P-256 성능 측정값은 그대로 유효하다** —
+곡선 연산 비용은 정책 포장이 바뀌어도 거의 같다. 다만 **그 URI를 제품의 최종
+인터페이스로 고정하면 안 된다.**
 
 ---
 
 ## 7. 다음
 
 1. ~~엔트로피 소스 연결~~ ✅ 2026-10-15 (`port/mbedtls/src/wiz_entropy.c`, 실기 확인)
-2. **ECC 상호운용성 조사** — 현재 유일한 게이트
-3. **L2 빌드** — `-DUA_ENABLE_ENCRYPTION=MBEDTLS`. Flash/heap 증가 측정
+2. ~~ECC 상호운용성 조사~~ ✅ 2026-10-15 — 답은 "ECC 단독 불가" (6-5)
+2b. **상호운용성 매트릭스 실연결** — 공개 문서 기준 조사를 실기로 확인한다.
+   RP2350 서버에 Basic256Sha256 / ECC endpoint를 각각 올리고 UAExpert ·
+   TwinCAT · Ignition · KEPServerEX · Prosys · node-opcua · asyncua로
+   GetEndpoints → OpenSecureChannel → CreateSession → ActivateSession 기록.
+   **미지원으로 조사된 제품은 실패가 정상**이라는 기준으로 시작한다
+2c. **open62541 업그레이드 검토** — `ECC_nistP256-AesGcm`의 선행 조건 (6-6)
+3. ~~L2 빌드 Flash 증가~~ ✅ 2026-10-15 — Flash +103 KB, 정적 RAM +8.8 KB (4-3).
+   **힙 피크는 여전히 미측정** — 실기 실행이 필요하다
 4. **실제 핸드셰이크 1회 측정** — 위 수치는 산술 바닥값이다
 5. **end-to-end 보안 처리량** — 8 KB payload → 청크·서명·암호화 → 전송 → 상대 검증.
    **이게 데이터시트에 들어갈 숫자다**
@@ -368,7 +493,9 @@ file-static이라 OPC UA 쪽에서 보이지 않았을 뿐이다. 새로 쓰지 
 7. `ssl_config.h`에서 다른 기본값이 빠졌는지 점검
 8. **ECP 핫 함수만 RAM에 올리기** (`__not_in_flash_func`) — 전체 RAM 실행의 ECC
    이득만 받고 RP2350 RSA 손실은 피할 수 있다. 미검증 (4-2 참조)
-9. **RP2040 ROSC 대량 덤프 + 오프라인 통계 검정** — 저가 등급 보안의 게이트
+9. **RP2040 ROSC 대량 덤프 + 오프라인 통계 검정** — 저가 등급의 **두 번째** 게이트
+   (첫 번째는 호환성이고 그쪽이 이미 NO-GO다, 6-5)
+9b. **소켓 수 결정** — 6-2. RSA 병행 확정으로 되살아났다
 10. RP2350에서 RSA가 RAM 실행에서 느려지는 이유 — 선택 사항 (4-2 추정만 있다)
 
 ---
