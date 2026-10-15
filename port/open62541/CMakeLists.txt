@@ -1,6 +1,28 @@
+# Security policies in the generated amalgamation.
+#
+# The generator decides this: with UA_ENABLE_ENCRYPTION=MBEDTLS the produced
+# header defines UA_ENABLE_ENCRYPTION and UA_ENABLE_ENCRYPTION_MBEDTLS, and
+# without it the same lines are #undef. The crypto plugin sources are
+# concatenated either way (open62541 CMakeLists:1188 includes them whenever
+# UA_ENABLE_AMALGAMATION is on), so the difference on disk is about 29 KB of
+# source and two defines - but those defines are what compile the policies in.
+#
+# -DOPCUA_ENABLE_ENCRYPTION=ON at configure time. The two settings get separate
+# amalgamation directories: the generation step is skipped when the output
+# already exists, so sharing one directory would silently serve whichever was
+# generated first.
+option(OPCUA_ENABLE_ENCRYPTION
+       "Generate the open62541 amalgamation with mbedTLS security policies" OFF)
+
+if(OPCUA_ENABLE_ENCRYPTION)
+    set(_ua_amalg_suffix "-enc")
+else()
+    set(_ua_amalg_suffix "")
+endif()
+
 set(OPEN62541_WIZNET_AMALGAMATION_DIR
-    "${CMAKE_BINARY_DIR}/open62541_pico_amalgamation"
-    CACHE PATH "Directory containing generated open62541.c/open62541.h")
+    "${CMAKE_BINARY_DIR}/open62541_pico_amalgamation${_ua_amalg_suffix}"
+    CACHE PATH "Directory containing generated open62541.c/open62541.h" FORCE)
 
 set(OPEN62541_WIZNET_C "${OPEN62541_WIZNET_AMALGAMATION_DIR}/open62541.c")
 set(OPEN62541_WIZNET_H "${OPEN62541_WIZNET_AMALGAMATION_DIR}/open62541.h")
@@ -9,6 +31,31 @@ set(OPEN62541_WIZNET_PATCHED_C
 
 if(NOT EXISTS "${OPEN62541_WIZNET_C}" OR NOT EXISTS "${OPEN62541_WIZNET_H}")
     message(STATUS "open62541 amalgamation not found — generating automatically...")
+
+    set(_ua_enc_args "")
+    if(OPCUA_ENABLE_ENCRYPTION)
+        # find_package(MbedTLS) insists on three library files before it will
+        # report success, even though the amalgamation target only concatenates
+        # sources and links nothing. The real libraries are built later in this
+        # same tree and do not exist yet at configure time, so empty stand-ins
+        # are created purely to satisfy the search. Nothing reads them.
+        set(_mbed_stub "${CMAKE_BINARY_DIR}/amalgamation_mbedtls_stub")
+        file(MAKE_DIRECTORY "${_mbed_stub}")
+        foreach(_lib mbedtls mbedx509 mbedcrypto)
+            if(NOT EXISTS "${_mbed_stub}/lib${_lib}.a")
+                file(TOUCH "${_mbed_stub}/lib${_lib}.a")
+            endif()
+        endforeach()
+
+        list(APPEND _ua_enc_args
+            -DUA_ENABLE_ENCRYPTION=MBEDTLS
+            -DMBEDTLS_INCLUDE_DIRS=${CMAKE_SOURCE_DIR}/libraries/mbedtls/include
+            -DMBEDTLS_LIBRARY=${_mbed_stub}/libmbedtls.a
+            -DMBEDX509_LIBRARY=${_mbed_stub}/libmbedx509.a
+            -DMBEDCRYPTO_LIBRARY=${_mbed_stub}/libmbedcrypto.a
+        )
+        message(STATUS "open62541 amalgamation: security policies ENABLED (mbedTLS)")
+    endif()
 
     execute_process(
         COMMAND ${CMAKE_COMMAND}
@@ -27,6 +74,7 @@ if(NOT EXISTS "${OPEN62541_WIZNET_C}" OR NOT EXISTS "${OPEN62541_WIZNET_H}")
             -DUA_MULTITHREADING=0
             -DUA_BUILD_EXAMPLES=OFF
             -DUA_BUILD_UNIT_TESTS=OFF
+            ${_ua_enc_args}
         RESULT_VARIABLE _cfg_result
     )
     if(NOT _cfg_result EQUAL 0)
@@ -102,3 +150,14 @@ target_link_libraries(OPEN62541_WIZNET PUBLIC
     ETHERNET_FILES
     IOLIBRARY_FILES
 )
+
+# With the policies compiled in, the amalgamation calls into mbedTLS directly,
+# and it needs an entropy source registered before any of it runs - hence
+# WIZ_ENTROPY_FILES rather than the crypto libraries alone.
+if(OPCUA_ENABLE_ENCRYPTION)
+    target_link_libraries(OPEN62541_WIZNET PUBLIC
+        mbedcrypto
+        mbedx509
+        WIZ_ENTROPY_FILES
+    )
+endif()

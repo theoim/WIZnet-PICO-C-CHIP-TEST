@@ -83,6 +83,21 @@
 #define MBEDTLS_DHM_C
 #define MBEDTLS_GCM_C
 #define MBEDTLS_MD_C
+
+/*
+ * Two modules open62541's security policies need, missing for the same reason
+ * MBEDTLS_ECP_NIST_OPTIM was: this file replaces mbedtls_config.h rather than
+ * extending it, so upstream defaults do not arrive.
+ *
+ * HKDF is the key derivation step of the ECC policies
+ * (plugins/crypto/mbedtls/securitypolicy_common.c:1043).
+ *
+ * PK_WRITE is not ECC-specific: securitypolicy_common.c:384 calls
+ * mbedtls_pk_write_key_der() on the shared path, so an RSA-only encryption
+ * build needs it too.
+ */
+#define MBEDTLS_HKDF_C
+#define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_MD5_C
 #define MBEDTLS_OID_C
 
