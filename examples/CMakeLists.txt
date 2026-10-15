@@ -1,6 +1,7 @@
 # add_subdirectory(buffer_read)
 # add_subdirectory(PING_TEST)
 # add_subdirectory(10M_Complience_Test)
+add_subdirectory(crypto_bench)         # RSA cost on this part, before any security work
 add_subdirectory(socket_listen_test)   # F-1 verification, temporary
 add_subdirectory(opcua_usb_stdio)
 add_subdirectory(opcua_node)   # Phase A product prototype (see examples/opcua_node/TASK_BRIEF.md)
