@@ -96,6 +96,23 @@
 #define MBEDTLS_SHA256_C
 
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED     /* P-256: ECDHE-RSA 핸드셰이크에 필요 */
+
+/*
+ * Faster modular reduction for the NIST curves.
+ *
+ * This file replaces mbedtls_config.h entirely (MBEDTLS_CONFIG_FILE), and the
+ * upstream default enables this option - so leaving it out silently turned it
+ * off. That matters because reduction is where P-256 spends its time: the first
+ * ECC measurements (2026-10-15, RP2040 2,458 ms / RP2350 1,697 ms per handshake)
+ * were taken without it, while RSA was measured with its assembly path on. The
+ * two were not compared on equal terms.
+ *
+ * It costs code size and no RAM. -DBENCH_NO_ECP_OPTIM=1 takes it back out so
+ * the pair of images differs in this one thing - see examples/crypto_bench.
+ */
+#if !defined(BENCH_NO_ECP_OPTIM)
+#define MBEDTLS_ECP_NIST_OPTIM
+#endif
 #define MBEDTLS_ECDH_C                          /* ECDH 연산 (ECDHE 키 교환) */
 #define MBEDTLS_ECDSA_C                         /* ECDSA 서명 검증 (EC 인증서 체인) */
 #define MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED  /* TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 */

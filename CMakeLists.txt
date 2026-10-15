@@ -100,6 +100,14 @@ if(BENCH_NO_ASM)
     message(STATUS "BENCH_NO_ASM = 1 (mbedTLS bignum in C)")
 endif()
 
+# The same switch for the NIST-curve reduction, so an ECC A/B pair differs in
+# one thing. ssl_config.h reads BENCH_NO_ECP_OPTIM and drops
+# MBEDTLS_ECP_NIST_OPTIM when it is set.
+if(BENCH_NO_ECP_OPTIM)
+    add_definitions(-DBENCH_NO_ECP_OPTIM)
+    message(STATUS "BENCH_NO_ECP_OPTIM = 1 (generic modular reduction)")
+endif()
+
 
 if(NOT DEFINED PICO_SDK_PATH)
     set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/libraries/pico-sdk)
