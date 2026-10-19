@@ -44,7 +44,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
 # Stamp the image so the serial log says which build it is. Inferring that from
 # behaviour has already cost one wrong conclusion.
 execute_process(
-        COMMAND git rev-parse --short HEAD
+        COMMAND git describe --always --dirty --abbrev=7
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_VARIABLE OPCUA_BUILD_GIT
         OUTPUT_STRIP_TRAILING_WHITESPACE

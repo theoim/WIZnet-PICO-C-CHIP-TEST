@@ -192,6 +192,11 @@ typedef struct {
     /* OPN 을 받아 서버에 넘겼고 아직 응답을 못 보낸 상태. 응답을 보내는
      * 순간 내려간다 — OPN 다음에 그 소켓으로 나가는 첫 송신이 OPN 응답이다. */
     bool handshaking;
+    /* 이 연결에서 OPN 응답을 한 번 보냈다. 이후의 OPN 은 채널 갱신(renew)이다.
+     * 갱신은 이미 붙어 있는 클라이언트가 수명마다 보내는 것이라 그 시점의
+     * connectedAtMs 는 몇 분 전이고, 대기 시간으로 따지면 반드시 거부된다.
+     * 갱신이 몰리는 일도 없다 — 클라이언트마다 접속 시각이 다르다. */
+    bool channelOpened;
     /* TCP 가 연결된 시각. 이 클라이언트가 얼마나 기다렸는지를 알아야
      * "끝낼 수 없는 일을 시작하지 않는" 판단을 할 수 있다. */
     uint32_t connectedAtMs;
@@ -750,6 +755,9 @@ static void wiz_process_pending_active_close(WizTcpConnectionManager *tcp,
     /* A connection that dies mid-handshake must give the slot back, or the
      * limit ratchets down one refused client at a time until nothing connects. */
     st->handshaking = false;
+    /* The next client on this socket starts fresh; its first OPN is a new
+     * handshake, not a renewal. */
+    st->channelOpened = false;
     close(WIZ_SOCKET_OF(idx));
 }
 
@@ -828,7 +836,8 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
              * session occupying a slot for ten minutes. */
             if(received > 0 && WIZ_IS_OPN(tcp->rxBuffer, (size_t)received) &&
                wiz_opn_needs_asymmetric(tcp->rxBuffer, (size_t)received) &&
-               !st->handshaking && WIZ_HANDSHAKE_BUDGET_MS > 0u) {
+               !st->handshaking && !st->channelOpened &&
+               WIZ_HANDSHAKE_BUDGET_MS > 0u) {
                 uint32_t now = to_ms_since_boot(get_absolute_time());
                 uint32_t waited = now - st->connectedAtMs;
                 uint32_t wouldFinishAt = waited + WIZ_HANDSHAKE_COST_MS;
@@ -968,6 +977,7 @@ wiz_cm_open_connection(UA_ConnectionManager *cm, const UA_KeyValueMap *params,
         tcp->s[i].activeAnnounced = false;
         tcp->s[i].pendingActiveClose = false;
         tcp->s[i].handshaking = false;
+        tcp->s[i].channelOpened = false;
         close(WIZ_SOCKET_OF(i));
     }
     for(unsigned i = 0; i < g_wizSocketCount; i++)
@@ -1001,6 +1011,8 @@ wiz_cm_send(UA_ConnectionManager *cm, uintptr_t connectionId,
      * out, and the first send on this socket after that request is it. Clearing
      * on any send is deliberate: if the server answers with an error instead,
      * the slot still has to come back. */
+    if(tcp->s[idx].handshaking)
+        tcp->s[idx].channelOpened = true;
     tcp->s[idx].handshaking = false;
 
 out:

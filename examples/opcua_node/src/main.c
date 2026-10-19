@@ -4,6 +4,7 @@
 #include "pico/stdio_usb.h"
 
 #include "data_table.h"
+#include "opcua_security.h" /* open62541.h: UA_ENABLE_ENCRYPTION for the banner */
 #include "opcua_server.h"
 #include "opcua_settings.h"
 #include "usb_stdio_link.h"
