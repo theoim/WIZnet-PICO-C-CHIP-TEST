@@ -138,6 +138,18 @@ typedef struct {
  *
  * 예산 0 이면 무제한 — A/B 측정용이다.
  */
+/* Socket reclaim limits (F-6). The reasoning is with wiz_begin_disconnect(). */
+#ifndef WIZ_KEEPALIVE_UNITS
+#define WIZ_KEEPALIVE_UNITS   2u        /* x 5 s = probe after 10 s idle */
+#endif
+#ifndef WIZ_CLOSING_CAP_MS
+#define WIZ_CLOSING_CAP_MS    30000u
+#endif
+
+#ifndef SOCK_CLOSING
+#define SOCK_CLOSING          0x1Au     /* W5500 header names it, W6300 does not */
+#endif
+
 #ifndef WIZ_HANDSHAKE_COST_MS
 #define WIZ_HANDSHAKE_COST_MS   1700u   /* 실측 1.66s, 올림 */
 #endif
@@ -197,6 +209,11 @@ typedef struct {
      * connectedAtMs 는 몇 분 전이고, 대기 시간으로 따지면 반드시 거부된다.
      * 갱신이 몰리는 일도 없다 — 클라이언트마다 접속 시각이 다르다. */
     bool channelOpened;
+    /* When the socket entered FIN_WAIT/CLOSING/TIME_WAIT/LAST_ACK, 0 if not. */
+    uint32_t closingSinceMs;
+    /* Last time bytes arrived from the peer; tells how long a dropped
+     * connection had been silent before the chip gave up on it. */
+    uint32_t lastRxMs;
     /* TCP 가 연결된 시각. 이 클라이언트가 얼마나 기다렸는지를 알아야
      * "끝낼 수 없는 일을 시작하지 않는" 판단을 할 수 있다. */
     uint32_t connectedAtMs;
@@ -638,8 +655,25 @@ static int wiz_send_all(uint8_t sock, const uint8_t *buf, uint16_t len) {
                         WIZ_SEND_STALL_TIMEOUT_MS;
 
     while(sentTotal < len) {
-        int32_t sent = send(sock, (uint8_t *)buf + sentTotal,
-                            (uint16_t)(len - sentTotal));
+        /* Ask only for what fits. Given more than the free TX space, a
+         * blocking-mode send() waits inside ioLibrary for the peer to drain
+         * its window - forever, if the peer advertises zero and keeps ACKing
+         * probes. Clamped, a full buffer comes back here as no progress and
+         * the stall deadline below applies. */
+        uint16_t chunk = (uint16_t)(len - sentTotal);
+        uint16_t space = (uint16_t)getSn_TX_FSR(sock);
+        if(space == 0u) {
+            if((int32_t)(to_ms_since_boot(get_absolute_time()) - deadline) >= 0) {
+                WIZ_DBG("send s%u NO SPACE sent=%u/%u sr=0x%02X\r\n",
+                        sock, sentTotal, len, getSn_SR(sock));
+                return -1;
+            }
+            continue;
+        }
+        if(chunk > space)
+            chunk = space;
+
+        int32_t sent = send(sock, (uint8_t *)buf + sentTotal, chunk);
 
         if(sent < 0) {
             WIZ_DBG("send s%u FAIL rc=%ld sent=%u/%u sr=0x%02X\r\n",
@@ -708,6 +742,10 @@ static void wiz_signal_active_open(WizTcpConnectionManager *tcp, unsigned idx) {
      * seconds while earlier handshakes run, and that waiting is most of what
      * it experiences. */
     st->connectedAtMs = to_ms_since_boot(get_absolute_time());
+    st->closingSinceMs = 0;
+    st->lastRxMs = st->connectedAtMs;
+    /* Per connection, so it is set here rather than at listen(). */
+    setSn_KPALVTR(sock, WIZ_KEEPALIVE_UNITS);
 
     char remote[24];
     snprintf(remote, sizeof(remote), "%u.%u.%u.%u",
@@ -732,6 +770,56 @@ static void wiz_signal_active_open(WizTcpConnectionManager *tcp, unsigned idx) {
 
 static void wiz_queue_active_close(WizTcpConnectionManager *tcp, unsigned idx) {
     tcp->s[idx].pendingActiveClose = true;
+}
+
+/* -- Socket reclaim (F-6) ---------------------------------------------
+ *
+ * Four sockets serve every client, so one held by nobody is a quarter of the
+ * server. Three ways a socket can stay held:
+ *
+ *   peer vanished, no FIN      keepalive. The chip probes an idle connection
+ *                              and closes it (Sn_IR_TIMEOUT) when probes go
+ *                              unanswered. A live but quiet client - no
+ *                              subscription, between requests - answers the
+ *                              probes at the TCP level and is never touched,
+ *                              which an application idle timer could not
+ *                              promise.
+ *   connected, never finished  nothing to add here: open62541 gives every
+ *   the handshake              new channel a 10 s lifetime until OPN succeeds
+ *                              (secureChannelHouseKeeping), which closes a
+ *                              silent connection and one that stops after HEL.
+ *   stuck closing              cap on FIN_WAIT/CLOSING/TIME_WAIT/LAST_ACK. The
+ *                              watertank board caught sockets in FIN_WAIT for
+ *                              thirteen hours against peers that answered
+ *                              nothing.
+ *
+ * The same holes as the watertank web server, where they were found and
+ * measured; that server needed its own first-byte timeout, this one does not. */
+/* Limits: see WIZ_KEEPALIVE_UNITS and friends near the top. */
+
+static uint32_t g_wizCloseCut = 0;
+
+/* Starts a graceful close and returns at once.
+ *
+ * ioLibrary's disconnect() loops until the socket reaches CLOSED, which
+ * against a peer that never answers the FIN is the chip's full retransmission
+ * timeout - long enough to starve every other socket and trip a watchdog.
+ * Here the DISCON command is issued and the socket left in FIN_WAIT; the poll
+ * loop reopens it as a listener once the chip reports CLOSED, and the closing
+ * cap takes it back if that never happens. Data already queued (an ERR
+ * message, a last response) still goes out before the FIN. */
+static void wiz_begin_disconnect(uint8_t sock) {
+    uint8_t sr = getSn_SR(sock);
+    if(sr != SOCK_ESTABLISHED && sr != SOCK_CLOSE_WAIT)
+        return;
+    setSn_CR(sock, Sn_CR_DISCON);
+    while(getSn_CR(sock))
+        ;
+}
+
+static bool wiz_is_closing_state(uint8_t sr) {
+    return sr == SOCK_FIN_WAIT || sr == SOCK_CLOSING ||
+           sr == SOCK_TIME_WAIT || sr == SOCK_LAST_ACK;
 }
 
 /* Tells a refused client why, before the connection goes away.
@@ -789,7 +877,16 @@ static void wiz_process_pending_active_close(WizTcpConnectionManager *tcp,
     /* The next client on this socket starts fresh; its first OPN is a new
      * handshake, not a renewal. */
     st->channelOpened = false;
-    close(WIZ_SOCKET_OF(idx));
+
+    /* Graceful where the connection still exists, so queued bytes reach the
+     * peer; the poll loop finishes the job. A socket that never got that far
+     * (LISTEN, INIT, SYNRECV) has nothing to flush and is reset at once. */
+    uint8_t sock = WIZ_SOCKET_OF(idx);
+    uint8_t sr = getSn_SR(sock);
+    if(sr == SOCK_ESTABLISHED || sr == SOCK_CLOSE_WAIT)
+        wiz_begin_disconnect(sock);
+    else if(!wiz_is_closing_state(sr) && sr != SOCK_CLOSED)
+        close(sock);
 }
 
 /* listen 을 내리면 모든 소켓을 닫는다. */
@@ -849,11 +946,14 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
         wiz_signal_active_open(tcp, idx);
 
         uint16_t rxSize = getSn_RX_RSR(sock);
+
         if(rxSize > 0u) {
             if(rxSize > sizeof(tcp->rxBuffer))
                 rxSize = sizeof(tcp->rxBuffer);
 
             int32_t received = recv(sock, tcp->rxBuffer, rxSize);
+            if(received > 0)
+                st->lastRxMs = to_ms_since_boot(get_absolute_time());
             WIZ_DBG("rx s%u rsr=%u recv=%ld announced=%d cb=%d\r\n",
                     sock, rxSize, (long)received, st->activeAnnounced,
                     tcp->callback != NULL);
@@ -884,7 +984,7 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
                            st->peerIp[0], st->peerIp[1],
                            st->peerIp[2], st->peerIp[3], st->peerPort);
                     wiz_send_too_busy(sock);
-                    disconnect(sock);
+                    wiz_begin_disconnect(sock);
                     wiz_queue_active_close(tcp, idx);
                     return;
                 }
@@ -908,16 +1008,40 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
     }
 
     if(sr == SOCK_CLOSE_WAIT) {
-        disconnect(sock);
+        wiz_begin_disconnect(sock);
         wiz_queue_active_close(tcp, idx);
         return;
     }
 
     if(st->activeAnnounced &&
        (sr == SOCK_CLOSED || sr == SOCK_INIT || sr == SOCK_LISTEN)) {
+        /* The chip closed a connection nobody asked to close: keepalive or
+         * retransmission went unanswered. This is the reclaim of a peer that
+         * vanished without a FIN, and the only trace it leaves. */
+        uint32_t now = to_ms_since_boot(get_absolute_time());
+        printf("[el] s%u dropped by chip (peer silent %lums, sr=0x%02X) "
+               "%u.%u.%u.%u:%u\n",
+               sock, (unsigned long)(now - st->lastRxMs), sr,
+               st->peerIp[0], st->peerIp[1], st->peerIp[2], st->peerIp[3],
+               st->peerPort);
         wiz_queue_active_close(tcp, idx);
         return;
     }
+
+    if(wiz_is_closing_state(sr)) {
+        uint32_t now = to_ms_since_boot(get_absolute_time());
+        if(st->closingSinceMs == 0u)
+            st->closingSinceMs = now ? now : 1u;
+        else if((uint32_t)(now - st->closingSinceMs) >= WIZ_CLOSING_CAP_MS) {
+            g_wizCloseCut++;
+            printf("[el] close cut s%u: sr=0x%02X for %ums (closecut=%lu)\n",
+                   sock, sr, WIZ_CLOSING_CAP_MS, (unsigned long)g_wizCloseCut);
+            close(sock);
+            st->closingSinceMs = 0;
+        }
+        return;
+    }
+    st->closingSinceMs = 0;
 
     wiz_open_listen_socket(tcp, idx);
 }
@@ -1011,6 +1135,7 @@ wiz_cm_open_connection(UA_ConnectionManager *cm, const UA_KeyValueMap *params,
         tcp->s[i].pendingActiveClose = false;
         tcp->s[i].handshaking = false;
         tcp->s[i].channelOpened = false;
+        tcp->s[i].closingSinceMs = 0;
         close(WIZ_SOCKET_OF(i));
     }
     for(unsigned i = 0; i < g_wizSocketCount; i++)
@@ -1060,7 +1185,7 @@ static UA_StatusCode wiz_cm_close(UA_ConnectionManager *cm,
 
     int idx = wiz_index_of_active_id(connectionId);
     if(idx >= 0) {
-        disconnect(WIZ_SOCKET_OF(idx));
+        wiz_begin_disconnect(WIZ_SOCKET_OF(idx));
         wiz_queue_active_close(tcp, (unsigned)idx);
         return UA_STATUSCODE_GOOD;
     }

@@ -493,7 +493,18 @@ int opcua_server_init(const opcua_settings_t *cfg) {
          * 런타임 읽기는 그대로 DataSource 콜백을 탄다. */
         config.allowEmptyVariables        = UA_RULEHANDLING_ACCEPT;
         config.maxSecureChannels          = OPCUA_MAX_SOCKETS;
-        config.maxSessions                = OPCUA_MAX_SOCKETS;
+        /* Twice the sockets, on purpose. A session outlives its channel by
+         * design - a client whose connection drops may reactivate it on a new
+         * one - so when a client vanishes, its socket comes back through
+         * keepalive within seconds but its session holds a slot until
+         * maxSessionTimeout. With sessions == sockets, four vanished clients
+         * locked the server out for ten minutes with every socket free
+         * (BadTooManySessions, seen 2026-10-15). Live clients stay bounded by
+         * the four sockets either way; the extra slots only absorb orphans,
+         * at about 2.4 KB each. open62541 logs a startup warning that
+         * channels are fewer than sessions; that is this decision, not a
+         * misconfiguration. */
+        config.maxSessions                = 2u * OPCUA_MAX_SOCKETS;
         config.maxSessionTimeout          = 10.0 * 60.0 * 1000.0; /* 10분 */
         config.maxNotificationsPerPublish = 100;   /* 한 응답이 6KB TX 버퍼에 들어가는 크기 */
         config.maxRetransmissionQueueSize = 256;   /* 구독당 상한과 동일 */

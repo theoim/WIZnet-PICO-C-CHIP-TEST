@@ -117,6 +117,14 @@ static void process_line(char *line) {
         opcua_server_print_status();
         return;
     }
+    if(strcmp(cmd, "WDTEST") == 0) {
+        /* Proves the watchdog end to end: stop feeding it and the board must
+         * come back with "reset cause: WATCHDOG". Not in HELP on purpose. */
+        printf("[wdt] stalling the main loop; expect a watchdog reset\r\n");
+        stdio_flush();
+        for(;;)
+            tight_loop_contents();
+    }
     if(strcmp(cmd, "NTP") == 0) {
         sntp_client_print_status();
         return;

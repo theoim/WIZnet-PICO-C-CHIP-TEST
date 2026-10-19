@@ -2,6 +2,7 @@
 
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
+#include "hardware/watchdog.h"
 
 #include "data_table.h"
 #include "opcua_security.h" /* open62541.h: UA_ENABLE_ENCRYPTION for the banner */
@@ -12,6 +13,18 @@
 #include "wiznet_network.h"
 
 static opcua_settings_t g_settings;
+
+/* The longest the loop may legitimately go without coming round.
+ *
+ * The worst known stall is one RSA private-key operation inside a handshake:
+ * about 1.7 s on the RP2350 (5 s on the RP2040, which is why that part is not
+ * the target). A settings save erases a flash sector with interrupts off for
+ * tens of milliseconds. Everything else - sends, closes, SNTP - is bounded or
+ * non-blocking. Eight seconds is over four times the RSA case on the target
+ * part and under half the hardware maximum (about 16.7 s). */
+#ifndef OPCUA_WATCHDOG_MS
+#define OPCUA_WATCHDOG_MS 8000u
+#endif
 
 int main(void) {
     stdio_init_all();
@@ -41,6 +54,11 @@ int main(void) {
            "off"
 #endif
     );
+    /* A reset the watchdog caused must be visible, or a hang that recovers
+     * itself every few minutes looks like a healthy board. */
+    if(watchdog_enable_caused_reboot())
+        printf("reset cause: WATCHDOG - the main loop stalled > %u ms\r\n",
+               OPCUA_WATCHDOG_MS);
     printf("Device: %s  channels: %u\r\n",
            g_settings.device_name, (unsigned)g_settings.channel_count);
     /* 보드에 따라 MCU 가 다르다 — W55RP20 은 RP2040, EVB-Pico2 계열은 RP2350.
@@ -57,7 +75,12 @@ int main(void) {
     opcua_server_print_status();
     usb_stdio_print_help();
 
+    /* Armed only now: initialisation may be slow, the loop may not.
+     * pause_on_debug so a halted debugger does not reset the target. */
+    watchdog_enable(OPCUA_WATCHDOG_MS, true);
+
     while(1) {
+        watchdog_update();
         usb_stdio_link_poll();
         wiznet_network_poll();
         sntp_client_poll();

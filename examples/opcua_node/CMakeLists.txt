@@ -68,6 +68,7 @@ target_link_libraries(${TARGET_NAME}
     hardware_pio
     hardware_flash
     hardware_sync
+    hardware_watchdog
     ETHERNET_FILES
     IOLIBRARY_FILES
     PORT_COMMON_FILES
