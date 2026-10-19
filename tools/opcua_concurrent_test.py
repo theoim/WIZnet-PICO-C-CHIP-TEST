@@ -43,6 +43,11 @@ APP_URI = "urn:wiznet:interop-client"
 DEFAULT_URL = "opc.tcp://192.168.11.2:4840"
 POLICY = "Basic256Sha256,SignAndEncrypt"
 
+# What a client gives up after. open62541's own default is 5 s; a little
+# more is allowed here so a slow-but-successful connection is recorded as
+# slow rather than disappearing into a timeout.
+CLIENT_TIMEOUT = 15.0
+
 
 async def one_client(index: int, url: str, barrier: asyncio.Barrier) -> dict:
     """Connect, time it, disconnect. Waits on the barrier so all start together."""
@@ -56,11 +61,19 @@ async def one_client(index: int, url: str, barrier: asyncio.Barrier) -> dict:
 
     started = time.perf_counter()
     try:
-        await client.connect()
+        # A hard ceiling per client, because a refused connection does not
+        # always surface as an error: when the server closes the TCP connection
+        # mid-handshake, asyncua can sit waiting for a response that will never
+        # come, and one stuck client otherwise holds up the whole measurement.
+        # A real client has its own timeout; this stands in for it.
+        await asyncio.wait_for(client.connect(), timeout=CLIENT_TIMEOUT)
         elapsed = time.perf_counter() - started
         result = {"index": index, "ok": True, "seconds": elapsed, "error": None}
-        await client.disconnect()
-    except Exception as exc:                        # noqa: BLE001 - reporting tool
+        try:
+            await asyncio.wait_for(client.disconnect(), timeout=5)
+        except Exception:                           # noqa: BLE001
+            pass
+    except BaseException as exc:                    # noqa: BLE001 - reporting tool
         elapsed = time.perf_counter() - started
         result = {"index": index, "ok": False, "seconds": elapsed,
                   "error": f"{type(exc).__name__}: {exc}"}
@@ -78,8 +91,13 @@ async def main(count: int, url: str) -> int:
     barrier = asyncio.Barrier(count)
     started = time.perf_counter()
     results = await asyncio.gather(
-        *(one_client(i, url, barrier) for i in range(count))
+        *(one_client(i, url, barrier) for i in range(count)),
+        return_exceptions=True,
     )
+    results = [r if isinstance(r, dict) else
+               {"index": -1, "ok": False, "seconds": 0.0,
+                "error": f"{type(r).__name__}: {r}"}
+               for r in results]
     wall = time.perf_counter() - started
 
     results.sort(key=lambda r: r["seconds"])

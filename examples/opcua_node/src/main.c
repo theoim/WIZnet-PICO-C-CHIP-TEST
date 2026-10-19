@@ -4,8 +4,10 @@
 #include "pico/stdio_usb.h"
 
 #include "data_table.h"
+#include "opcua_security.h" /* open62541.h: UA_ENABLE_ENCRYPTION for the banner */
 #include "opcua_server.h"
 #include "opcua_settings.h"
+#include "sntp_client.h"
 #include "usb_stdio_link.h"
 #include "wiznet_network.h"
 
@@ -23,6 +25,22 @@ int main(void) {
     usb_stdio_link_init(&g_settings);
 
     printf("\r\n=== WIZnet OPC UA Node (Phase A) ===\r\n");
+
+    /* Which image is running.
+     *
+     * Without this line every flash is followed by inferring from behaviour
+     * whether the new build actually took - and an admission-control change
+     * that produced identical timings was read as "the logic does not fire"
+     * when "the image did not change" was equally consistent with what was on
+     * screen. crypto_bench has carried the same banner since the first stale
+     * image slipped through there. */
+    printf("build %s %s  security=%s\r\n", OPCUA_BUILD_GIT, OPCUA_BUILD_UTC,
+#if defined(UA_ENABLE_ENCRYPTION)
+           "on"
+#else
+           "off"
+#endif
+    );
     printf("Device: %s  channels: %u\r\n",
            g_settings.device_name, (unsigned)g_settings.channel_count);
     /* 보드에 따라 MCU 가 다르다 — W55RP20 은 RP2040, EVB-Pico2 계열은 RP2350.
@@ -35,12 +53,14 @@ int main(void) {
 
     wiznet_network_init(&g_settings);
     opcua_server_init(&g_settings);
+    sntp_client_init(&g_settings);
     opcua_server_print_status();
     usb_stdio_print_help();
 
     while(1) {
         usb_stdio_link_poll();
         wiznet_network_poll();
+        sntp_client_poll();
         opcua_server_poll();
         sleep_ms(1);
     }

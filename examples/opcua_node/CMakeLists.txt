@@ -16,6 +16,7 @@ add_executable(${TARGET_NAME}
     src/data_table.c
     src/opcua_settings.c
     src/opcua_security.c
+    src/sntp_client.c
 )
 
 # The certificates are generated, not committed: they hold private keys.
@@ -40,6 +41,25 @@ endif()
 target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
+
+# Stamp the image so the serial log says which build it is. Inferring that from
+# behaviour has already cost one wrong conclusion.
+execute_process(
+        COMMAND git describe --always --dirty --abbrev=7
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE OPCUA_BUILD_GIT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+        )
+if(NOT OPCUA_BUILD_GIT)
+    set(OPCUA_BUILD_GIT "no-git")
+endif()
+string(TIMESTAMP OPCUA_BUILD_UTC "%Y-%m-%dT%H:%M:%SZ" UTC)
+
+target_compile_definitions(${TARGET_NAME} PRIVATE
+        OPCUA_BUILD_GIT="${OPCUA_BUILD_GIT}"
+        OPCUA_BUILD_UTC="${OPCUA_BUILD_UTC}"
+        )
 
 target_link_libraries(${TARGET_NAME}
     pico_stdlib

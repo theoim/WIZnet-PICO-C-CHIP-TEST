@@ -152,7 +152,13 @@ typedef struct {
     /* ── Channel table ────────────────────────────────────────────── */
     channel_def_t channels[OPCUA_MAX_CHANNELS];
 
-    uint8_t  _pad_tail[76];
+    /* NTP server for the wall clock (sntp_client.c). 0.0.0.0 = built-in
+     * default. Carved from the tail padding, so every earlier offset is
+     * unchanged and a v1 image - padding all zero - reads as "default" without
+     * a schema bump. */
+    uint8_t  ntp_server[4];
+
+    uint8_t  _pad_tail[72];
     uint32_t crc32;                 /* over bytes [0, sizeof-4)                       */
 } opcua_settings_t;
 
