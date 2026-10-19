@@ -63,7 +63,7 @@ void usb_stdio_print_help(void) {
     printf("  GET\r\n");
     printf("  NET\r\n");
     printf("  OPCUA\r\n");
-    printf("  NTP [a.b.c.d]   clock sync status / set server and sync now\r\n");
+    printf("  NTP [a.b.c.d]   clock sync status / set+save server (0.0.0.0 = default)\r\n");
     printf("  CLEAR\r\n");
     printf("  HELP\r\n");
     printf("Example: $DATA:23.50,101.32,65.20\r\n\r\n");
@@ -130,8 +130,10 @@ static void process_line(char *line) {
             return;
         }
         const uint8_t ip[4] = {(uint8_t)a, (uint8_t)b, (uint8_t)c, (uint8_t)d};
-        sntp_client_set_server(ip);
-        printf("[sntp] server set to %u.%u.%u.%u, syncing\r\n", a, b, c, d);
+        bool saved = sntp_client_set_server(ip);
+        printf("[sntp] server set to %u.%u.%u.%u%s, %s, syncing\r\n", a, b, c, d,
+               (a | b | c | d) ? "" : " (built-in default)",
+               saved ? "saved" : "NOT saved - lost on reboot");
         return;
     }
     if(strcmp(cmd, "CLEAR") == 0) {

@@ -53,7 +53,7 @@ int main(void) {
 
     wiznet_network_init(&g_settings);
     opcua_server_init(&g_settings);
-    sntp_client_init(NULL);
+    sntp_client_init(&g_settings);
     opcua_server_print_status();
     usb_stdio_print_help();
 

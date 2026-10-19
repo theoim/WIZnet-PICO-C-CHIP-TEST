@@ -69,6 +69,7 @@ static struct {
     uint32_t     last_rtt_ms;
     uint8_t      last_stratum;
     const char  *last_error;
+    bool         announce;       /* log the next success (boot, server change) */
 } s;
 
 static uint32_t now_ms(void) {
@@ -215,24 +216,48 @@ static void receive_reply(void) {
     s.last_rtt_ms = (uint32_t)((recv_us - s.sent_us) / 1000u);
     s.last_stratum = stratum;
     s.last_error = NULL;
-    if(s.ok_count == 1u)
+    if(s.announce)
         printf("[sntp] clock set from %u.%u.%u.%u (stratum %u, rtt %lu ms)\r\n",
                s.server[0], s.server[1], s.server[2], s.server[3],
                (unsigned)stratum, (unsigned long)s.last_rtt_ms);
+    s.announce = false;
     schedule(SNTP_RESYNC_MS);
 }
 
-void sntp_client_init(const uint8_t server[4]) {
-    static const uint8_t def[4] = OPCUA_SNTP_SERVER_IP;
+static const uint8_t s_default_server[4] = OPCUA_SNTP_SERVER_IP;
+static opcua_settings_t *s_cfg;
+
+static bool is_unset(const uint8_t ip[4]) {
+    return (ip[0] | ip[1] | ip[2] | ip[3]) == 0u;
+}
+
+void sntp_client_init(opcua_settings_t *cfg) {
     memset(&s, 0, sizeof(s));
-    memcpy(s.server, server ? server : def, 4);
+    s_cfg = cfg;
+    const uint8_t *ip = (cfg && !is_unset(cfg->ntp_server)) ? cfg->ntp_server
+                                                            : s_default_server;
+    memcpy(s.server, ip, 4);
+    s.announce = true;
     schedule(0);
 }
 
-void sntp_client_set_server(const uint8_t server[4]) {
-    memcpy(s.server, server, 4);
+bool sntp_client_set_server(const uint8_t server[4]) {
+    memcpy(s.server, is_unset(server) ? s_default_server : server, 4);
     s.last_error = NULL;
+    /* Hourly resyncs stay quiet; the first answer from a newly set server is
+     * the confirmation the operator is waiting for. */
+    s.announce = true;
     schedule(0);
+
+    if(!s_cfg)
+        return false;
+    /* Store what was asked for, not what is in use: 0.0.0.0 stays "follow
+     * the built-in default" rather than freezing today's default address. */
+    memcpy(s_cfg->ntp_server, server, 4);
+    /* The flash erase runs with interrupts off for tens of milliseconds. TCP
+     * peers retransmit through that; it is a configuration command, not a
+     * per-message path. */
+    return opcua_settings_save(s_cfg);
 }
 
 void sntp_client_poll(void) {
@@ -250,8 +275,10 @@ void sntp_client_poll(void) {
 }
 
 void sntp_client_print_status(void) {
-    printf("[sntp] server=%u.%u.%u.%u synced=%s ok=%lu fail=%lu",
+    bool from_cfg = s_cfg && !is_unset(s_cfg->ntp_server);
+    printf("[sntp] server=%u.%u.%u.%u (%s) synced=%s ok=%lu fail=%lu",
            s.server[0], s.server[1], s.server[2], s.server[3],
+           from_cfg ? "saved" : "default",
            wiz_clock_is_synced() ? "yes" : "no",
            (unsigned long)s.ok_count, (unsigned long)s.fail_count);
     if(s.ok_count)
