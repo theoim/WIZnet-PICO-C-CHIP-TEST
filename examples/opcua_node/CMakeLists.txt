@@ -16,6 +16,7 @@ add_executable(${TARGET_NAME}
     src/data_table.c
     src/opcua_settings.c
     src/opcua_security.c
+    src/sntp_client.c
 )
 
 # The certificates are generated, not committed: they hold private keys.

@@ -734,6 +734,37 @@ static void wiz_queue_active_close(WizTcpConnectionManager *tcp, unsigned idx) {
     tcp->s[idx].pendingActiveClose = true;
 }
 
+/* Tells a refused client why, before the connection goes away.
+ *
+ * Dropping the TCP connection alone left clients waiting for an OPN response
+ * until their own timeout (asyncua: 4 s), and the failure then read as a
+ * timeout - indistinguishable from a dead server. An OPC UA ERR message is the
+ * transport's way to say "no": the client fails at once with a status it can
+ * act on. Bad_TcpServerTooBusy is the code Part 6 defines for exactly this,
+ * "the server cannot process the request because it is too busy".
+ *
+ * Layout (Part 6, 7.1.2.5): "ERRF", MessageSize, Error (StatusCode),
+ * Reason (String). All little-endian. Sent with the blocking send; the caller
+ * then disconnects, and the chip sends the bytes before its FIN. */
+#define WIZ_BAD_TCP_SERVER_TOO_BUSY 0x807D0000u
+
+static void wiz_send_too_busy(uint8_t sock) {
+    static const char reason[] = "handshake capacity in use, retry shortly";
+    const uint32_t reasonLen = (uint32_t)(sizeof(reason) - 1u);
+    const uint32_t size = 8u + 4u + 4u + reasonLen;
+    uint8_t msg[8u + 4u + 4u + sizeof(reason)];
+
+    memcpy(msg, "ERRF", 4);
+    for(unsigned i = 0; i < 4u; i++) {
+        msg[4 + i]  = (uint8_t)(size >> (8u * i));
+        msg[8 + i]  = (uint8_t)(WIZ_BAD_TCP_SERVER_TOO_BUSY >> (8u * i));
+        msg[12 + i] = (uint8_t)(reasonLen >> (8u * i));
+    }
+    memcpy(msg + 16, reason, reasonLen);
+
+    (void)wiz_send_all(sock, msg, (uint16_t)size);
+}
+
 /* 소켓 하나의 미처리 close 를 반영한다. 상위에 CLOSING 을 통보하고 소켓을 닫는다.
  * 닫힌 소켓은 다음 폴링에서 wiz_open_listen_socket() 이 다시 LISTEN 으로 돌린다. */
 static void wiz_process_pending_active_close(WizTcpConnectionManager *tcp,
@@ -852,6 +883,8 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
                            (unsigned long)g_wizHandshakeRefused,
                            st->peerIp[0], st->peerIp[1],
                            st->peerIp[2], st->peerIp[3], st->peerPort);
+                    wiz_send_too_busy(sock);
+                    disconnect(sock);
                     wiz_queue_active_close(tcp, idx);
                     return;
                 }

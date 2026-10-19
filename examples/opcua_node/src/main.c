@@ -7,6 +7,7 @@
 #include "opcua_security.h" /* open62541.h: UA_ENABLE_ENCRYPTION for the banner */
 #include "opcua_server.h"
 #include "opcua_settings.h"
+#include "sntp_client.h"
 #include "usb_stdio_link.h"
 #include "wiznet_network.h"
 
@@ -52,12 +53,14 @@ int main(void) {
 
     wiznet_network_init(&g_settings);
     opcua_server_init(&g_settings);
+    sntp_client_init(NULL);
     opcua_server_print_status();
     usb_stdio_print_help();
 
     while(1) {
         usb_stdio_link_poll();
         wiznet_network_poll();
+        sntp_client_poll();
         opcua_server_poll();
         sleep_ms(1);
     }

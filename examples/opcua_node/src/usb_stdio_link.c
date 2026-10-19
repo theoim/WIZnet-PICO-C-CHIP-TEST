@@ -11,6 +11,7 @@
 #include "data_table.h"
 #include "opcua_server.h"
 #include "opcua_settings.h"
+#include "sntp_client.h"
 #include "wiznet_network.h"
 
 #define USB_LINE_MAX 96u
@@ -62,6 +63,7 @@ void usb_stdio_print_help(void) {
     printf("  GET\r\n");
     printf("  NET\r\n");
     printf("  OPCUA\r\n");
+    printf("  NTP [a.b.c.d]   clock sync status / set server and sync now\r\n");
     printf("  CLEAR\r\n");
     printf("  HELP\r\n");
     printf("Example: $DATA:23.50,101.32,65.20\r\n\r\n");
@@ -113,6 +115,23 @@ static void process_line(char *line) {
     }
     if(strcmp(cmd, "OPCUA") == 0) {
         opcua_server_print_status();
+        return;
+    }
+    if(strcmp(cmd, "NTP") == 0) {
+        sntp_client_print_status();
+        return;
+    }
+    if(strncmp(cmd, "NTP ", 4u) == 0) {
+        unsigned a, b, c, d;
+        char extra;
+        if(sscanf(cmd + 4, "%u.%u.%u.%u%c", &a, &b, &c, &d, &extra) != 4 ||
+           a > 255u || b > 255u || c > 255u || d > 255u) {
+            printf("[sntp] usage: NTP a.b.c.d\r\n");
+            return;
+        }
+        const uint8_t ip[4] = {(uint8_t)a, (uint8_t)b, (uint8_t)c, (uint8_t)d};
+        sntp_client_set_server(ip);
+        printf("[sntp] server set to %u.%u.%u.%u, syncing\r\n", a, b, c, d);
         return;
     }
     if(strcmp(cmd, "CLEAR") == 0) {
