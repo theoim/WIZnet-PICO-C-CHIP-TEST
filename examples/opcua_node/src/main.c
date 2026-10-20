@@ -10,6 +10,7 @@
 #include "opcua_settings.h"
 #include "reset_cause.h"
 #include "sntp_client.h"
+#include "uart_link.h"
 #include "usb_stdio_link.h"
 #include "wiznet_network.h"
 
@@ -72,6 +73,7 @@ int main(void) {
     wiznet_network_init(&g_settings);
     opcua_server_init(&g_settings);
     sntp_client_init(&g_settings);
+    uart_link_init();
     opcua_server_print_status();
     usb_stdio_print_help();
 
@@ -82,6 +84,7 @@ int main(void) {
     while(1) {
         watchdog_update();
         usb_stdio_link_poll();
+        uart_link_poll();
         wiznet_network_poll();
         sntp_client_poll();
         opcua_server_poll();

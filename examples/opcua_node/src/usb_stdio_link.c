@@ -12,6 +12,7 @@
 #include "opcua_server.h"
 #include "opcua_settings.h"
 #include "sntp_client.h"
+#include "uart_link.h"
 #include "wiznet_network.h"
 
 #define USB_LINE_MAX 96u
@@ -30,32 +31,6 @@ static char *trim(char *s) {
     return s;
 }
 
-static bool parse_float_token(const char **cursor, float *out) {
-    char *end = NULL;
-    float value = strtof(*cursor, &end);
-    if(end == *cursor)
-        return false;
-    while(*end == ' ' || *end == '\t')
-        end++;
-    *cursor = end;
-    *out = value;
-    return true;
-}
-
-/* Original $DATA demo parser: exactly three comma-separated floats.
- * A-3 generalizes this to the configurable UART_RAW delimiter/mapping. */
-static bool parse_data_payload(const char *payload, float *v /*[3]*/) {
-    const char *p = payload;
-    while(*p == ' ' || *p == '\t') p++;
-    if(!parse_float_token(&p, &v[0])) return false;
-    if(*p++ != ',') return false;
-    while(*p == ' ' || *p == '\t') p++;
-    if(!parse_float_token(&p, &v[1])) return false;
-    if(*p++ != ',') return false;
-    while(*p == ' ' || *p == '\t') p++;
-    if(!parse_float_token(&p, &v[2])) return false;
-    return *p == '\0';
-}
 
 void usb_stdio_print_help(void) {
     printf("\r\nCommands:\r\n");
@@ -63,6 +38,7 @@ void usb_stdio_print_help(void) {
     printf("  GET\r\n");
     printf("  NET\r\n");
     printf("  OPCUA\r\n");
+    printf("  UART            UART0 (GP0 TX, GP1 RX) input counters\r\n");
     printf("  NTP [a.b.c.d]   clock sync status / set+save server (0.0.0.0 = default)\r\n");
     printf("  CLEAR\r\n");
     printf("  HELP\r\n");
@@ -125,6 +101,10 @@ static void process_line(char *line) {
         for(;;)
             tight_loop_contents();
     }
+    if(strcmp(cmd, "UART") == 0) {
+        uart_link_print_status();
+        return;
+    }
     if(strcmp(cmd, "NTP") == 0) {
         sntp_client_print_status();
         return;
@@ -158,7 +138,7 @@ static void process_line(char *line) {
 
     if(payload) {
         float v[3] = {0.0f, 0.0f, 0.0f};
-        if(!parse_data_payload(payload, v)) {
+        if(!data_table_parse_triplet(payload, v)) {
             data_table_note_usb_error();
             printf("[DATA] parse error: %s\r\n", cmd);
             return;

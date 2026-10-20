@@ -1,5 +1,6 @@
 #include "data_table.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "pico/stdlib.h"
@@ -107,6 +108,46 @@ void data_table_note_modbus_poll(void) { s_diag.modbus_poll_count++; }
 void data_table_note_modbus_timeout(void) { s_diag.modbus_timeout_count++; }
 
 /* ── Legacy demo helper ───────────────────────────────────────────── */
+static bool parse_float_token(const char **cursor, float *out) {
+    char *end = NULL;
+    float value = strtof(*cursor, &end);
+    if(end == *cursor)
+        return false;
+    while(*end == ' ' || *end == '\t')
+        end++;
+    *cursor = end;
+    *out = value;
+    return true;
+}
+
+bool data_table_parse_triplet(const char *payload, float v[3]) {
+    const char *p = payload;
+    while(*p == ' ' || *p == '\t') p++;
+    if(!parse_float_token(&p, &v[0])) return false;
+    if(*p++ != ',') return false;
+    while(*p == ' ' || *p == '\t') p++;
+    if(!parse_float_token(&p, &v[1])) return false;
+    if(*p++ != ',') return false;
+    while(*p == ' ' || *p == '\t') p++;
+    if(!parse_float_token(&p, &v[2])) return false;
+    return *p == '\0';
+}
+
+void data_table_feed_uart_floats(const float *vals, uint16_t n,
+                                 const char *raw) {
+    if(!s_cfg)
+        return;
+    uint16_t fed = 0;
+    for(uint16_t i = 0; i < s_cfg->channel_count && fed < n; i++) {
+        uint8_t src = s_cfg->channels[i].source;
+        if(src != OPCUA_SRC_USB && src != OPCUA_SRC_UART)
+            continue;
+        data_table_set_raw(i, (double)vals[fed]);
+        fed++;
+    }
+    data_table_note_uart_frame(raw);
+}
+
 void data_table_feed_usb_floats(const float *vals, uint16_t n,
                                 const char *raw) {
     if(!s_cfg)

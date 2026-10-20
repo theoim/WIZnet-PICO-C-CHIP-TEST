@@ -18,6 +18,7 @@ add_executable(${TARGET_NAME}
     src/opcua_security.c
     src/sntp_client.c
     src/reset_cause.c
+    src/uart_link.c
 )
 
 # The certificates are generated, not committed: they hold private keys.

@@ -68,6 +68,16 @@ void data_table_note_modbus_timeout(void);
  * preserving the original $DATA:<ch1>,<ch2>,<ch3> behavior. */
 void data_table_feed_usb_floats(const float *vals, uint16_t n,
                                 const char *raw);
+
+/* The same legacy frame arriving on the hardware UART. Feeds the same first
+ * external-input channels (source USB or UART) - per-channel source mapping
+ * (A-3) is not built yet - and counts it as a UART frame. */
+void data_table_feed_uart_floats(const float *vals, uint16_t n,
+                                 const char *raw);
+
+/* Parses the legacy "$DATA:" payload: exactly three comma-separated floats.
+ * Shared by the USB console and the UART link. */
+bool data_table_parse_triplet(const char *payload, float v[3]);
 void data_table_clear(void);
 
 #endif /* DATA_TABLE_H */
