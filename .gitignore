@@ -19,3 +19,6 @@ examples/opcua_node/inc/opcua_certs.h
 
 # Test client certificate for the interoperability tests (private key).
 tools/interop_certs/
+
+# Soak test output (CSV, console and event logs)
+tools/soak_out/

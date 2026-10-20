@@ -798,6 +798,7 @@ static void wiz_queue_active_close(WizTcpConnectionManager *tcp, unsigned idx) {
 /* Limits: see WIZ_KEEPALIVE_UNITS and friends near the top. */
 
 static uint32_t g_wizCloseCut = 0;
+static uint32_t g_wizChipDropped = 0;
 
 /* Starts a graceful close and returns at once.
  *
@@ -1019,6 +1020,7 @@ static void wiz_cm_poll_socket(WizTcpConnectionManager *tcp, unsigned idx) {
          * retransmission went unanswered. This is the reclaim of a peer that
          * vanished without a FIN, and the only trace it leaves. */
         uint32_t now = to_ms_since_boot(get_absolute_time());
+        g_wizChipDropped++;
         printf("[el] s%u dropped by chip (peer silent %lums, sr=0x%02X) "
                "%u.%u.%u.%u:%u\n",
                sock, (unsigned long)(now - st->lastRxMs), sr,
@@ -1243,4 +1245,17 @@ UA_ConnectionManager *
 UA_ConnectionManager_new_LWIP_UDP(const UA_String eventSourceName) {
     (void)eventSourceName;
     return NULL;
+}
+
+void UA_EventLoop_LWIP_getStats(UA_EventLoop_LWIP_Stats *out) {
+    uint8_t busy = 0;
+    for(uint8_t sk = 0; sk < g_wizSocketCount; sk++) {
+        uint8_t sr = getSn_SR(sk);
+        if(sr != SOCK_LISTEN && sr != SOCK_CLOSED)
+            busy++;
+    }
+    out->socketsBusy = busy;
+    out->handshakeRefused = g_wizHandshakeRefused;
+    out->closeCut = g_wizCloseCut;
+    out->chipDropped = g_wizChipDropped;
 }

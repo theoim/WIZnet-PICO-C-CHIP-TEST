@@ -101,6 +101,17 @@ static void process_line(char *line) {
         for(;;)
             tight_loop_contents();
     }
+    if(strncmp(cmd, "LINKDOWN ", 9u) == 0) {
+        /* Scheduled link outage for soak tests. Not in HELP, like WDTEST. */
+        unsigned s;
+        char extra;
+        if(sscanf(cmd + 9, "%u%c", &s, &extra) != 1 || s > 600u) {
+            printf("[WIZnet] usage: LINKDOWN <0..600 s>\r\n");
+            return;
+        }
+        wiznet_network_link_drop(s);
+        return;
+    }
     if(strcmp(cmd, "UART") == 0) {
         uart_link_print_status();
         return;

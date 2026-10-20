@@ -53,6 +53,16 @@ typedef enum {
     /* 시각원(SNTP/RTC) 동기화 상태. 이 값이 Unsynchronised 인 동안에는
      * 채널 값에 sourceTimestamp 를 붙이지 않는다 — 붙이면 1970년이 나간다. */
     OPCUA_DIAG_TIME_SYNC,
+    /* Soak-test diagnostics: heap low-water mark, which image is running,
+     * and the session/channel/socket state a leak would show up in. */
+    OPCUA_DIAG_MIN_FREE_HEAP,
+    OPCUA_DIAG_BUILD_ID,
+    OPCUA_DIAG_SESSIONS,
+    OPCUA_DIAG_CHANNELS,
+    OPCUA_DIAG_SOCKETS_BUSY,
+    OPCUA_DIAG_HANDSHAKE_REFUSED,
+    OPCUA_DIAG_CLOSE_CUT,
+    OPCUA_DIAG_CHIP_DROPPED,
     OPCUA_DIAG__COUNT
 } OpcUaDiagKind;
 

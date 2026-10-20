@@ -36,6 +36,18 @@ void UA_EventLoop_LWIP_setSocketCount(uint8_t count);
 /* 현재 설정값을 돌려준다. 진단·로그용. */
 uint8_t UA_EventLoop_LWIP_getSocketCount(void);
 
+/* Transport counters for diagnostics and soak tests. A socket that never
+ * comes back (a leak) shows as socketsBusy staying up with no client
+ * connected; the three counters are cumulative since boot. */
+typedef struct {
+    uint8_t  socketsBusy;       /* hardware sockets neither LISTEN nor CLOSED */
+    uint32_t handshakeRefused;  /* OPNs answered with Bad_TcpServerTooBusy    */
+    uint32_t closeCut;          /* closes forced after the closing-state cap  */
+    uint32_t chipDropped;       /* connections the chip's keepalive gave up on */
+} UA_EventLoop_LWIP_Stats;
+
+void UA_EventLoop_LWIP_getStats(UA_EventLoop_LWIP_Stats *out);
+
 /* ── 시각 동기화 ───────────────────────────────────────────────────
  * 이 포팅 계층은 시계를 두 개로 분리해서 제공한다.
  *

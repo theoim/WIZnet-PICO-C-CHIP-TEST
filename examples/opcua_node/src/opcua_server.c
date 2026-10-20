@@ -62,6 +62,20 @@ static UA_UInt32 free_heap(void) {
     return (UA_UInt32)(total - (uint32_t)m.uordblks);
 }
 
+/* Heap that malloc has never claimed: total minus the peak arena. The heap
+ * only grows through sbrk, so this catches a transient peak inside one
+ * handshake that a sampled FreeHeap misses. It is a lower bound of the worst
+ * FreeHeap: free chunks inside the arena count as used here. Running out of
+ * it is what makes malloc fail.
+ *
+ * newlib's own high-water mark, read directly: mallinfo().usmblks is not it
+ * in this build (it gave a "minimum" above the current FreeHeap). */
+extern unsigned long __malloc_max_sbrked_mem;
+static UA_UInt32 min_free_heap(void) {
+    uint32_t total = (uint32_t)(&__StackLimit - &__bss_end__);
+    return (UA_UInt32)(total - (uint32_t)__malloc_max_sbrked_mem);
+}
+
 static UA_StatusCode copy_string_to_config(UA_String *dst, const char *text) {
     UA_String src = UA_STRING((char *)text);
     UA_String_clear(dst);
@@ -219,6 +233,34 @@ static UA_StatusCode read_diag(uint16_t kind, UA_DataValue *value,
     case OPCUA_DIAG_FREE_HEAP: {
         UA_UInt32 fh = free_heap();
         return emit_scalar(value, &fh, &UA_TYPES[UA_TYPES_UINT32], ts);
+    }
+    case OPCUA_DIAG_MIN_FREE_HEAP: {
+        UA_UInt32 mf = min_free_heap();
+        return emit_scalar(value, &mf, &UA_TYPES[UA_TYPES_UINT32], ts);
+    }
+    case OPCUA_DIAG_BUILD_ID:
+        /* The same stamp as the boot banner, so a test can refuse to judge a
+         * board that is not running the image it was written against. */
+        return emit_string(value, OPCUA_BUILD_GIT " " OPCUA_BUILD_UTC, ts);
+    case OPCUA_DIAG_SESSIONS:
+    case OPCUA_DIAG_CHANNELS: {
+        UA_ServerStatistics st = UA_Server_getStatistics(s_server);
+        UA_UInt32 n = (UA_UInt32)(kind == OPCUA_DIAG_SESSIONS
+                                      ? st.ss.currentSessionCount
+                                      : st.scs.currentChannelCount);
+        return emit_scalar(value, &n, &UA_TYPES[UA_TYPES_UINT32], ts);
+    }
+    case OPCUA_DIAG_SOCKETS_BUSY:
+    case OPCUA_DIAG_HANDSHAKE_REFUSED:
+    case OPCUA_DIAG_CLOSE_CUT:
+    case OPCUA_DIAG_CHIP_DROPPED: {
+        UA_EventLoop_LWIP_Stats es;
+        UA_EventLoop_LWIP_getStats(&es);
+        UA_UInt32 n = kind == OPCUA_DIAG_SOCKETS_BUSY      ? es.socketsBusy
+                    : kind == OPCUA_DIAG_HANDSHAKE_REFUSED ? es.handshakeRefused
+                    : kind == OPCUA_DIAG_CLOSE_CUT         ? es.closeCut
+                                                           : es.chipDropped;
+        return emit_scalar(value, &n, &UA_TYPES[UA_TYPES_UINT32], ts);
     }
     case OPCUA_DIAG_REBOOT_COUNT: {
         UA_UInt32 rc = s_cfg->reboot_count;
@@ -420,6 +462,14 @@ static UA_StatusCode add_address_space(void) {
     add_diag_var(device, OPCUA_DIAG_MODBUS_POLLS,   "ModbusPollCount",  UA_NS0ID_UINT32);
     add_diag_var(device, OPCUA_DIAG_MODBUS_TIMEOUTS,"ModbusTimeoutCount",UA_NS0ID_UINT32);
     add_diag_var(device, OPCUA_DIAG_TIME_SYNC,      "TimeSync",         UA_NS0ID_STRING);
+    add_diag_var(device, OPCUA_DIAG_MIN_FREE_HEAP,  "MinFreeHeap",      UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_BUILD_ID,       "BuildId",          UA_NS0ID_STRING);
+    add_diag_var(device, OPCUA_DIAG_SESSIONS,       "SessionCount",     UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_CHANNELS,       "ChannelCount",     UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_SOCKETS_BUSY,   "SocketsBusy",      UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_HANDSHAKE_REFUSED, "HandshakeRefused", UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_CLOSE_CUT,      "CloseCut",         UA_NS0ID_UINT32);
+    add_diag_var(device, OPCUA_DIAG_CHIP_DROPPED,   "ChipDropped",      UA_NS0ID_UINT32);
 
     /* Channels. */
     for(uint16_t i = 0; i < s_cfg->channel_count; i++) {
@@ -624,6 +674,13 @@ void opcua_server_print_status(void) {
            (unsigned)s_status.channel_count);
     printf("[OPC UA] %s\r\n",
            s_status.status_text ? s_status.status_text : "(no status)");
+    struct mallinfo m = mallinfo();
+    printf("[heap] total=%lu in_use=%lu arena=%lu peak_arena=%lu "
+           "free=%lu min_free=%lu\r\n",
+           (unsigned long)(&__StackLimit - &__bss_end__),
+           (unsigned long)m.uordblks, (unsigned long)m.arena,
+           __malloc_max_sbrked_mem, (unsigned long)free_heap(),
+           (unsigned long)min_free_heap());
 #if !OPCUA_ENABLE && OPCUA_TCP_PROBE_ENABLE
     opcua_tcp_probe_print_status();
 #endif

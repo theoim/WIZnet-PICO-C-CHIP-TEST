@@ -33,4 +33,9 @@ void wiznet_network_get_status(WiznetNetworkStatus *status);
 void wiznet_network_print_status(void);
 bool wiznet_network_is_ready(void);
 
+/* Powers the PHY down for `seconds` and back up from the poll loop: the
+ * board-side equivalent of pulling the cable, so a soak test can inject a
+ * link outage on a schedule. Non-blocking. 0 cancels one in progress. */
+void wiznet_network_link_drop(uint32_t seconds);
+
 #endif /* WIZNET_NETWORK_H */

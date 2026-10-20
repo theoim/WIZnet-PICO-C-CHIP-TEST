@@ -57,6 +57,7 @@ static wiz_NetInfo s_net_info = {
 
 static WiznetNetworkStatus s_status;
 static uint32_t s_last_link_poll_ms;
+static uint32_t s_link_drop_until_ms;     /* 0 = PHY not held down */
 
 static const char *state_name(WiznetNetworkState state) {
     switch(state) {
@@ -84,7 +85,10 @@ static void copy_net_info_to_status(void) {
 
 static void update_link_status(bool print_on_change) {
     bool old_link_up = s_status.link_up;
-    uint8_t link = wizphy_getphylink();
+    /* PHYSR, not wizphy_getphylink(): in MII mode that reads BMSR over MDIO,
+     * and ioLibrary's MDIO access spins on PHYACR with no timeout. See
+     * phy_power() for the hang this caused. */
+    uint8_t link = (getPHYSR() & PHYSR_LNK) ? PHY_LINK_ON : PHY_LINK_OFF;
 
     s_status.link_up = (link == PHY_LINK_ON);
     s_status.state = s_status.link_up ?
@@ -188,11 +192,42 @@ int wiznet_network_init(const opcua_settings_t *cfg) {
     return 0;
 }
 
+/* Power-down goes through PHYCR1, never MDIO. ioLibrary's MDIO access
+ * (wiz_mdio_read/write in w6300.c) spins on PHYACR with no timeout, and the
+ * first LINKDOWN, done with wizphy_setphypmode() over MDIO, stopped the loop
+ * before the next link poll could print and the watchdog reset the board 8 s
+ * later - most likely the MDIO read of BMSR never completing with the PHY
+ * powered down. */
+static void phy_power(bool down) {
+    PHYUNLOCK();
+    uint8_t v = getPHYCR1();
+    setPHYCR1(down ? (uint8_t)(v | PHYCR1_PWDN) : (uint8_t)(v & ~PHYCR1_PWDN));
+    PHYLOCK();
+}
+
+void wiznet_network_link_drop(uint32_t seconds) {
+    if(seconds == 0u) {
+        s_link_drop_until_ms = 1u;        /* release on the next poll */
+        return;
+    }
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    phy_power(true);
+    s_link_drop_until_ms = (now + seconds * 1000u) | 1u;
+    printf("[WIZnet] PHY powered down for %lus (LINKDOWN)\r\n",
+           (unsigned long)seconds);
+}
+
 void wiznet_network_poll(void) {
     if(!s_status.initialized)
         return;
 
     uint32_t now = to_ms_since_boot(get_absolute_time());
+    if(s_link_drop_until_ms != 0u &&
+       (int32_t)(now - s_link_drop_until_ms) >= 0) {
+        s_link_drop_until_ms = 0u;
+        phy_power(false);
+        printf("[WIZnet] PHY powered up (LINKDOWN over)\r\n");
+    }
     if((uint32_t)(now - s_last_link_poll_ms) < LINK_POLL_INTERVAL_MS)
         return;
 
