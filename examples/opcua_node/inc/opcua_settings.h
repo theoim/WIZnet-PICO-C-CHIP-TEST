@@ -145,8 +145,8 @@ typedef struct {
     uint8_t  sec_reserved[28];
 
     /* ── Reliability record (A-5) ─────────────────────────────────── */
-    uint32_t reboot_count;
-    uint8_t  reboot_reason;         /* 0=power,1=watchdog,2=user/save                */
+    uint32_t reboot_count;          /* unplanned resets since factory reset          */
+    uint8_t  reboot_reason;         /* reset_cause_t of the last unplanned reset     */
     uint8_t  _pad_rel[3];
 
     /* ── Channel table ────────────────────────────────────────────── */

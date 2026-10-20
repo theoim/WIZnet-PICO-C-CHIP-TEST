@@ -10,6 +10,7 @@
 #include "data_table.h"
 #include "opcua_node_map.h"
 #include "opcua_tcp_probe.h"
+#include "reset_cause.h"
 #include "pico/stdlib.h"
 #include "wiznet_network.h"
 #include "wiznet_eventloop_config.h"
@@ -223,12 +224,10 @@ static UA_StatusCode read_diag(uint16_t kind, UA_DataValue *value,
         UA_UInt32 rc = s_cfg->reboot_count;
         return emit_scalar(value, &rc, &UA_TYPES[UA_TYPES_UINT32], ts);
     }
-    case OPCUA_DIAG_REBOOT_REASON: {
-        const char *r = s_cfg->reboot_reason == 1 ? "watchdog"
-                      : s_cfg->reboot_reason == 2 ? "user"
-                                                  : "power";
-        return emit_string(value, r, ts);
-    }
+    case OPCUA_DIAG_REBOOT_REASON:
+        /* This boot's cause. RebootCount is the persisted number of unplanned
+         * resets (watchdog, brown-out, glitch); see reset_cause.h. */
+        return emit_string(value, reset_cause_name(reset_cause_this_boot()), ts);
     case OPCUA_DIAG_LINK_STATUS:
         return emit_string(value,
                            wiznet_network_is_ready() ? "up" : "down", ts);

@@ -19,8 +19,8 @@ Objects
       FwVersion         String         ns;s="Diag.FwVersion"
       Uptime_s          UInt32         ns;s="Diag.Uptime_s"
       FreeHeap          UInt32         ns;s="Diag.FreeHeap"
-      RebootCount       UInt32         ns;s="Diag.RebootCount"
-      RebootReason      String         ns;s="Diag.RebootReason"    (power|watchdog|user)
+      RebootCount       UInt32         ns;s="Diag.RebootCount"     unplanned resets (watchdog/brownout/glitch), persisted
+      RebootReason      String         ns;s="Diag.RebootReason"    this boot: power|watchdog|user|brownout|glitch|run-pin|debugger|unknown
       LinkStatus        String         ns;s="Diag.LinkStatus"      (up|down)
       RawFrame          String         ns;s="Diag.RawFrame"        (last input frame)
       UsbFrameCount     UInt32         ns;s="Diag.UsbFrameCount"
